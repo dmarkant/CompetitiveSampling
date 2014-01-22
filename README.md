@@ -1,0 +1,4 @@
+CompetitiveSampling
+===================
+
+Competitive sampling project
