@@ -95,6 +95,13 @@ var Option = function(stage, option_info, callback) {
 	self.draw = function() {
 		
 		self.disp = self.stage.append('g').attr('id', self.id);
+		self.obj = self.disp.append('image')
+							.attr('x', self.x-100)
+							.attr('y', self.y-80)
+							.attr('width', 200)
+							.attr('height', 200)
+							.attr('xlink:href', 'static/images/pot.png');
+
 		self.circle = self.disp.append('circle')
 						 .attr('cx', self.x)
 						 .attr('cy', self.y)
