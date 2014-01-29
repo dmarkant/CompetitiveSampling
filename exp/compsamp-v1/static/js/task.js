@@ -18,6 +18,27 @@ var pages = [
 psiTurk.preloadPages(pages);
 
 
+INSTRUCTIONS = [
+'<p>In this study you will play five lottery games against other players. In each game you will be randomly assigned to play against another player.</p>',
+'<p>In each game there are two urns. Each urn contains 100 numbered coins. The number written on a coin represents the amount of money that you get as a Bonus (depending on your decisions) at the end of the study. Each player starts with an entry fee of X. You will win or lose money based on what kinds of coins are present in the urn you choose.</p>',
+'<p>This is what the urns look like:</p>',
+'<p>Neither you nore the other player knows before every single game what kinds of coins are present in each urn. To find this out, both players have the possibility to inspect the urns before they decide. These are Information Rounds. If a player decides to choose an urn after an Information Round, the Decision Round will follow for both players.</p>',
+'<p>Each game will start with the first Information Round. In this round, you can click on one of the two urns to pick a ball. Thus, you inspect the urns. When both players clicked on an urn, you will see the amount of money on a coin that is randomly chosen from that urn. You will also see which urn the other player has chosen. But you will not see the amount of money on the coin that the other player received.</p>',
+'<p>Now you can decide if you want to continue inspecting the urns and have another Information Round. In this case you will click on "Inspect". If you don\'t want to continue inspecting the urns, you can go to a Decision Round by clicking on "quit inspecting".</p>',
+'If you decide for another Information Round, there are two possibilities. If the other player decided for an Information Round, the next Information Round starts. If the other player decided for a Decision Round, he or she will choose an urn. IMPORTANT: Because both players cannot choose the same urn during the Decision Round, you can only choose the urn that the other player hasn\'t chosen.</p>',
+'<p>If you chose for a Decision Round, you will get to choose an urn. You click on the urn that you want. If the other player decided for an Information Round, you are free in choosing. The other urn will be assigned to the other player.</p>',
+'<p>If the other player decided for a Decision Round, there are two possibilities that can happen. If you and the other player choose different urns, you will each get the urn of your choice. If you and the other player choose the same urn, the computer will randomly choose one of your to receive the urn, and the other player will receive the non-chosen urn.</p>',
+'<p>Each game is over after a Decision Round. Another game of the total five lottery games will follow with new urns and new balls.</p>',
+'<p>You can decide how often you want to inspect the urns. There is no maximum number of Information Rounds. As long as both players decide for Information Rounds, the inspection of the urns will continue.</p>',
+'<p>You will get money regarding your decisions at the end of the experiment. From each urn that you received (either because you chose it or because it was assigned to you after the other player made a choice). You will receive the average amount of all coins in each urn. For example, if an urn includes 50 coins with -5 and 50 coins with 15, then you will receive 5.</p>',
+'<p>An urn can include positive as well as negative amounts of money. Because of that it can happen that you may lose money. At the end of the experiment you will receive the total amount of money of the five lottery games.</p>',
+'<p>It could happen that sometimes you have to wait until the other player makes his decision. Please wait patiently until the game continues.</p>',
+'<p>Now three practice games will follow so that you can learn how to play the game.</p>'
+];
+
+
+
+
 // Task object to keep track of the current phase
 var exp,
 	NROUNDS = 6;
