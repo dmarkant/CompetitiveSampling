@@ -168,6 +168,7 @@ var Option = function(stage, option_info, callback) {
 				 .attr('x', self.sample_x)
 				 .attr('y', self.sample_y+15)
 				 .attr('text-anchor', 'middle')
+				 .attr('fill', '#5E610B')
 				 .attr('class', 'samplefeedback')
 				 .text(value);
 	};
