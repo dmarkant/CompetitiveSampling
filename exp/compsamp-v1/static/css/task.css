@@ -6,13 +6,13 @@ body {
 	text-align: center;
 	font-family: Verdana, Helvetica, sans-serif;
 	margin: 0 auto;
-        margin-top: 100px;
+    margin-top: 100px;
 	width: 800px;
 }
 
 h1 {
-        font-family: "Crimson Text";
-        font-size: 32pt;
+    font-family: "Crimson Text";
+    font-size: 32pt;
 }
 
 a {
@@ -29,7 +29,7 @@ a {
 
 strong {
 	font-weight: bold;
-	color: #DDAA90;
+	color: black;
 }
 
 
@@ -68,7 +68,7 @@ input {
         width: 200px;
         height: 100px;
         font-size: 22pt;
-        margin: 10px;
+        margin: 20px;
 }
 
 .questionnaire {
@@ -221,4 +221,16 @@ input {
     font-family: "Crimson Text";
     font-size: 42pt;
     font-weight: bold;
+}
+
+.svg-container {
+    margin: 0 auto;
+}
+
+#container-instructions .instruction-body {
+    text-align: left;
+    font-family: "Georgia";
+    font-size: 16pt;
+    margin-top: 15px;
+    
 }
