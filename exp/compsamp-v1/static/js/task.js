@@ -13,7 +13,8 @@ var pages = [
 	"preq.html",
 	"test.html",
 	"postquestionnaire.html",
-	"stage.html"
+	"stage.html",
+	"feedback.html"
 ];
 
 psiTurk.preloadPages(pages);
@@ -24,7 +25,9 @@ var exp,
 	N_PRACTICE_GAMES = 2,
 	NROUNDS = 6,
 	MAX_N_TRIALS = 25,
-	P_EXPIRE = .0;
+	P_EXPIRE = .1,
+	INIT_BONUS = 1,
+	chosen_values = [];
 
 
 var sample_from_discrete = function(option) {
@@ -33,6 +36,10 @@ var sample_from_discrete = function(option) {
 	} else {
 		return option.L;
 	};
+};
+
+var expected_value = function(option) {
+	return option['H']*option['p'] + option['L']*(1-option['p']);
 };
 
 
@@ -178,10 +185,12 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 	var self = this;
 	self.round = round;
 	self.gamble = gamble_info;
-	self.practice = (practice===undefined) ? false : practice;
+	self.practice = practice;
 	self.trial = -1;
 
-	console.log(['practice', practice])
+	console.log(['round', self.round]);
+	console.log(['trial', self.trial]);
+	console.log(['practice', practice]);
 
 	self.reset_stage = function(callback) {
 		psiTurk.showPage('stage.html');
@@ -400,11 +409,11 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 
 		self.set_instruction('Click on the urn you want!');
 		
-
 	}
 
 	self.show_feedback = function(chosen_id) {
 		console.log('show feedback');
+		chosen_values.push(expected_value(self.gamble.options[chosen_id]));
 
 		// continue button
 		self.btn = self.below_stage.append('input')
@@ -422,7 +431,6 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 	}
 
 	self.finish = function() {
-		console.log('finished this round');
 		callback();
 	}
 
@@ -432,9 +440,10 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 };
 
 
+
 var IndividualSamplingExperiment = function() {
 
-	self = this;
+	var self = this;
 
 	self.gamble = {'options': {'A': {'H': 50, 'L': -20, 'p': .5},
 							   'B': {'H': 40, 'L': -30, 'p': .2}}
@@ -445,9 +454,10 @@ var IndividualSamplingExperiment = function() {
 		self.round += 1;
 
 		if (self.round < NROUNDS) {
-			
+			console.log('starting new game');	
 			self.view = new IndividualSamplingGame(self.round, self.gamble, self.next, false);
-
+		} else {
+			self.finish();
 		};
 	};
 
@@ -455,9 +465,16 @@ var IndividualSamplingExperiment = function() {
 		self.round = -1;
 		self.next();
 	};
+
+	self.finish = function() {
+		Feedback();
+	};
+
+
 	//self.begin();
 	Instructions1();
 	//InstructionsQuiz();
+	//Feedback();
 };
 
 
@@ -472,7 +489,7 @@ svg_element = function(id, width, height) {
 
 var Instructions1 = function() {
 
-	self = this;
+	var self = this;
 	psiTurk.showPage('instruct.html');	
 
 	// create an SVG element
@@ -565,7 +582,7 @@ var Instructions1 = function() {
 
 var Instructions2 = function() {
 
-	self = this;
+	var self = this;
 	psiTurk.showPage('instruct.html');	
 	self.div = $('#container-instructions');
 
@@ -645,7 +662,7 @@ var Instructions2 = function() {
 
 var Instructions3 = function() {
 
-	self = this;
+	var self = this;
 	psiTurk.showPage('instruct.html');	
 
 	// create an SVG element
@@ -717,7 +734,7 @@ var Instructions3 = function() {
 
 var InstructionsPractice = function() {
 
-	self = this;
+	var self = this;
 	self.round = -1;
 
 	self.gamble = {'options': {'A': {'H': 50, 'L': -20, 'p': .5},
@@ -747,7 +764,7 @@ var InstructionsPractice = function() {
 
 var InstructionsQuiz = function() {
 
-	self = this;
+	var self = this;
 	psiTurk.showPage('preq.html');	
 	//self.div = $('#container-instructions');
 
@@ -794,10 +811,8 @@ var InstructionsQuiz = function() {
 
 var InstructionsComplete = function() {
 
-	self = this;
+	var self = this;
 	psiTurk.showPage('instruct.html');	
-
-	// create an SVG element
 	self.div = $('#container-instructions');
 	
 	var t = 'Good job! Looks like you\'re ready to start playing. You will play a series of ' +
@@ -819,15 +834,38 @@ var InstructionsComplete = function() {
 		exp.begin();
 	});
 	
-	
 };
 
 
-/****************
-* Questionnaire *
-****************/
+var Feedback = function() {
 
-var Questionnaire = function() {
+	// calculate final bonus
+	var final_bonus = INIT_BONUS;
+	for (var i=0; i<NROUNDS; i++) {
+		final_bonus += chosen_values[i]/100;
+	};
+
+
+	var self = this;
+	psiTurk.showPage('feedback.html');	
+	self.div = $('#container-instructions');
+
+	var t = 'All done! Now you can see the results of your choices across all the games you ' +
+		    'played, and how they impact your final bonus:';
+	self.div.append(instruction_text_element(t));
+
+	html =  '<div id=feedback-table>'
+	html +=	'<div class=row><div class=left>Initial bonus:</div><div class=right>$'+(INIT_BONUS).toFixed(2)+'</div></div>'
+	for (var i=0; i<NROUNDS; i++) {
+		html +=	'<div class=row><div class=left>Game '+(i+1)+':</div><div class=right>'+(chosen_values[i]/100).toFixed(2)+'</div></div>'	
+	};
+	html +=	'<div class=row style="border-top: 1px solid black; font-weight: bold;"><div class=left>Final bonus:</div><div class=right>$'+final_bonus.toFixed(2)+'</div></div>'	
+	html += '</div>'
+	self.div.append(html);
+
+
+	var t = 'You will be eligible to receive the bonus after you\'ve answered the following questions:'
+	self.div.append(instruction_text_element(t));
 
 	var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your HIT. This might happen if you lose your internet connection. Press the button to resubmit.</p><button id='resubmit'>Resubmit</button>";
 
@@ -865,17 +903,13 @@ var Questionnaire = function() {
 			error: prompt_resubmit}
 		);
 	};
-
-	// Load the questionnaire snippet 
-	psiTurk.showPage('postquestionnaire.html');
-	psiTurk.recordTrialData(['postquestionnaire', 'begin']);
 	
 	$("#continue").click(function () {
 		record_responses();
 		psiTurk.teardownTask();
     	psiTurk.saveData({success: finish, error: prompt_resubmit});
 	});
-	
+
 };
 
 
