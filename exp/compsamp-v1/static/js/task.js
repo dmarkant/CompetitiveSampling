@@ -19,6 +19,17 @@ var pages = [
 
 psiTurk.preloadPages(pages);
 
+// Flatten taken from
+// http://tech.karbassi.com/2009/12/17/pure-javascript-flatten-array/
+Array.prototype.flatten = function flatten(){
+   var flat = [];
+   for (var i = 0, l = this.length; i < l; i++){
+       var type = Object.prototype.toString.call(this[i]).split(' ').pop().split(']').shift().toLowerCase();
+       if (type) { flat = flat.concat(/^(array|collection|arguments|object)$/.test(type) ? flatten.call(this[i]) : this[i]); }
+   }
+   return flat;
+};
+
 function output(arr) {
     psiTurk.recordTrialData(arr);
     psiTurk.saveData();
@@ -470,6 +481,7 @@ var IndividualSamplingExperiment = function() {
 
 	self.begin = function() {
 		self.round = -1;
+		chosen_values = [];
 		self.next();
 	};
 
@@ -477,11 +489,8 @@ var IndividualSamplingExperiment = function() {
 		Feedback();
 	};
 
-
 	//self.begin();
 	Instructions1();
-	//InstructionsQuiz();
-	//Feedback();
 };
 
 
@@ -789,7 +798,7 @@ var InstructionsQuiz = function() {
 			errors.push("probexpire");
 		};
 
-		output(['errors', errors]);
+		output(['instructions', 'preq', 'errors', errors].flatten());
 	
 		if (errors.length == 0) {
 			InstructionsComplete();
