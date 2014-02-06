@@ -19,6 +19,11 @@ var pages = [
 
 psiTurk.preloadPages(pages);
 
+function output(arr) {
+    psiTurk.recordTrialData(arr);
+    psiTurk.saveData();
+    console.log(arr);
+};
 
 // Task object to keep track of the current phase
 var exp,
@@ -188,9 +193,9 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 	self.practice = practice;
 	self.trial = -1;
 
-	console.log(['round', self.round]);
-	console.log(['trial', self.trial]);
-	console.log(['practice', practice]);
+	output(['game', self.round, 'practice', self.practice]);	
+	output(['game', self.round, 'option', 'A', self.gamble.options.A.H, self.gamble.options.A.L, self.gamble.options.A.p])
+	output(['game', self.round, 'option', 'B', self.gamble.options.B.H, self.gamble.options.B.L, self.gamble.options.B.p])
 
 	self.reset_stage = function(callback) {
 		psiTurk.showPage('stage.html');
@@ -287,6 +292,7 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 		self.options['B'].stop_listening();
 
 		result = sample_from_discrete(self.gamble.options[chosen_id]);
+		output(['game', self.round, self.trial, 'sample', chosen_id, result])
 
 		// show feedback
 		self.options[chosen_id].draw_sample(result);
@@ -374,9 +380,11 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 			expired = 'A';
 			result = 'B';
 		}
+		chosen_values.push(expected_value(self.gamble.options[result]));
+		output(['game', self.round, self.trial, 'expired', expired])
+		output(['game', self.round, self.trial, 'choice', result])
 
 		self.options[expired].expire();
-
 		self.set_instruction('The game expired, and urn '+expired+' has disappeared. Urn '+result+' will be used to determine your bonus.');
 		
 		// continue button
@@ -392,7 +400,6 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 	};
 
 	self.final_decision = function() {
-		console.log('at the final decision');
 
 		self.options = {'A': new Option(self.stage,
 								  {'id': 'A',
@@ -412,7 +419,8 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 	}
 
 	self.show_feedback = function(chosen_id) {
-		console.log('show feedback');
+
+		output(['game', self.round, self.trial, 'choice', chosen_id])		
 		chosen_values.push(expected_value(self.gamble.options[chosen_id]));
 
 		// continue button
@@ -454,7 +462,6 @@ var IndividualSamplingExperiment = function() {
 		self.round += 1;
 
 		if (self.round < NROUNDS) {
-			console.log('starting new game');	
 			self.view = new IndividualSamplingGame(self.round, self.gamble, self.next, false);
 		} else {
 			self.finish();
@@ -488,7 +495,7 @@ svg_element = function(id, width, height) {
 
 
 var Instructions1 = function() {
-
+	output(['instructions', 1]);
 	var self = this;
 	psiTurk.showPage('instruct.html');	
 
@@ -581,7 +588,7 @@ var Instructions1 = function() {
 
 
 var Instructions2 = function() {
-
+	output(['instructions', 2]);
 	var self = this;
 	psiTurk.showPage('instruct.html');	
 	self.div = $('#container-instructions');
@@ -661,7 +668,7 @@ var Instructions2 = function() {
 
 
 var Instructions3 = function() {
-
+	output(['instructions', 3]);
 	var self = this;
 	psiTurk.showPage('instruct.html');	
 
@@ -733,6 +740,7 @@ var Instructions3 = function() {
 
 
 var InstructionsPractice = function() {
+	output(['instructions', 'practice']);
 
 	var self = this;
 	self.round = -1;
@@ -763,13 +771,11 @@ var InstructionsPractice = function() {
 
 
 var InstructionsQuiz = function() {
-
+	output(['instructions', 'preq']);
 	var self = this;
 	psiTurk.showPage('preq.html');	
-	//self.div = $('#container-instructions');
 
 	var checker = function() {
-		console.log('checking answers');
 		var errors = [];
 
 		if ($('#maxtrials option:selected').val() != "1") { 
@@ -783,7 +789,7 @@ var InstructionsQuiz = function() {
 			errors.push("probexpire");
 		};
 
-		console.log(['QUIZ',errors]);
+		output(['errors', errors]);
 	
 		if (errors.length == 0) {
 			InstructionsComplete();
@@ -800,7 +806,7 @@ var InstructionsQuiz = function() {
 
 
 	$('#startover').on('click', function() { 
-		console.log('restarting instructions');
+		output('instructions', 'restart');
 		Instructions1();
 	});
 
@@ -810,7 +816,7 @@ var InstructionsQuiz = function() {
 
 
 var InstructionsComplete = function() {
-
+	output(['instructions', 'ready']);
 	var self = this;
 	psiTurk.showPage('instruct.html');	
 	self.div = $('#container-instructions');
@@ -830,7 +836,6 @@ var InstructionsComplete = function() {
 								   .style('margin-bottom', '30px');
 
 	self.btn.on('click', function() {
-		console.log('clicked');
 		exp.begin();
 	});
 	
@@ -838,12 +843,14 @@ var InstructionsComplete = function() {
 
 
 var Feedback = function() {
+	output(['instructions', 'feedback']);
 
 	// calculate final bonus
 	var final_bonus = INIT_BONUS;
 	for (var i=0; i<NROUNDS; i++) {
 		final_bonus += chosen_values[i]/100;
 	};
+	output(['instructions', 'feedback', 'final_bonus', final_bonus]);
 
 
 	var self = this;
