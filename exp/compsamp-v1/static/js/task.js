@@ -10,32 +10,13 @@ var psiTurk = PsiTurk();
 // All pages to be loaded
 var pages = [
 	"instruct.html",
+	"preq.html",
 	"test.html",
 	"postquestionnaire.html",
 	"stage.html"
 ];
 
 psiTurk.preloadPages(pages);
-
-
-INSTRUCTIONS = [
-'<p>In this study you will play five lottery games against other players. In each game you will be randomly assigned to play against another player.</p>',
-'<p>In each game there are two urns. Each urn contains 100 numbered coins. The number written on a coin represents the amount of money that you get as a Bonus (depending on your decisions) at the end of the study. Each player starts with an entry fee of X. You will win or lose money based on what kinds of coins are present in the urn you choose.</p>',
-'<p>Neither you nore the other player knows before every single game what kinds of coins are present in each urn. To find this out, both players have the possibility to inspect the urns before they decide. These are Information Rounds. If a player decides to choose an urn after an Information Round, the Decision Round will follow for both players.</p>',
-'<p>Each game will start with the first Information Round. In this round, you can click on one of the two urns to pick a ball. Thus, you inspect the urns. When both players clicked on an urn, you will see the amount of money on a coin that is randomly chosen from that urn. You will also see which urn the other player has chosen. But you will not see the amount of money on the coin that the other player received.</p>',
-'<p>Now you can decide if you want to continue inspecting the urns and have another Information Round. In this case you will click on "Inspect". If you don\'t want to continue inspecting the urns, you can go to a Decision Round by clicking on "quit inspecting".</p>',
-'If you decide for another Information Round, there are two possibilities. If the other player decided for an Information Round, the next Information Round starts. If the other player decided for a Decision Round, he or she will choose an urn. IMPORTANT: Because both players cannot choose the same urn during the Decision Round, you can only choose the urn that the other player hasn\'t chosen.</p>',
-'<p>If you chose for a Decision Round, you will get to choose an urn. You click on the urn that you want. If the other player decided for an Information Round, you are free in choosing. The other urn will be assigned to the other player.</p>',
-'<p>If the other player decided for a Decision Round, there are two possibilities that can happen. If you and the other player choose different urns, you will each get the urn of your choice. If you and the other player choose the same urn, the computer will randomly choose one of your to receive the urn, and the other player will receive the non-chosen urn.</p>',
-'<p>Each game is over after a Decision Round. Another game of the total five lottery games will follow with new urns and new balls.</p>',
-'<p>You can decide how often you want to inspect the urns. There is no maximum number of Information Rounds. As long as both players decide for Information Rounds, the inspection of the urns will continue.</p>',
-'<p>You will get money regarding your decisions at the end of the experiment. From each urn that you received (either because you chose it or because it was assigned to you after the other player made a choice). You will receive the average amount of all coins in each urn. For example, if an urn includes 50 coins with -5 and 50 coins with 15, then you will receive 5.</p>',
-'<p>An urn can include positive as well as negative amounts of money. Because of that it can happen that you may lose money. At the end of the experiment you will receive the total amount of money of the five lottery games.</p>',
-'<p>It could happen that sometimes you have to wait until the other player makes his decision. Please wait patiently until the game continues.</p>',
-'<p>Now three practice games will follow so that you can learn how to play the game.</p>'
-];
-
-
 
 
 // Task object to keep track of the current phase
@@ -60,56 +41,6 @@ var expiration_fcn = function(prob) {
 
 	return (Math.random() < prob) ? true : false;
 
-};
-
-
-
-/*************************
-* INSTRUCTIONS         
-*************************/
-
-var Instructions = function(pages) {
-	var currentscreen = 0,
-	    timestamp;
-	    instruction_pages = pages; 
-	
-	var next = function() {
-		psiTurk.showPage(instruction_pages[currentscreen]);
-		$('.continue').click(function() {
-			buttonPress();
-		});
-		
-		currentscreen = currentscreen + 1;
-
-		// Record the time that an instructions page is presented
-		timestamp = new Date().getTime();
-	};
-
-	var buttonPress = function() {
-
-		// Record the response time
-		var rt = (new Date().getTime()) - timestamp;
-		psiTurk.recordTrialData(["INSTRUCTIONS", currentscreen, rt]);
-
-		if (currentscreen == instruction_pages.length) {
-			finish();
-		} else {
-			next();
-		}
-
-	};
-
-	var finish = function() {
-		// Record that the user has finished the instructions and 
-		// moved on to the experiment. This changes their status code
-		// in the database.
-		//psiTurk.finishInstructions();
-
-		// Move on to the experiment 
-		currentview = new TestPhase();
-	};
-
-	next();
 };
 
 
@@ -249,6 +180,8 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 	self.gamble = gamble_info;
 	self.practice = (practice===undefined) ? false : practice;
 	self.trial = -1;
+
+	console.log(['practice', practice])
 
 	self.reset_stage = function(callback) {
 		psiTurk.showPage('stage.html');
@@ -465,7 +398,7 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 								   'y': self.stage_h/3},
 								  self.show_feedback).draw().listen()};
 
-		self.set_instruction('Click on the option you want!');
+		self.set_instruction('Click on the urn you want!');
 		
 
 	}
@@ -483,7 +416,7 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 			self.finish();
 		});
 
-		self.set_instruction('You chose option '+chosen_id+'. Your earnings from this choice will be shown at the end of the experiment.');
+		self.set_instruction('You chose urn '+chosen_id+'. Your earnings from this choice will be shown at the end of the experiment.');
 		
 
 	}
@@ -502,7 +435,6 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 var IndividualSamplingExperiment = function() {
 
 	self = this;
-	self.round = -1;
 
 	self.gamble = {'options': {'A': {'H': 50, 'L': -20, 'p': .5},
 							   'B': {'H': 40, 'L': -30, 'p': .2}}
@@ -514,13 +446,18 @@ var IndividualSamplingExperiment = function() {
 
 		if (self.round < NROUNDS) {
 			
-			self.view = new IndividualSamplingGame(self.round, self.gamble, self.next);
+			self.view = new IndividualSamplingGame(self.round, self.gamble, self.next, false);
 
 		};
 	};
 
-	// self.next();
+	self.begin = function() {
+		self.round = -1;
+		self.next();
+	};
+	//self.begin();
 	Instructions1();
+	//InstructionsQuiz();
 };
 
 
@@ -531,32 +468,6 @@ instruction_text_element = function(text) {
 svg_element = function(id, width, height) {
 	return '<div class="svg-container" width="'+width+'" height="'+height+'"><svg width="'+width+'" height="'+height+'" id="'+id+'"></svg></div>'
 };
-
-
-	self.generate_sample = function(chosen_id) {
-
-		self.options['A'].stop_listening();
-		self.options['B'].stop_listening();
-
-		result = sample_from_discrete(self.gamble.options[chosen_id]);
-
-		// show feedback
-		self.options[chosen_id].draw_sample(result);
-
-		self.instruction.html('You chose option '+chosen_id+' and got a coin worth $'+result+'.');
-
-		// continue button
-		self.btn = self.buttons.append('input')
-								   .attr('value', 'OK')
-			    				   .attr('type', 'button')
-								   .attr('height', 100);
-
-		self.btn.on('click', function() {
-			self.options[chosen_id].clear_sample();	
-			self.prompt_stop_or_continue();
-		});
-	}
-
 
 
 var Instructions1 = function() {
@@ -639,7 +550,7 @@ var Instructions1 = function() {
 	self.div.append(instruction_text_element(t));
 
 
-	btn = d3.select('#container-instructions').append('input')
+	self.btn = d3.select('#container-instructions').append('input')
 								   .attr('value', 'Continue')
 			    				   .attr('type', 'button')
 								   .attr('height', 100)
@@ -656,8 +567,6 @@ var Instructions2 = function() {
 
 	self = this;
 	psiTurk.showPage('instruct.html');	
-
-	// create an SVG element
 	self.div = $('#container-instructions');
 
 	var t = 'In each game you will be faced with two different urns, each of which ' +
@@ -721,7 +630,7 @@ var Instructions2 = function() {
 	var t = 'Click the button below to continue.'
 	self.div.append(instruction_text_element(t));
 
-	btn = d3.select('#container-instructions').append('input')
+	self.btn = d3.select('#container-instructions').append('input')
 								   .attr('value', 'Continue')
 			    				   .attr('type', 'button')
 								   .attr('height', 100)
@@ -793,7 +702,7 @@ var Instructions3 = function() {
 		    'Click the button below to start the first practice game.';
 	self.div.append(instruction_text_element(t));
 
-	btn = d3.select('#container-instructions').append('input')
+	self.btn = d3.select('#container-instructions').append('input')
 								   .attr('value', 'Continue')
 			    				   .attr('type', 'button')
 								   .attr('height', 100)
@@ -839,28 +748,79 @@ var InstructionsPractice = function() {
 var InstructionsQuiz = function() {
 
 	self = this;
+	psiTurk.showPage('preq.html');	
+	//self.div = $('#container-instructions');
+
+	var checker = function() {
+		console.log('checking answers');
+		var errors = [];
+
+		if ($('#maxtrials option:selected').val() != "1") { 
+			errors.push("maxtrials");
+		};
+		if ($('#expiration option:selected').val() != "1") {
+			errors.push("expiration");
+		};
+
+		if ($('#probexpire option:selected').val() != "2") {
+			errors.push("probexpire");
+		};
+
+		console.log(['QUIZ',errors]);
+	
+		if (errors.length == 0) {
+			InstructionsComplete();
+		} else {
+			$('#continue').hide();
+			for(var i=0; i<errors.length; i++) {
+				$('#'+errors[i]).css("border","2px solid red");
+			};
+			$("#warning").css("color","red");
+			$("#warning").html("<p>Looks like you answered some questions incorrectly (highlighted in red). Please review them and click the \"Repeat\" button at the bottom to see the instructions again.</p>");
+		};
+
+	};
+
+
+	$('#startover').on('click', function() { 
+		console.log('restarting instructions');
+		Instructions1();
+	});
+
+	$('#continue').on('click', function() { checker(); });
+
+};
+
+
+var InstructionsComplete = function() {
+
+	self = this;
 	psiTurk.showPage('instruct.html');	
 
 	// create an SVG element
 	self.div = $('#container-instructions');
 	
-	var t = 'Now you take quiz.';
+	var t = 'Good job! Looks like you\'re ready to start playing. You will play a series of ' +
+			NROUNDS + ' games. After you\'ve finished, you will see the value of all of the urns ' +
+			'that you choose and your final bonus for the experiment.';
+	self.div.append(instruction_text_element(t));
+
+	var t = 'Click below to start the first game. Good luck!';
 	self.div.append(instruction_text_element(t));
 	
-	/*
-	btn = d3.select('#container-instructions').append('input')
+	self.btn = d3.select('#container-instructions').append('input')
 								   .attr('value', 'Continue')
 			    				   .attr('type', 'button')
 								   .attr('height', 100)
 								   .style('margin-bottom', '30px');
 
 	self.btn.on('click', function() {
-		InstructionsPractice();
+		console.log('clicked');
+		exp.begin();
 	});
-	*/
-
+	
+	
 };
-
 
 
 /****************

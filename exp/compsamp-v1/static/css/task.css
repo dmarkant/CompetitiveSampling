@@ -19,6 +19,13 @@ a {
 	color: #FFCC90;
 }
 
+input {
+        width: 200px;
+        height: 100px;
+        font-size: 22pt;
+        margin: 20px;
+}
+
 .warm {
 	color: #DDAA90;
 }
@@ -63,30 +70,29 @@ strong {
 
 
 /* Questionnaire */
-
-input {
-        width: 200px;
-        height: 100px;
-        font-size: 22pt;
-        margin: 20px;
-}
-
 .questionnaire {
-    text-align: center;
-}
-
-.questionnaire .continue {
-    margin: 0 auto;
-    margin-top: 20px;
-}
-
-.questionnaire h1 {
-    text-align: center;
-}
-
-.questionnaire p {
     text-align: left;
+    margin-top: 30px;
+    margin-bottom: 30px;
+
 }
+
+.questiontext {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.questionnaire #buttons {
+    width: 450px;
+    margin: 30px auto;
+    text-align: center;
+}
+
+.questionnaire #buttons input {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
 
 .questionnaire #warning {
     color: red;
@@ -122,34 +128,19 @@ input {
 .questionnaire td:last-child { padding-right: 0; border-right: 0; }
 
 .answer {
-        text-align: left;
 	padding-left: 3em;
 }
 
-.questionnaire .questiontext {
-	vertical-align: top;
-        width: 300px;
-        margin: 20px;
-        font-size: 1.2em;
-}
-.questiontext em {
-	font-size: 70%;
-}
 .questionnaire textarea {
     width: 320px;
     height: 130px;
 }
 .questionnaire form {
-    text-align: right;
 }
 .questionnaire ul {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
-}
-
-.questiontext {
-	text-align: right;
 }
 
 
@@ -198,6 +189,9 @@ input {
 	font-size: 100%;
 	width: 25em;
 }
+
+
+
 
 
 .samplefeedback {
