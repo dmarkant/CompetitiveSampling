@@ -40,8 +40,10 @@ INSTRUCTIONS = [
 
 // Task object to keep track of the current phase
 var exp,
-	N_PRACTICE_GAMES = 3,
-	NROUNDS = 6;
+	N_PRACTICE_GAMES = 2,
+	NROUNDS = 6,
+	MAX_N_TRIALS = 25,
+	P_EXPIRE = .0;
 
 
 var sample_from_discrete = function(option) {
@@ -51,6 +53,15 @@ var sample_from_discrete = function(option) {
 		return option.L;
 	};
 };
+
+
+// Expiration functions
+var expiration_fcn = function(prob) {
+
+	return (Math.random() < prob) ? true : false;
+
+};
+
 
 
 /*************************
@@ -114,7 +125,9 @@ var Option = function(stage, option_info, callback) {
 	self.sample_y = self.y + 200;
 	self.stage = stage;
 	self.selection_callback = callback;
-	self.disp = self.stage.append('g').attr('id', self.id);
+	self.disp = self.stage.append('g')
+						  .attr('id', self.id)
+						  .attr('opacity', 1.);
 	
 	self.draw = function() {
 		
@@ -151,6 +164,26 @@ var Option = function(stage, option_info, callback) {
 								  .attr('fill', 'none');
 
 		return self;
+	};
+
+	self.expire = function() {
+
+		self.disp.transition()
+			     .attr('opacity', 0.3);
+
+		self.expiration_label = self.stage.append('text')
+							 .attr('x', self.x)
+							 .attr('y', self.y+140)
+							 .attr('class', 'expirationlabel')
+							 .attr('text-anchor', 'middle')
+							 .attr('fill', '#DF0101')
+							 .text('EXPIRED')
+							 .attr('opacity', 0.)
+							 .transition()
+							   .delay(300)
+							   .duration(200)
+							   .attr('opacity', 1);
+
 	};
 
 	self.draw_sample = function(value, loc) {
@@ -215,6 +248,7 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 	self.round = round;
 	self.gamble = gamble_info;
 	self.practice = (practice===undefined) ? false : practice;
+	self.trial = -1;
 
 	self.reset_stage = function(callback) {
 		psiTurk.showPage('stage.html');
@@ -227,9 +261,9 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 		self.stage_h = self.stage.attr("height");
 
 		if (self.practice==true) {
-			self.above_stage.html('<h1>Practice round '+(self.round+1)+'/'+N_PRACTICE_GAMES+'</h1>');
+			self.above_stage.html('<h1>Practice game '+(self.round+1)+'/'+N_PRACTICE_GAMES+'</h1>');
 		} else {
-			self.above_stage.html('<h1>Round '+(self.round+1)+'/'+NROUNDS+'</h1>');
+			self.above_stage.html('<h1>Game '+(self.round+1)+'/'+NROUNDS+'</h1>');
 		}
 
 		callback();
@@ -243,9 +277,9 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 
 		var t;
 		if (self.practice==true) {
-			t = 'Practice round '+(self.round+1)+'/'+N_PRACTICE_GAMES;
+			t = 'Practice game '+(self.round+1)+'/'+N_PRACTICE_GAMES;
 		} else {
-			t = 'Round '+(self.round+1)+'/'+NROUNDS;
+			t = 'Game '+(self.round+1)+'/'+NROUNDS;
 		}
 
 		splash.append('text')
@@ -268,23 +302,41 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 
 	}
 
+	self.set_instruction = function(text) {
+
+		self.instruction.html('<div id="turn-number">TURN '+(self.trial+1)+'</div>'+text)
+
+	};
+
 	self.sampling_trial = function() {
+
+		self.trial += 1;
 
 		self.options = {'A': new Option(self.stage,
 								  {'id': 'A',
 								   'color': 'red',
 								   'x': self.stage_w/4,
 								   'y': self.stage_h/3},
-								  self.generate_sample).draw().listen(),
+								  self.generate_sample).draw(),
 						'B': new Option(self.stage,
 								  {'id': 'B',
 								   'color': 'blue',
 								   'x': 3 * self.stage_w/4,
 								   'y': self.stage_h/3},
-								  self.generate_sample).draw().listen()};
+								  self.generate_sample).draw()};
 	
-		self.instruction.html('Click the option you want to sample.');
 
+		if (self.trial > 1 & expiration_fcn(P_EXPIRE)) {
+
+			self.expired();
+
+		} else {
+
+			self.options['A'].listen();
+			self.options['B'].listen();
+			self.set_instruction('Click the urn you want to learn about.');
+
+		}
 	}
 
 	self.generate_sample = function(chosen_id) {
@@ -297,7 +349,7 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 		// show feedback
 		self.options[chosen_id].draw_sample(result);
 
-		self.instruction.html('You chose option '+chosen_id+' and got a coin worth $'+result+'.');
+		self.set_instruction('You chose urn '+chosen_id+' and got a coin worth '+result+' cents.');
 
 		// continue button
 		self.btn = self.buttons.append('input')
@@ -307,7 +359,16 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 
 		self.btn.on('click', function() {
 			self.options[chosen_id].clear_sample();	
-			self.prompt_stop_or_continue();
+
+			if (self.trial == (MAX_N_TRIALS-1)) {
+
+				self.reset_stage(self.max_samples_drawn);
+
+			} else {
+
+				self.prompt_stop_or_continue();
+
+			};
 		});
 	}
 	
@@ -317,7 +378,7 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 			
 		// continue button
 		continue_btn = self.buttons.append('input')
-								   .attr('value', 'Continue sampling')
+								   .attr('value', 'Continue Learning')
 			    				   .attr('type', 'button')
 								   .attr('height', 100);
 
@@ -329,7 +390,7 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 
 		// continue button
 		stop_btn = self.buttons.append('input')
-								   .attr('value', 'Stop and choose')
+								   .attr('value', 'Stop and Choose')
 			    				   .attr('type', 'button')
 								   .attr('height', 100);
 		
@@ -339,9 +400,54 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 			self.reset_stage(self.final_decision);
 		});
 		
-		self.instruction.html('Do you want to continue sampling or stop and choose one of the options?');
+		self.set_instruction('Do you want to <strong>Continue Learning</strong> or <strong>Stop and Choose</strong> one of the options?');
 
 	}
+
+	self.max_samples_drawn = function() {
+
+		self.options = {'A': new Option(self.stage,
+								  {'id': 'A',
+								   'color': 'red',
+								   'x': self.stage_w/4,
+								   'y': self.stage_h/3},
+								  self.show_feedback).draw().listen(),
+						'B': new Option(self.stage,
+								  {'id': 'B',
+								   'color': 'blue',
+								   'x': 3 * self.stage_w/4,
+								   'y': self.stage_h/3},
+								  self.show_feedback).draw().listen()};		
+
+		self.set_instruction('You\'ve reached the maximum of '+MAX_N_TRIALS+' turns. Please choose one of the urns.');
+		
+	};
+
+	self.expired = function() {
+
+		if (Math.random() < .5) {
+			result = 'A';
+			expired = 'B';
+		} else {
+			expired = 'A';
+			result = 'B';
+		}
+
+		self.options[expired].expire();
+
+		self.set_instruction('The game expired, and urn '+expired+' has disappeared. Urn '+result+' will be used to determine your bonus.');
+		
+		// continue button
+		self.btn = self.below_stage.append('input')
+								   .attr('value', 'OK')
+			    				   .attr('type', 'button')
+								   .attr('height', 100);
+
+		self.btn.on('click', function() {
+			self.finish();
+		});
+
+	};
 
 	self.final_decision = function() {
 		console.log('at the final decision');
@@ -359,7 +465,7 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 								   'y': self.stage_h/3},
 								  self.show_feedback).draw().listen()};
 
-		self.instruction.html('Click on the option you want!');
+		self.set_instruction('Click on the option you want!');
 		
 
 	}
@@ -377,7 +483,7 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 			self.finish();
 		});
 
-		self.instruction.html('You chose option '+chosen_id+'. Your earnings from this choice will be shown at the end of the experiment.');
+		self.set_instruction('You chose option '+chosen_id+'. Your earnings from this choice will be shown at the end of the experiment.');
 		
 
 	}
@@ -462,7 +568,7 @@ var Instructions1 = function() {
 	self.div = $('#container-instructions');
 
 	var t = 'Welcome! In this experiment you will play a series of lottery ' +
-			'games, in which you must select coins from an <strong>urn</strong> in order ' +
+			'games, in which you must select one of two <strong>urns</strong> in order ' +
 			'to get a reward. An urn looks like this:'
 	self.div.append(instruction_text_element(t));
 
@@ -502,7 +608,7 @@ var Instructions1 = function() {
 
 	var t = 'The way that you learn about an urn is by clicking on it and seeing a randomly ' +
 			'drawn coin (which is then put back into the urn, so the total number of coins ' +
-			'never changes). Go ahead and click on the urn you see below a few times to learn ' +
+			'never changes). Go ahead and click on the urn below a few times to learn ' +
 			'about the coins it contains:'
 	self.div.append(instruction_text_element(t));
 	
@@ -517,7 +623,7 @@ var Instructions1 = function() {
 		self.urn2.draw_sample(result);
 	};
 
-	self.div.append(svg_element('urn-svg2', 500, 450));
+	self.div.append(svg_element('urn-svg2', 500, 360));
 	self.stage = d3.select('#urn-svg2');
 	self.stage_w = stage.attr("width");
 	self.stage_h = stage.attr("height");	
@@ -556,10 +662,17 @@ var Instructions2 = function() {
 
 	var t = 'In each game you will be faced with two different urns, each of which ' +
 		    'contains different kinds of coins (and different ratios of positive to ' +
-			'negative coins). The goal of each game is to select the urn that you think ' +
-			'has the highest value. At the end of the experiment, the value of the urn that ' +
-		    'you choose will get added (or subtracted, if it\'s negative) to your bonus.';
+			'negative coins). The goal of each game is to choose the urn that has the ' +
+			'<strong>highest average value</strong>. At the end of the experiment, the ' + 
+			'value of the urn that you choose will get added (or subtracted, if it\'s ' +
+			'negative) to your bonus.';
 	self.div.append(instruction_text_element(t));
+
+	var t = 'For example, if the urn that you choose has 50 coins labeled "-10" and 50 ' +
+		    'coins labeled "+30", then at the end the average value for the urn, 20 cents, ' +
+			'will be added to your bonus.';
+	self.div.append(instruction_text_element(t));
+
 
 	var t = 'As you just saw, you can learn about either urn by ' +
 			'clicking on one at a time. Go ahead and try for the urns shown below:';
@@ -600,7 +713,7 @@ var Instructions2 = function() {
 	var t = 'Each game is made up of a series of turns. On each turn, you will begin by ' +
 		    'clicking on one urn and seeing the coin that you get. You then have a choice ' + 
 			'to make: you can either 1) <strong>Continue Learning</strong>, in which case ' +
-			'you will go on to the next turn, or you can 2) <strong>Choose an Urn</strong>, ' +
+			'you will go on to the next turn, or you can 2) <strong>Stop and Choose</strong>, ' +
 			'which means that you are ready to choose an urn, which will then be used to ' +
 			'determine your bonus.'
 	self.div.append(instruction_text_element(t));
@@ -630,15 +743,52 @@ var Instructions3 = function() {
 	self.div = $('#container-instructions');
 	
 	var t = 'Each game will last up to a maximum of 25 turns. At that point, you will be forced ' +
-		 'to choose one of the urns.';
+		 'to choose one of the urns if you have not already.';
 	self.div.append(instruction_text_element(t));
 	
-	var t = 'In addition, <strong>there is a 1 in 20 chance that the ' +
-		    'game will expire</strong> at the start of each turn.' +
-		 'If this happens, a randomly chosen urn will disappear, and you will be forced to ' +
-		 'select whichever urn remains to go toward your bonus.';
+	var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
+		    'there is a <strong>1 in 20 chance that the game will expire early</strong>. ' +
+			'If this happens, a randomly chosen urn will disappear, and whatever urn is left ' +
+			'will go toward your bonus at the end of the experiment.'
 	self.div.append(instruction_text_element(t));
 	
+	var t = 'If the game expires early, one of the urns will fade out as you can see below:';
+	self.div.append(instruction_text_element(t));
+
+
+	self.div.append(svg_element('urn-svg', 600, 280));
+	self.stage = d3.select('#urn-svg');
+	self.stage_w = stage.attr("width");
+	self.stage_h = stage.attr("height");	
+
+	var option_values = {'A': {'H': 25, 'L': -17, 'p': .7},
+						 'B': {'H': 20, 'L': -30, 'p': .3}};
+	
+	var nsamples = {'A': 0, 'B': 0};
+	var generate_sample = function(id) {
+		nsamples[id] += 1;
+		if (nsamples[id] > 1) {
+			self.options[id].clear_sample();
+		}
+		result = sample_from_discrete(option_values[id]);
+		self.options[id].draw_sample(result);
+	};
+	
+	self.options = {'A': new Option(self.stage,
+							  {'id': 'A',
+							   'color': 'red',
+							   'x': self.stage_w/4,
+							   'y': self.stage_h/2-30},
+							  generate_sample).draw(),
+					'B': new Option(self.stage,
+							  {'id': 'B',
+							   'color': 'blue',
+							   'x': 3 * self.stage_w/4,
+							   'y': self.stage_h/2-30},
+							  generate_sample).draw().expire()};
+
+
+
 	var t = 'You\'ll now play a couple of practice games to become familiar with how it works. ' +
 		    'Click the button below to start the first practice game.';
 	self.div.append(instruction_text_element(t));

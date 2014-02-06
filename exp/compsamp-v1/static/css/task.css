@@ -231,6 +231,24 @@ input {
     text-align: left;
     font-family: "Georgia";
     font-size: 16pt;
-    margin-top: 15px;
+    margin-top: 20px;
+    line-height: 1.3em;
     
+}
+
+.expirationlabel {
+    color: red;
+    font-family: "Arial";
+    font-weight: bold;
+    font-size: 22pt;
+}
+
+#turn-number {
+    font-weight: bold;
+    color: gray;
+    border: 1px solid gray;
+    width: 100px;
+    padding: 10px;
+    margin: 0 auto;
+    margin-bottom: 10px;
 }
