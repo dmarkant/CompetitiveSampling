@@ -66,6 +66,20 @@ var expiration_fcn = function(prob) {
 
 };
 
+var generate_gamble = function() {
+	A_pos = Math.floor(Math.random()*100);
+	A_neg = Math.floor(Math.random()*(-100));
+	A_p = Math.floor(100*Math.random())/100;
+
+	B_pos = Math.floor(Math.random()*100);
+	B_neg = Math.floor(Math.random()*(-100));
+	B_p = Math.floor(100*Math.random())/100;
+
+	return {'options': {'A': {'H': A_pos, 'L': A_neg, 'p': A_p},
+						'B': {'H': B_pos, 'L': B_neg, 'p': B_p}}
+	};
+};
+
 
 
 var Option = function(stage, option_info, callback) {
@@ -464,16 +478,13 @@ var IndividualSamplingExperiment = function() {
 
 	var self = this;
 
-	self.gamble = {'options': {'A': {'H': 50, 'L': -20, 'p': .5},
-							   'B': {'H': 40, 'L': -30, 'p': .2}}
-	};
-
-
 	self.next = function() {
 		self.round += 1;
 
+		var gamble = generate_gamble();
+
 		if (self.round < NROUNDS) {
-			self.view = new IndividualSamplingGame(self.round, self.gamble, self.next, false);
+			self.view = new IndividualSamplingGame(self.round, gamble, self.next, false);
 		} else {
 			self.finish();
 		};
@@ -750,19 +761,16 @@ var Instructions3 = function() {
 
 var InstructionsPractice = function() {
 	output(['instructions', 'practice']);
-
 	var self = this;
 	self.round = -1;
-
-	self.gamble = {'options': {'A': {'H': 50, 'L': -20, 'p': .5},
-							   'B': {'H': 40, 'L': -30, 'p': .2}}
-	};
 
 	self.next = function() {
 		self.round += 1;
 
+		var gamble = generate_gamble();
+
 		if (self.round < N_PRACTICE_GAMES) {
-			self.view = new IndividualSamplingGame(self.round, self.gamble, self.next, true);
+			self.view = new IndividualSamplingGame(self.round, gamble, self.next, true);
 		} else {
 			InstructionsQuiz();	
 		};
