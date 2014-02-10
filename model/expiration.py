@@ -150,6 +150,13 @@ def prob_choose_H(options, num_samples_H, num_samples_L):
     return tot
 
 
+def prob_choose_H_by_allocation(options, num_samples):
+    """For a given gamble and a total number of samples, find the
+    probability of selecting the H option across different allocations
+    between the two options"""
+    return np.array([prob_choose_H(options, n, num_samples - n) for n in range(num_samples + 1)])
+
+
 def prob_choose_H_all_allocations(options, num_samples):
     """For a given gamble and a total number of samples, find the
     probability of selecting the H option, integrating over all
@@ -179,7 +186,9 @@ def expected_gain_given_uniform_expiration(options, p_expire, max_samples, start
         if trial < start:
             p_exp_cum = 0.
         else:
-            p_exp_cum = np.sum([p_expire for _ in range(start, trial)])
+            # CDF of geometric distribution: F(x) = 1 - (1 - p)**t (modified
+            # because expiration is not possible on the first trial)
+            p_exp_cum = 1 - (1 - p_expire)**(trial)
 
         pH = prob_choose_H_all_allocations(options, trial)
         eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
@@ -208,8 +217,14 @@ def expected_gain_given_normal_expiration(options, mn, sd, max_samples):
 
 
 if __name__=="__main__":
-    g = generate_gamble_posneg()
+    #g = generate_gamble_posneg_nondom()
+
+    g = {'H': (50, -23, .93), 'L': (76, -53, 0.33)}
+
     print_gamble(g)
     prob_choose_H_all_allocations(g, 10)
 
-    print expected_gain_given_normal_expiration(g, 10, 3, 25)
+
+    print expected_gain_given_uniform_expiration(g, .1, 25)
+
+    #print expected_gain_given_normal_expiration(g, 10, 3, 25)

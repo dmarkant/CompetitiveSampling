@@ -40,15 +40,15 @@ def expected_value(option):
     return O_pos * p_pos + O_neg * (1 - p_pos)
 
 
-def generate_gamble():
+def generate_gamble(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 1]):
 
-    A_pos = np.random.randint(0, 101)
-    A_neg = np.random.randint(-100, 1)
-    A_p = np.random.random()
+    A_pos = np.random.randint(pos_range[0], pos_range[1])
+    A_neg = np.random.randint(neg_range[0], neg_range[1])
+    A_p = p_range[0] + np.random.random()*(p_range[1]-p_range[0])
 
-    B_pos = np.random.randint(0, 101)
-    B_neg = np.random.randint(-100, 1)
-    B_p = np.random.random()
+    B_pos = np.random.randint(pos_range[0], pos_range[1])
+    B_neg = np.random.randint(neg_range[0], neg_range[1])
+    B_p = p_range[0] + np.random.random()*(p_range[1]-p_range[0])
 
     A_ev = expected_value((A_pos, A_neg, A_p))
     B_ev = expected_value((B_pos, B_neg, B_p))
@@ -63,13 +63,25 @@ def generate_gamble():
     return {"H": H, "L": L}
 
 
-def generate_gamble_posneg():
+def generate_gamble_posneg(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 1]):
     done = False
     while not done:
-        g = generate_gamble()
+        g = generate_gamble(pos_range=pos_range, neg_range=neg_range, p_range=p_range)
         if expected_value(g['H']) > 0 and expected_value(g['L']) < 0:
             done = True
     return g
+
+
+def generate_gamble_posneg_nondom(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 1]):
+
+    done = False
+    while not done:
+        g = generate_gamble(pos_range=pos_range, neg_range=neg_range, p_range=p_range)
+        if ((g['H'][0] > g['L'][0] and g['H'][1] < g['L'][1]) or (g['H'][0] < g['L'][0] and g['H'][1] > g['L'][1])) and expected_value(g['H']) > 0 and expected_value(g['L']) < 0:
+            done = True
+    return g
+
+
 
 
 def generate_gamble_fixed_values(value_pos, value_neg):
