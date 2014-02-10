@@ -801,11 +801,13 @@ var InstructionsQuiz = function() {
 		if ($('#expiration option:selected').val() != "1") {
 			errors.push("expiration");
 		};
-
 		if ($('#probexpire option:selected').val() != "2") {
 			errors.push("probexpire");
 		};
-
+		if ($('#whichexpire option:selected').val() != "0") {
+			errors.push("whichexpire");
+		};
+		
 		output(['instructions', 'preq', 'errors', errors].flatten());
 	
 		if (errors.length == 0) {
@@ -883,7 +885,7 @@ var Feedback = function() {
 	for (var i=0; i<NROUNDS; i++) {
 		html +=	'<div class=row><div class=left>Game '+(i+1)+':</div><div class=right>'+(chosen_values[i]/100).toFixed(2)+'</div></div>'	
 	};
-	html +=	'<div class=row style="border-top: 1px solid black; font-weight: bold;"><div class=left>Final bonus:</div><div class=right>$'+final_bonus.toFixed(2)+'</div></div>'	
+	html +=	'<div class=row style="border-top: 1px solid black; font-weight: bold;"><div class=left>Final bonus:</div><div class=right>$'+Math.max(0, final_bonus).toFixed(2)+'</div></div>'	
 	html += '</div>'
 	self.div.append(html);
 

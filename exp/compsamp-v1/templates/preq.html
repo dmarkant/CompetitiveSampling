@@ -24,7 +24,7 @@
                     <select id="expiration" name="expiration">
 			            <option value="noresp" SELECTED></option>
 			            <option value="0">I will have to choose whichever urn I think has a higher value</option>
-			            <option value="1">One of the urns will disappear at random and I will have to take the other one</option>
+			            <option value="1">One of the urns will disappear and I will have to take the other one</option>
 			            <option value="2">The urn I choose in that game won't have any effect on my bonus at the end</option>
 			        </select>
 			    </div>
@@ -40,6 +40,19 @@
 			            <option value="2">There's a 1 in 20 chance</option>
 			        </select>
 			    </div>
+
+			    <div class="question">
+			        <p class="questiontext">
+			        When the game expires early, which of the two urns will disappear?
+                    </p>
+			        <select id="whichexpire" name="whichexpire">
+			            <option value="noresp" SELECTED></option>
+			            <option value="0">The urn that disappears is chosen randomly</option>
+			            <option value="1">The urn with the higher value always disappears</option>
+			            <option value="2">Neither urn disappears, but you have to choose one immediately</option>
+			        </select>
+			    </div>
+                
 
                 <div id = "warning"></div>
 
