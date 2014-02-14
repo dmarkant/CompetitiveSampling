@@ -1,14 +1,16 @@
+var session_id;
+
 var Connection = function(){
 
 	var self = this;
 	
 	self.send = function(data){
-		console.log('sending:', data);
+		console.log('sending!:', data);
 		self.socket.emit('my event', {'data': data});
 	};
 
 	self.broadcast = function(data){
-		console.log('sending:', data);
+		console.log('sending!:', data);
 		self.socket.emit('my broadcast event', {'data': data});
 	};
 
@@ -22,6 +24,10 @@ var Connection = function(){
 		console.log('opening socket');
 
 		self.socket = io.connect('http://' + document.domain + ':' + location.port + '/sockettest');
+
+        self.socket.on('connection response', function(msg) {
+            console.log(msg);
+        });
 
 		self.socket.on('my response', function(msg) {
 			self.receive(msg);
