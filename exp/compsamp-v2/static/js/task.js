@@ -463,20 +463,24 @@ var CompetitiveSamplingGame = function(round, gamble_info, callback, practice) {
 
 					// the choices are the same				
 					if (chosen_id === opponent_chosen_id) {
-						self.set_instruction('The other player also decided to stop and choose, and picked the same urn!');	
+						self.random_assignment();
+						return;
+
 					} else {
 						self.set_instruction('The other player also decided to stop and choose, but picked a different urn.');
 					};
 		
-				};
+				} else if (!self.stopped && self.opponent_stopped) {
+					// this player decided to continue, other decided to stop
+					
+					chosen_id = (opponent_chosen_id = 'A') ? 'B' : 'A';
 
-				// this player decided to stop, other decided to continue
-				if (!self.stopped && self.opponent_stopped) {
-					self.set_instruction('Although you wanted to continue, the other player decided to stop, and chose urn '+opponent_chosen_id+'.');
-				};
+					t = 'Although you wanted to continue, the other player decided to stop, and chose urn '+opponent_chosen_id+'. ' + 
+						'As a result you will receive urn '+chosen_id+'.';
+					self.set_instruction(t);
 				
-				// this player decided to continue, other decided to stop
-				if (self.stopped && !self.opponent_stopped) {
+				} else if (self.stopped && !self.opponent_stopped) {
+					// this player decided to stop, other decided to continue				
 					self.set_instruction('The other player chose to continue. Since you decided to stop, your choice (urn '+chosen_id+') will go towards your bonus at the end, and the other player will get the other urn.');
 
 				};
@@ -498,9 +502,60 @@ var CompetitiveSamplingGame = function(round, gamble_info, callback, practice) {
 
 		});
 
-		
 	};
 
+	self.random_assignment = function() {
+		
+		session.send('random', self.round, {});
+		session.check_or_wait_for('random', self.round, undefined, function(data) {
+			var origin = data.uniqueId;
+			var rnd = data.random;
+			var received_id;
+			console.log(rnd);
+
+			if (origin == uniqueId) {
+				if (rnd < 0.5) {
+					received_id = 'A';
+					opponent_id = 'B';
+				} else {
+					received_id = 'B';
+					opponent_id = 'A';
+				}
+
+			} else {
+				if (rnd < 0.5) {
+					received_id = 'B';
+					opponent_id = 'A';
+				} else {
+					received_id = 'A';
+					opponent_id = 'B';
+				}
+			}
+
+			t = 'The other player also decided to stop and choose, and picked the same urn! ' +
+				'As a result, they were assigned randomly. You received urn '+received_id+' while ' +
+				'the other player received urn '+opponent_id+'.<br />Click the button below to ' +
+				'continue to the next game.';
+			self.set_instruction(t);	
+
+			output(['game', self.round, self.trial, 'received_id', received_id])		
+			chosen_values.push(expected_value(self.gamble.options[received_id]));
+
+			// continue button
+			self.btn = self.below_stage.append('input')
+									.attr('value', 'OK')
+									.attr('type', 'button')
+									.attr('height', 100);
+
+			self.btn.on('click', function() {
+				self.finish();
+			});
+			
+		});
+
+	};
+
+	/*
 	self.max_samples_drawn = function() {
 
 		self.options = {'A': new Option(self.stage,
@@ -547,6 +602,7 @@ var CompetitiveSamplingGame = function(round, gamble_info, callback, practice) {
 		});
 
 	};
+	*/
 
 
 	self.finish = function() {
@@ -1106,7 +1162,7 @@ var MultiplayerSession = function(callback) {
 	};
 
 	self.receive = function(data) {
-        console.log('received data', data);
+        //console.log('received data', data);
 
 
 		// First, check against list of registered callbacks
@@ -1114,13 +1170,7 @@ var MultiplayerSession = function(callback) {
 		for (var i=0; i<self.callbacks.length; i++) {
 			var c = self.callbacks[i];
 
-			console.log(c.msg_type === data.type);
-			console.log(c.msg_id === data.id);
-			console.log(c.player_id === data.uniqueId);
-			console.log(c.player_id);
-			console.log(data.uniqueId);
-
-			if ((c.msg_type === data.type) && (c.msg_id === data.id) && (c.player_id === data.uniqueId)) {
+			if ((c.msg_type === data.type) && (c.msg_id === data.id) && ((c.player_id === undefined) || (c.player_id === data.uniqueId))) {
 				c.callback(data);
 			} else {
 				remaining.push(c);	
@@ -1182,6 +1232,11 @@ var MultiplayerSession = function(callback) {
 
 		};
 
+		if (data.type == 'random') {
+		
+			self.game_msgs.push({'msg_type': 'random', 'msg_id': data.id, 'uniqueId': data.uniqueId});
+
+		};
 
     };
 
@@ -1200,7 +1255,6 @@ var MultiplayerSession = function(callback) {
 
 	};
 
-
 	self.ready_for = function(phase) {
 		
 		if (phase == 'instructions') {
@@ -1215,6 +1269,7 @@ var MultiplayerSession = function(callback) {
 
 	};
 
+
 	self.register_callback = function(msg_type, msg_id, player_id, callback) {
 
 		self.callbacks.push({'msg_type': msg_type, 'msg_id': msg_id, 'player_id': player_id, 'callback': callback});
@@ -1225,7 +1280,7 @@ var MultiplayerSession = function(callback) {
 	self.check_or_wait_for = function(msg_type, msg_id, player_id, callback) {
 
 		var result = _.select(self.game_msgs, function(msg){ 
-			return (msg.msg_type == msg_type) && (msg.msg_id == msg_id) && (msg.uniqueId == player_id)
+			return (msg.msg_type == msg_type) && (msg.msg_id == msg_id) && ((msg.uniqueId == player_id) || (player_id === undefined))
 		});
 	
 		if (result.length > 0) {
@@ -1263,6 +1318,7 @@ var MultiplayerSession = function(callback) {
 			self.connection.add_response_handler(self.session_id + ' ' + 'sample-decision');
 			self.connection.add_response_handler(self.session_id + ' ' + 'stop-decision');
 			self.connection.add_response_handler(self.session_id + ' ' + 'ready-to-play');
+			self.connection.add_response_handler(self.session_id + ' ' + 'random');
 			
 			self.connection.broadcast({'session-id': self.session_id, 'type': 'player-connected', 'uniqueId': uniqueId});
 	
