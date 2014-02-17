@@ -33,6 +33,7 @@ labeled the "H" option.
 
 """
 import numpy as np
+from random import random
 
 
 def expected_value(option):
@@ -81,6 +82,25 @@ def generate_gamble_posneg_nondom(pos_range=[0, 101], neg_range=[-100, 1], p_ran
             done = True
     return g
 
+def generate_gamble_posneg_nondom_fixed_outcomes(A_pos, A_neg, B_pos, B_neg, A_p_range=[0,1], B_p_range=[0,1]):
+
+    done = False
+    while not done:
+        A_p = A_p_range[0] + np.random.random()*(A_p_range[1]-A_p_range[0])
+        B_p = B_p_range[0] + np.random.random()*(B_p_range[1]-B_p_range[0])
+        A_ev = expected_value((A_pos, A_neg, A_p))
+        B_ev = expected_value((B_pos, B_neg, B_p))
+        if A_ev > B_ev:
+            H = (A_pos, A_neg, A_p)
+            L = (B_pos, B_neg, B_p)
+        else:
+            H = (B_pos, B_neg, B_p)
+            L = (A_pos, A_neg, A_p)
+        g = {"H": H, "L": L}
+
+        if ((g['H'][0] > g['L'][0] and g['H'][1] < g['L'][1]) or (g['H'][0] < g['L'][0] and g['H'][1] > g['L'][1])) and expected_value(g['H']) > 0 and expected_value(g['L']) < 0:
+            done = True
+    return g
 
 
 

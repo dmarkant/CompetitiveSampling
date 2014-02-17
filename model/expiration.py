@@ -180,7 +180,7 @@ def expected_gain_given_uniform_expiration(options, p_expire, max_samples, start
     ev_low  = expected_value(options['L'])
     ev_random = 0.5 * ev_high + 0.5 * ev_low
 
-    eg = np.zeros(max_samples, float)
+    eg = np.zeros(max_samples - 1, float)
     for trial in range(1, max_samples):
 
         if trial < start:
@@ -191,7 +191,7 @@ def expected_gain_given_uniform_expiration(options, p_expire, max_samples, start
             p_exp_cum = 1 - (1 - p_expire)**(trial)
 
         pH = prob_choose_H_all_allocations(options, trial)
-        eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
+        eg[trial - 1] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
 
     return eg
 
@@ -202,14 +202,14 @@ def expected_gain_given_normal_expiration(options, mn, sd, max_samples):
     ev_low  = expected_value(options['L'])
     ev_random = 0.5 * ev_high + 0.5 * ev_low
 
-    eg = np.zeros(max_samples, float)
+    eg = np.zeros(max_samples - 1, float)
 
     for trial in range(1, max_samples):
 
         # get cumulative probability according to normal
         p_exp_cum = norm.cdf(trial, loc=mn, scale=sd)
         pH = prob_choose_H_all_allocations(options, trial)
-        eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
+        eg[trial + 1] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
 
     return eg
 
