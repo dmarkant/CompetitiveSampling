@@ -270,18 +270,3 @@ strong {
     padding-right: 20px;
     text-align: right;
 }
-
-/* SESSION START PAGE */
-#session-start {
-    text-align: center;
-}
-
-#session-num-entry {
-    font-size: 42px;
-    display: block;
-    margin: 0 auto;
-    padding: 20px;
-    height: 55px;
-    text-align: center;
-    resize: none;
-}
