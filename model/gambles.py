@@ -36,6 +36,10 @@ import numpy as np
 from random import random
 
 
+def value_given_outcomes(option, N_pos, N_neg):
+    pos, neg, p = option
+    return N_pos * pos + N_neg * neg
+
 def expected_value(option):
     O_pos, O_neg, p_pos = option
     return O_pos * p_pos + O_neg * (1 - p_pos)
