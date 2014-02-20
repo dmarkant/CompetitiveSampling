@@ -40,9 +40,26 @@ def value_given_outcomes(option, N_pos, N_neg):
     pos, neg, p = option
     return N_pos * pos + N_neg * neg
 
+
 def expected_value(option):
     O_pos, O_neg, p_pos = option
     return O_pos * p_pos + O_neg * (1 - p_pos)
+
+
+def midpoint(option):
+    O_pos, O_neg, p_pos = option
+    return (O_pos + O_neg)/2.
+
+
+def spread(option):
+    O_pos, O_neg, p_pos = option
+    return (O_pos - O_neg)
+
+
+def gamble_differences(g):
+    return expected_value(g['H']) - expected_value(g['L']), \
+           midpoint(g['H']) - midpoint(g['L']), \
+           spread(g['H']) - spread(g['L'])
 
 
 def generate_gamble(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 1]):
@@ -156,3 +173,8 @@ def generate_gamble_prob_range(A_range=[0., 1.], B_range=[0., 1.]):
 def print_gamble(opt):
     print "high option: %s (EV: %s)" % (opt["H"], expected_value(opt["H"]))
     print "low option: %s (EV: %s)" % (opt["L"], expected_value(opt["L"]))
+
+    ev, m, s = gamble_differences(opt)
+    print "difference in expected value: %s" % ev
+    print "difference in median: %s" % m
+    print "difference in spread: %s" % s

@@ -111,6 +111,33 @@ def option_sample_means_and_probs(option, N):
 
     return np.array(mns), np.array(probs)
 
+def expected_difference(options, num_samples_H, num_samples_L):
+
+    mns_H, probs_H = option_sample_means_and_probs(options['H'], num_samples_H)
+    mns_L, probs_L = option_sample_means_and_probs(options['L'], num_samples_L)
+
+    tot = 0.
+    probs_diff = []
+    mns_diff = []
+    for i in range(len(probs_H)):
+        for j in range(len(probs_L)):
+
+            probs_diff.append(probs_H[i] * probs_L[j])
+            mns_diff.append(mns_H[i] - mns_L[j])
+            tot += probs_H[i] * probs_L[j] * (mns_H[i] - mns_L[j])
+
+    return tot, probs_diff, mns_diff
+
+
+def expected_difference_over_sample_size(g, max_samples_per_option):
+
+    expected_diff = []
+    for ns in range(1, max_samples_per_option):
+        tot, probs_diff, mns_diff = expected_difference(g, ns, ns)
+        expected_diff.append(tot)
+
+    return np.array(expected_diff)
+
 
 def prob_choose_H(options, num_samples_H, num_samples_L):
     """For a given gamble and an allocation of samples to each option,
@@ -166,6 +193,14 @@ def prob_choose_H_all_allocations(options, num_samples):
 
     # prob of choosing H for each possible allocation beteween the two options
     return np.sum(p * np.array([prob_choose_H(options, n, num_samples - n) for n in range(num_samples + 1)]))
+
+
+def expected_mean_difference(options, num_samples):
+    """For a given gamble and a total number of samples, find the
+    expected mean difference between the two options."""
+
+    # here have to have at least one sample allocated to each option
+    pass
 
 
 def expected_gain_given_uniform_expiration(options, p_expire, max_samples, start=None):
@@ -227,7 +262,6 @@ if __name__=="__main__":
     print_gamble(g)
     prob_choose_H_all_allocations(g, 10)
 
-
-    print expected_gain_given_uniform_expiration(g, .1, 25)
-
+    print expected_difference(g, 5, 5)
+    #print expected_gain_given_uniform_expiration(g, .1, 25)
     #print expected_gain_given_normal_expiration(g, 10, 3, 25)
