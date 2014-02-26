@@ -500,6 +500,9 @@ var IndividualSamplingExperiment = function() {
 		Feedback();
 	};
 
+	output(["condition", condition]);
+	output(["counter", counterbalance]);
+
 	//self.begin();
 	Instructions1();
 };
@@ -699,12 +702,34 @@ var Instructions3 = function() {
 		 'to choose one of the urns if you have not already.';
 	self.div.append(instruction_text_element(t));
 	
-	var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
-		    'there is a <strong>1 in 20 chance that the game will expire early</strong>. ' +
-			'If this happens, a randomly chosen urn will disappear, and whatever urn is left ' +
-			'will go toward your bonus at the end of the experiment.'
-	self.div.append(instruction_text_element(t));
-	
+	if (condition===1) {
+
+		var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
+				'there is a chance that the game will <strong>expire early</strong>. ' +
+				'If this happens, a randomly chosen urn will disappear, and whatever urn is left ' +
+				'will go toward your bonus at the end of the experiment.<br />' +
+				'The chance of the game expiring is the same on every turn, and is equal to 5\%, or a ' +
+				'1 in 20 chance.';
+		self.div.append(instruction_text_element(t));
+
+	} else if (condition===2) {
+
+		var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
+				'there is a chance that the game will <strong>expire early</strong>. ' +
+				'If this happens, a randomly chosen urn will disappear, and whatever urn is left ' +
+				'will go toward your bonus at the end of the experiment.<br />' +
+				'The chance of the game expiring is the same on every turn, and is equal to 10\%, or a ' +
+				'1 in 10 chance.';
+		self.div.append(instruction_text_element(t));
+		
+	} else {
+		output(['ERROR', 'unknown condition']);
+	};
+
+
+
+
+
 	var t = 'If the game expires early, one of the urns will fade out as you can see below:';
 	self.div.append(instruction_text_element(t));
 
