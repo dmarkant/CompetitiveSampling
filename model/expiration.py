@@ -203,16 +203,16 @@ def expected_mean_difference(options, num_samples):
     pass
 
 
-def expected_gain_given_uniform_expiration(options, p_expire, max_samples, start=None):
+def expected_gain_given_fixed_expiration(options, p_expire, max_samples, start=None):
     """For a given gamble and a probability distribution defining
     the expiration of one option, what is the optimal number of
     samples?"""
 
-    if start == None:
+    if start is None:
         start = 1
 
     ev_high = expected_value(options['H'])
-    ev_low  = expected_value(options['L'])
+    ev_low = expected_value(options['L'])
     ev_random = 0.5 * ev_high + 0.5 * ev_low
 
     eg = np.zeros(max_samples, float)
@@ -223,7 +223,7 @@ def expected_gain_given_uniform_expiration(options, p_expire, max_samples, start
         else:
             # CDF of geometric distribution: F(x) = 1 - (1 - p)**t (modified
             # because expiration is not possible on the first trial)
-            p_exp_cum = 1 - (1 - p_expire)**(trial)
+            p_exp_cum = 1 - (1 - p_expire) ** (trial)
 
         pH = prob_choose_H_all_allocations(options, trial + 1)
         eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
@@ -231,12 +231,43 @@ def expected_gain_given_uniform_expiration(options, p_expire, max_samples, start
     return eg
 
 
+def expected_gain_given_uniform_expiration(options, max_samples, start=None):
+    """For a given gamble and a probability distribution defining
+    the expiration of one option, what is the optimal number of
+    samples?"""
+
+    if start is None:
+        start = 1
+
+    ev_high = expected_value(options['H'])
+    ev_low = expected_value(options['L'])
+    ev_random = 0.5 * ev_high + 0.5 * ev_low
+
+    p  = np.zeros(max_samples, float)
+    eg = np.zeros(max_samples, float)
+    for trial in range(max_samples):
+
+        if trial < start:
+            p_exp_cum = 0.
+        else:
+            # CDF of geometric distribution: F(x) = 1 - (1 - p)**t (modified
+            # because expiration is not possible on the first trial)
+            p_exp_cum = (trial - 1) / float(max_samples - 1)
+
+        pH = prob_choose_H_all_allocations(options, trial + 1)
+        p[trial] = (1 - p_exp_cum) * pH + p_exp_cum * 0.5
+        eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
+
+    return p, eg
+
+
 def expected_gain_given_normal_expiration(options, mn, sd, max_samples):
 
     ev_high = expected_value(options['H'])
-    ev_low  = expected_value(options['L'])
+    ev_low = expected_value(options['L'])
     ev_random = 0.5 * ev_high + 0.5 * ev_low
 
+    p  = np.zeros(max_samples, float)
     eg = np.zeros(max_samples, float)
 
     for trial in range(max_samples):
@@ -247,6 +278,7 @@ def expected_gain_given_normal_expiration(options, mn, sd, max_samples):
         else:
             p_exp_cum = norm.cdf(trial, loc=mn, scale=sd) - norm.cdf(0, loc=mn, scale=sd)
         pH = prob_choose_H_all_allocations(options, trial + 1)
+        p[trial] = (1 - p_exp_cum) * pH + p_exp_cum * 0.5
         eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
 
     return eg
