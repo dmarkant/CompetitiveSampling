@@ -270,3 +270,24 @@ strong {
     padding-right: 20px;
     text-align: right;
 }
+
+#barchart {
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+#barchart .bar {
+    fill: gray;
+}
+
+.axis text {
+  font: 12px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+

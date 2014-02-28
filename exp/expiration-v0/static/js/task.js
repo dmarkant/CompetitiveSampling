@@ -690,6 +690,64 @@ var Instructions2 = function() {
 };
 
 
+var ExpirationFrequencyChart = function(container, data) {
+
+	var maxwidth = 500,
+		maxheight = 300;
+
+	var margin = {top: 20, right: 30, bottom: 30, left: 40},
+		width =  maxwidth - margin.left - margin.right,
+		height = maxheight - margin.top - margin.bottom;
+	
+	var barWidth = width / 25 - 2;
+
+	container.append(svg_element('barchart', maxwidth, maxheight));
+
+	var x = d3.scale.linear()
+		      .domain([0, 26])
+			  .range([0, width]);
+
+	var y = d3.scale.linear()
+		      .domain([0, 100])
+			  .range([height, 0]);
+
+	var xAxis = d3.svg.axis()
+				  .scale(x)
+				  .orient('bottom');
+
+	var yAxis = d3.svg.axis()
+				  .scale(y)
+				  .orient('left');
+	
+	var chart = d3.select("#barchart")
+		.attr("width", maxwidth)
+		.attr("height", maxheight)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		
+	
+	chart.append('g')
+		 .attr('class', 'x axis')
+		 .attr('transform', 'translate(0,' + height +')')
+		 .call(xAxis);
+
+	chart.append('g')
+		 .attr('class', 'y axis')
+		 .call(yAxis);
+
+	chart.selectAll('.bar')
+		 .data(data)
+		 .enter().append('rect')
+		   .attr('class', 'bar')
+		   .attr('x', function(d, i) { return x(i+1) - barWidth/2; })
+		   .attr('y', function(d) { return y(d); })
+		   .attr('height', function(d) { return height - y(d); })
+		   .attr('width', barWidth - 1);
+	
+	return chart;
+};
+
+
 var Instructions3 = function() {
 	output(['instructions', 3]);
 	var self = this;
@@ -701,18 +759,22 @@ var Instructions3 = function() {
 	var t = 'Each game will last up to a maximum of 25 turns. At that point, you will be forced ' +
 		 'to choose one of the urns if you have not already.';
 	self.div.append(instruction_text_element(t));
-	
-	if (condition===1) {
+
+
+	if (condition==1) {
 
 		var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
 				'there is a chance that the game will <strong>expire early</strong>. ' +
 				'If this happens, a randomly chosen urn will disappear, and whatever urn is left ' +
-				'will go toward your bonus at the end of the experiment.<br />' +
-				'The chance of the game expiring is the same on every turn, and is equal to 5\%, or a ' +
+				'will go toward your bonus at the end of the experiment.';
+		self.div.append(instruction_text_element(t));
+		
+		var t = 'The chance of the game expiring is the same on every turn, and is equal to 5\%, or a ' +
 				'1 in 20 chance.';
 		self.div.append(instruction_text_element(t));
+		chart = ExpirationFrequencyChart(self.div, ConstantArray(25, 5));
 
-	} else if (condition===2) {
+	} else if (condition==2) {
 
 		var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
 				'there is a chance that the game will <strong>expire early</strong>. ' +
@@ -721,51 +783,48 @@ var Instructions3 = function() {
 				'The chance of the game expiring is the same on every turn, and is equal to 10\%, or a ' +
 				'1 in 10 chance.';
 		self.div.append(instruction_text_element(t));
+		chart = ExpirationFrequencyChart(self.div, [5, 5, 10, 10, 2]);
 		
-	} else {
-		output(['ERROR', 'unknown condition']);
-	};
-
-
-
-
-
-	var t = 'If the game expires early, one of the urns will fade out as you can see below:';
-	self.div.append(instruction_text_element(t));
-
-
-	self.div.append(svg_element('urn-svg', 600, 280));
-	self.stage = d3.select('#urn-svg');
-	self.stage_w = stage.attr("width");
-	self.stage_h = stage.attr("height");	
-
-	var option_values = {'A': {'H': 25, 'L': -17, 'p': .7},
-						 'B': {'H': 20, 'L': -30, 'p': .3}};
-	
-	var nsamples = {'A': 0, 'B': 0};
-	var generate_sample = function(id) {
-		nsamples[id] += 1;
-		if (nsamples[id] > 1) {
-			self.options[id].clear_sample();
-		}
-		result = sample_from_discrete(option_values[id]);
-		self.options[id].draw_sample(result);
 	};
 	
-	self.options = {'A': new Option(self.stage,
-							  {'id': 'A',
-							   'color': 'red',
-							   'x': self.stage_w/4,
-							   'y': self.stage_h/2-30},
-							  generate_sample).draw(),
-					'B': new Option(self.stage,
-							  {'id': 'B',
-							   'color': 'blue',
-							   'x': 3 * self.stage_w/4,
-							   'y': self.stage_h/2-30},
-							  generate_sample).draw().expire()};
+	if (condition!=0) {
+
+		var t = 'If the game expires early, one of the urns will fade out as you can see below:';
+		self.div.append(instruction_text_element(t));
 
 
+		self.div.append(svg_element('urn-svg', 600, 280));
+		self.stage = d3.select('#urn-svg');
+		self.stage_w = stage.attr("width");
+		self.stage_h = stage.attr("height");	
+
+		var option_values = {'A': {'H': 25, 'L': -17, 'p': .7},
+							 'B': {'H': 20, 'L': -30, 'p': .3}};
+		
+		var nsamples = {'A': 0, 'B': 0};
+		var generate_sample = function(id) {
+			nsamples[id] += 1;
+			if (nsamples[id] > 1) {
+				self.options[id].clear_sample();
+			}
+			result = sample_from_discrete(option_values[id]);
+			self.options[id].draw_sample(result);
+		};
+		
+		self.options = {'A': new Option(self.stage,
+								  {'id': 'A',
+								   'color': 'red',
+								   'x': self.stage_w/4,
+								   'y': self.stage_h/2-30},
+								  generate_sample).draw(),
+						'B': new Option(self.stage,
+								  {'id': 'B',
+								   'color': 'blue',
+								   'x': 3 * self.stage_w/4,
+								   'y': self.stage_h/2-30},
+								  generate_sample).draw().expire()};
+
+	};
 
 	var t = 'You\'ll now play a couple of practice games to become familiar with how it works. ' +
 		    'Click the button below to start the first practice game.';

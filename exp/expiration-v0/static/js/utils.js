@@ -18,3 +18,12 @@ function boolpercent(arr) {
 	}
 	return 100* count / arr.length;
 }
+
+function ConstantArray(len, val) {
+    var rv = new Array(len);
+    while (--len >= 0) {
+        rv[len] = val;
+    }
+    return rv;
+}
+
