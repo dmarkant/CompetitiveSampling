@@ -4,6 +4,31 @@
  *     utils.js
  */
 
+var GAMBLE_SETS = [{'A': {'H': 68, 'L': -6, 'p': 0.23267108438718864},
+  'B': {'H': 79, 'L': -18, 'p': 0.9014312708660349}},
+ {'A': {'H': 60, 'L': 0, 'p': 0.3635416348872752},
+  'B': {'H': 95, 'L': -15, 'p': 0.11871918595656406}},
+ {'A': {'H': 12, 'L': -44, 'p': 0.6194636272990222},
+  'B': {'H': 54, 'L': -48, 'p': 0.5290562238867278}},
+ {'A': {'H': 21, 'L': -19, 'p': 0.3851531760827799},
+  'B': {'H': 34, 'L': -100, 'p': 0.8726139358997979}},
+ {'A': {'H': 39, 'L': -43, 'p': 0.2939483199063454},
+  'B': {'H': 87, 'L': -89, 'p': 0.510927829553496}},
+ {'A': {'H': 10, 'L': -14, 'p': 0.8676525363957424},
+  'B': {'H': 67, 'L': -51, 'p': 0.8422137830272641}},
+ {'A': {'H': 12, 'L': -5, 'p': 0.6946018621067012},
+  'B': {'H': 32, 'L': -38, 'p': 0.4084342449025822}},
+ {'A': {'H': 27, 'L': -78, 'p': 0.6066380698460068},
+  'B': {'H': 12, 'L': 0, 'p': 0.4517727639347079}},
+ {'A': {'H': 26, 'L': -18, 'p': 0.03539457181965988},
+  'B': {'H': 68, 'L': -90, 'p': 0.6802438702680387}},
+ {'A': {'H': 1, 'L': -5, 'p': 0.6657709098899136},
+  'B': {'H': 67, 'L': -96, 'p': 0.3825753263081355}},
+ {'A': {'H': 56, 'L': -7, 'p': 0.3521689221423362},
+  'B': {'H': 75, 'L': -26, 'p': 0.7456433830538688}},
+ {'A': {'H': 85, 'L': -57, 'p': 0.5982274472298033},
+  'B': {'H': 25, 'L': -42, 'p': 0.6448686520314039}}];
+
 var uniffreq = ConstantArray(25, 5);
 uniffreq.unshift(0);
 
@@ -95,6 +120,14 @@ var generate_gamble = function() {
 	return {'options': {'A': {'H': A_pos, 'L': A_neg, 'p': A_p},
 						'B': {'H': B_pos, 'L': B_neg, 'p': B_p}}
 	};
+};
+
+
+var generate_gamble_from_set = function() {
+
+	var g = _.shuffle(GAMBLE_SETS)[0];
+
+	return {'options': g};
 };
 
 
@@ -235,7 +268,7 @@ var IndividualSamplingGame = function(round, callback, practice) {
 	self.trial = -1;
 
 	// create a gamble for this game
-	self.gamble = generate_gamble();
+	self.gamble = generate_gamble_from_set();
 
 	// sample an expiration trial based on condition
 	if (condition==0) {
@@ -921,7 +954,7 @@ var InstructionsPractice = function() {
 		var gamble = generate_gamble();
 
 		if (self.round < N_PRACTICE_GAMES) {
-			self.view = new IndividualSamplingGame(self.round, gamble, self.next, true);
+			self.view = new IndividualSamplingGame(self.round, self.next, true);
 		} else {
 			InstructionsQuiz();	
 		};
@@ -941,38 +974,113 @@ var InstructionsPractice = function() {
 var InstructionsQuiz = function() {
 	output(['instructions', 'preq']);
 	var self = this;
-	psiTurk.showPage('preq.html');	
 
-	var checker = function() {
-		var errors = [];
+	if (condition==0) {
 
-		if ($('#maxtrials option:selected').val() != "1") { 
-			errors.push("maxtrials");
-		};
-		if ($('#expiration option:selected').val() != "1") {
-			errors.push("expiration");
-		};
-		if ($('#probexpire option:selected').val() != "2") {
-			errors.push("probexpire");
-		};
-		if ($('#whichexpire option:selected').val() != "0") {
-			errors.push("whichexpire");
-		};
-		
-		output(['instructions', 'preq', 'errors', errors].flatten());
-	
-		if (errors.length == 0) {
-			InstructionsComplete();
-		} else {
-			$('#continue').hide();
-			for(var i=0; i<errors.length; i++) {
-				$('#'+errors[i]).css("border","2px solid red");
+		psiTurk.showPage('preq_noexp.html');	
+
+		var checker = function() {
+			var errors = [];
+
+			if ($('#sampling option:selected').val() != "1") { 
+				errors.push("sampling");
 			};
-			$("#warning").css("color","red");
-			$("#warning").html("<p>Looks like you answered some questions incorrectly (highlighted in red). Please review them and click the \"Repeat\" button at the bottom to see the instructions again.</p>");
+			if ($('#maxtrials option:selected').val() != "1") { 
+				errors.push("maxtrials");
+			};
+			
+			output(['instructions', 'preq', 'errors', errors].flatten());
+		
+			if (errors.length == 0) {
+				InstructionsComplete();
+			} else {
+				$('#continue').hide();
+				for(var i=0; i<errors.length; i++) {
+					$('#'+errors[i]).css("border","2px solid red");
+				};
+				$("#warning").css("color","red");
+				$("#warning").html("<p>Looks like you answered some questions incorrectly (highlighted in red). Please review them and click the \"Repeat\" button at the bottom to see the instructions again.</p>");
+			};
+
 		};
 
-	};
+	} else if (condition==1) {
+
+		psiTurk.showPage('preq.html');	
+
+		var checker = function() {
+			var errors = [];
+
+			if ($('#sampling option:selected').val() != "1") { 
+				errors.push("sampling");
+			};
+			if ($('#maxtrials option:selected').val() != "1") { 
+				errors.push("maxtrials");
+			};
+			if ($('#expiration option:selected').val() != "1") {
+				errors.push("expiration");
+			};
+			if ($('#probexpire option:selected').val() != "1") { // this is different
+				errors.push("probexpire");
+			};
+			if ($('#whichexpire option:selected').val() != "0") {
+				errors.push("whichexpire");
+			};
+			
+			output(['instructions', 'preq', 'errors', errors].flatten());
+		
+			if (errors.length == 0) {
+				InstructionsComplete();
+			} else {
+				$('#continue').hide();
+				for(var i=0; i<errors.length; i++) {
+					$('#'+errors[i]).css("border","2px solid red");
+				};
+				$("#warning").css("color","red");
+				$("#warning").html("<p>Looks like you answered some questions incorrectly (highlighted in red). Please review them and click the \"Repeat\" button at the bottom to see the instructions again.</p>");
+			};
+
+		};
+
+	} else {
+
+		psiTurk.showPage('preq.html');	
+
+		var checker = function() {
+			var errors = [];
+
+			if ($('#sampling option:selected').val() != "1") { 
+				errors.push("sampling");
+			};
+			if ($('#maxtrials option:selected').val() != "1") { 
+				errors.push("maxtrials");
+			};
+			if ($('#expiration option:selected').val() != "1") {
+				errors.push("expiration");
+			};
+			if ($('#probexpire option:selected').val() != "2") {
+				errors.push("probexpire");
+			};
+			if ($('#whichexpire option:selected').val() != "0") {
+				errors.push("whichexpire");
+			};
+			
+			output(['instructions', 'preq', 'errors', errors].flatten());
+		
+			if (errors.length == 0) {
+				InstructionsComplete();
+			} else {
+				$('#continue').hide();
+				for(var i=0; i<errors.length; i++) {
+					$('#'+errors[i]).css("border","2px solid red");
+				};
+				$("#warning").css("color","red");
+				$("#warning").html("<p>Looks like you answered some questions incorrectly (highlighted in red). Please review them and click the \"Repeat\" button at the bottom to see the instructions again.</p>");
+			};
+
+		};
+
+	}
 
 
 	$('#startover').on('click', function() { 
