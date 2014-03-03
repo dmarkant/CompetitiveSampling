@@ -4,6 +4,33 @@
  *     utils.js
  */
 
+var uniffreq = ConstantArray(25, 5);
+uniffreq.unshift(0);
+
+var normfreq = [0., 1., 1., 1., 1., 1., 1., 1., 1., 2., 3., 5., 7., 9., 12., 12., 12., 9, 7., 5., 3., 2., 1., 1., 1., 1.];
+
+
+var expfreq = [0., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 2., 2., 2., 3., 4., 7., 10., 13., 17., 25];
+
+
+var sample_expiration_from_discrete = function(freq) {
+
+	var cs = cumsum(normalize(freq));
+	var r = Math.random();
+	var index;
+
+	for (var i=0; i<cs.length; i++) {
+		if (r < cs[i]) {
+			index = i;
+			break;
+		};
+	};
+
+	return index;
+};
+
+
+
 // Initalize psiturk object
 var psiTurk = PsiTurk();
 
@@ -19,16 +46,6 @@ var pages = [
 
 psiTurk.preloadPages(pages);
 
-// Flatten taken from
-// http://tech.karbassi.com/2009/12/17/pure-javascript-flatten-array/
-Array.prototype.flatten = function flatten(){
-   var flat = [];
-   for (var i = 0, l = this.length; i < l; i++){
-       var type = Object.prototype.toString.call(this[i]).split(' ').pop().split(']').shift().toLowerCase();
-       if (type) { flat = flat.concat(/^(array|collection|arguments|object)$/.test(type) ? flatten.call(this[i]) : this[i]); }
-   }
-   return flat;
-};
 
 function output(arr) {
     psiTurk.recordTrialData(arr);
@@ -40,7 +57,7 @@ function output(arr) {
 var exp,
 	N_PRACTICE_GAMES = 2,
 	NROUNDS = 6,
-	MAX_N_TRIALS = 25,
+	MAX_N_TRIALS = 26,
 	P_EXPIRE = .1,
 	INIT_BONUS = 1,
 	chosen_values = [];
@@ -210,14 +227,28 @@ var Option = function(stage, option_info, callback) {
 };
 
 
-var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
+var IndividualSamplingGame = function(round, callback, practice) {
 
 	var self = this;
 	self.round = round;
-	self.gamble = gamble_info;
 	self.practice = practice;
 	self.trial = -1;
 
+	// create a gamble for this game
+	self.gamble = generate_gamble();
+
+	// sample an expiration trial based on condition
+	if (condition==0) {
+		self.expiration = -1;
+	} else if (condition==1) {
+		self.expiration = sample_expiration_from_discrete(uniffreq);
+	} else if (condition==2) {
+		self.expiration = sample_expiration_from_discrete(normfreq);
+	} else if (condition==3) {
+		self.expiration = sample_expiration_from_discrete(expfreq);
+	};
+
+	output(['game', self.round, 'expiration', self.expiration]);		
 	output(['game', self.round, 'practice', self.practice]);	
 	output(['game', self.round, 'option', 'A', self.gamble.options.A.H, self.gamble.options.A.L, self.gamble.options.A.p])
 	output(['game', self.round, 'option', 'B', self.gamble.options.B.H, self.gamble.options.B.L, self.gamble.options.B.p])
@@ -298,7 +329,7 @@ var IndividualSamplingGame = function(round, gamble_info, callback, practice) {
 								  self.generate_sample).draw()};
 	
 
-		if (self.trial > 1 & expiration_fcn(P_EXPIRE)) {
+		if (self.trial == self.expiration) {
 
 			self.expired();
 
@@ -480,11 +511,8 @@ var IndividualSamplingExperiment = function() {
 
 	self.next = function() {
 		self.round += 1;
-
-		var gamble = generate_gamble();
-
 		if (self.round < NROUNDS) {
-			self.view = new IndividualSamplingGame(self.round, gamble, self.next, false);
+			self.view = new IndividualSamplingGame(self.round, self.next, false);
 		} else {
 			self.finish();
 		};
@@ -695,7 +723,7 @@ var ExpirationFrequencyChart = function(container, data) {
 	var maxwidth = 500,
 		maxheight = 300;
 
-	var margin = {top: 20, right: 30, bottom: 30, left: 40},
+	var margin = {top: 20, right: 50, bottom: 40, left: 50},
 		width =  maxwidth - margin.left - margin.right,
 		height = maxheight - margin.top - margin.bottom;
 	
@@ -708,7 +736,7 @@ var ExpirationFrequencyChart = function(container, data) {
 			  .range([0, width]);
 
 	var y = d3.scale.linear()
-		      .domain([0, 100])
+		      .domain([0, 25])
 			  .range([height, 0]);
 
 	var xAxis = d3.svg.axis()
@@ -735,6 +763,32 @@ var ExpirationFrequencyChart = function(container, data) {
 		 .attr('class', 'y axis')
 		 .call(yAxis);
 
+	chart.append("text")
+    	 .attr("class", "x label")
+    	 .attr("text-anchor", "end")
+    	 .attr("x", width/2+20)
+    	 .attr("y", height+40)
+    	 .text("Turn");
+	
+	chart.append("text")
+    	 .attr("class", "y label")
+    	 .attr("text-anchor", "end")
+    	 .attr("x", -60)
+    	 .attr("y", -45)
+    	 .attr("dy", ".75em")
+    	 .attr("transform", "rotate(-90)")
+    	 .text("# of games");
+
+	chart.selectAll('line.y')
+		 .data(y.ticks(4))
+		 .enter().append('line')
+		   .attr('class', 'y')
+		   .attr('x1', 0)
+		   .attr('x2', maxwidth)
+		   .attr('y1', y)
+		   .attr('y2', y)
+		   .style('stroke', '#ccc');
+		 
 	chart.selectAll('.bar')
 		 .data(data)
 		 .enter().append('rect')
@@ -744,6 +798,8 @@ var ExpirationFrequencyChart = function(container, data) {
 		   .attr('height', function(d) { return height - y(d); })
 		   .attr('width', barWidth - 1);
 	
+
+
 	return chart;
 };
 
@@ -756,42 +812,17 @@ var Instructions3 = function() {
 	// create an SVG element
 	self.div = $('#container-instructions');
 	
-	var t = 'Each game will last up to a maximum of 25 turns. At that point, you will be forced ' +
+	var t = 'Each game will last up to a maximum of '+MAX_N_TRIALS+' turns. At that point, you will be forced ' +
 		 'to choose one of the urns if you have not already.';
 	self.div.append(instruction_text_element(t));
 
-
-	if (condition==1) {
-
-		var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
-				'there is a chance that the game will <strong>expire early</strong>. ' +
-				'If this happens, a randomly chosen urn will disappear, and whatever urn is left ' +
-				'will go toward your bonus at the end of the experiment.';
-		self.div.append(instruction_text_element(t));
-		
-		var t = 'The chance of the game expiring is the same on every turn, and is equal to 5\%, or a ' +
-				'1 in 20 chance.';
-		self.div.append(instruction_text_element(t));
-		chart = ExpirationFrequencyChart(self.div, ConstantArray(25, 5));
-
-	} else if (condition==2) {
-
-		var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
-				'there is a chance that the game will <strong>expire early</strong>. ' +
-				'If this happens, a randomly chosen urn will disappear, and whatever urn is left ' +
-				'will go toward your bonus at the end of the experiment.<br />' +
-				'The chance of the game expiring is the same on every turn, and is equal to 10\%, or a ' +
-				'1 in 10 chance.';
-		self.div.append(instruction_text_element(t));
-		chart = ExpirationFrequencyChart(self.div, [5, 5, 10, 10, 2]);
-		
-	};
-	
 	if (condition!=0) {
 
-		var t = 'If the game expires early, one of the urns will fade out as you can see below:';
+		var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
+				'there is a chance that the game will <strong>expire early</strong>. ' +
+				'If this happens, a randomly chosen urn will fade out (see below), and whatever urn is left ' +
+				'will go toward your bonus at the end of the experiment.';
 		self.div.append(instruction_text_element(t));
-
 
 		self.div.append(svg_element('urn-svg', 600, 280));
 		self.stage = d3.select('#urn-svg');
@@ -823,6 +854,42 @@ var Instructions3 = function() {
 								   'x': 3 * self.stage_w/4,
 								   'y': self.stage_h/2-30},
 								  generate_sample).draw().expire()};
+
+
+		// UNIFORM	
+		if (condition==1) {
+
+			var t = 'The chance of the game expiring is the same across all turns (up to the maximum 26th ' +
+					'turn. For example, if you played the game 100 times, then the graph below shows the ' +
+					'number of games that would expire on each turn. For instance, the game would have expired ' +
+					'on the 2nd turn in 5 out of 100 games. Note that the game never expires on the first turn.';
+			self.div.append(instruction_text_element(t));
+			chart = ExpirationFrequencyChart(self.div, uniffreq);
+
+		// NORMAL
+		} else if (condition==2) {
+	
+			var t = 'The chance of the game expiring changes according to the turn. For example, if you ' +
+					'played the game 100 times, then the graph below shows the number of games that would ' +
+					'expire on each turn. For instance, the game would have expired on the 2nd turn in 1 out ' +
+					'of 100 games, while it would have expired on the 16th turn in 12 out of 100 games. ' + 
+				    'Note that the game never expires on the first turn.';
+			self.div.append(instruction_text_element(t));
+			chart = ExpirationFrequencyChart(self.div, normfreq);
+		
+		// EXPONENTIAL	
+		} else if (condition==3) {
+			
+			var t = 'The chance of the game expiring changes according to the turn. For example, if you ' +
+					'played the game 100 times, then the graph below shows the number of games that would ' +
+					'expire on each turn. For instance, the game would have expired on the 2nd turn in 1 out ' +
+					'of 100 games, while it would have expired on the 26th (final) turn in 25 out of 100 games.' +
+					'Note that the game never expires on the first turn.';
+			self.div.append(instruction_text_element(t));
+			chart = ExpirationFrequencyChart(self.div, expfreq);
+						
+		};
+	
 
 	};
 
