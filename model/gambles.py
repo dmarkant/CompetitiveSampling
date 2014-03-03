@@ -94,6 +94,16 @@ def generate_gamble_posneg(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 
     return g
 
 
+def generate_gamble_nondom(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 1]):
+
+    done = False
+    while not done:
+        g = generate_gamble(pos_range=pos_range, neg_range=neg_range, p_range=p_range)
+        if ((g['H'][0] > g['L'][0] and g['H'][1] < g['L'][1]) or (g['H'][0] < g['L'][0] and g['H'][1] > g['L'][1])):
+            done = True
+    return g
+
+
 def generate_gamble_posneg_nondom(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 1]):
 
     done = False

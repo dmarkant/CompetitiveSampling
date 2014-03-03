@@ -34,7 +34,7 @@ labeled the "H" option.
 """
 
 import numpy as np
-from scipy.stats import binom, norm
+from scipy.stats import binom, norm, expon
 from gambles import *
 
 
@@ -281,7 +281,29 @@ def expected_gain_given_normal_expiration(options, mn, sd, max_samples):
         p[trial] = (1 - p_exp_cum) * pH + p_exp_cum * 0.5
         eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
 
-    return eg
+    return p, eg
+
+def expected_gain_given_exponential_expiration(options, sc, max_samples):
+
+    ev_high = expected_value(options['H'])
+    ev_low = expected_value(options['L'])
+    ev_random = 0.5 * ev_high + 0.5 * ev_low
+
+    p  = np.zeros(max_samples, float)
+    eg = np.zeros(max_samples, float)
+
+    for trial in range(max_samples):
+
+        # get cumulative probability according to normal
+        if trial == 0:
+            p_exp_cum = 0.
+        else:
+            p_exp_cum = 1 - expon.cdf(max_samples - trial, loc=0, scale=sc)
+        pH = prob_choose_H_all_allocations(options, trial + 1)
+        p[trial] = (1 - p_exp_cum) * pH + p_exp_cum * 0.5
+        eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
+
+    return p, eg
 
 
 

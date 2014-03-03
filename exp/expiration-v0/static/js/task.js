@@ -63,6 +63,7 @@ var psiTurk = PsiTurk();
 var pages = [
 	"instruct.html",
 	"preq.html",
+	"preq_noexp.html",
 	"test.html",
 	"postquestionnaire.html",
 	"stage.html",
@@ -1058,7 +1059,7 @@ var InstructionsQuiz = function() {
 			if ($('#expiration option:selected').val() != "1") {
 				errors.push("expiration");
 			};
-			if ($('#probexpire option:selected').val() != "2") {
+			if ($('#probexpire option:selected').val() != "0") {
 				errors.push("probexpire");
 			};
 			if ($('#whichexpire option:selected').val() != "0") {
