@@ -260,6 +260,7 @@ var Option = function(stage, option_info, callback) {
 	return self;
 };
 
+var entry;
 
 var IndividualSamplingGame = function(round, callback, practice) {
 
@@ -267,21 +268,27 @@ var IndividualSamplingGame = function(round, callback, practice) {
 	self.round = round;
 	self.practice = practice;
 	self.trial = -1;
+	self.expiration = undefined;
+	self.planned_num_samples = undefined;
 
 	// create a gamble for this game
 	self.gamble = generate_gamble_from_set();
 
+	// set trial-by-trial vs. planned duration
+	self.tbt = (condition % 2 == 0) ? true : false;
+
 	// sample an expiration trial based on condition
-	if (condition==0) {
+	if (condition % 4 == 0) {
 		self.expiration = -1;
-	} else if (condition==1) {
+	} else if (condition % 4 == 1) {
 		self.expiration = sample_expiration_from_discrete(uniffreq);
-	} else if (condition==2) {
+	} else if (condition % 4 == 2) {
 		self.expiration = sample_expiration_from_discrete(normfreq);
-	} else if (condition==3) {
+	} else if (condition % 4 == 3) {
 		self.expiration = sample_expiration_from_discrete(expfreq);
 	};
 
+	output(['game', self.round, 'trialbytrial', self.tbt]);
 	output(['game', self.round, 'expiration', self.expiration]);		
 	output(['game', self.round, 'practice', self.practice]);	
 	output(['game', self.round, 'option', 'A', self.gamble.options.A.H, self.gamble.options.A.L, self.gamble.options.A.p])
@@ -309,7 +316,6 @@ var IndividualSamplingGame = function(round, callback, practice) {
 	self.begin = function() {
 
 		self.above_stage.html('');
-		
 		splash = self.stage.append('g');
 
 		var t;
@@ -327,57 +333,74 @@ var IndividualSamplingGame = function(round, callback, practice) {
 				  .attr('class', 'splash-text')
 				  .text(t);
 
-		// continue button
-		self.btn = self.buttons.append('input')
-								   .attr('value', 'Ready to start')
-			    				   .attr('type', 'button')
-								   .attr('height', 100);
-
-		self.btn.on('click', function() {
-			self.reset_stage(self.sampling_trial);
+		self.btn = self.add_button('Ready to start', function() {
+			if (self.tbt) { self.reset_stage(self.sampling_trial); }
+			else { self.reset_stage(self.planning_decision); }
 		});
 
 	}
 
 	self.set_instruction = function(text) {
-
 		self.instruction.html('<div id="turn-number">TURN '+(self.trial+1)+'</div>'+text)
+	};
 
+	self.add_button = function(value, onclickfcn) {
+
+		var btn = self.buttons.append('input')
+							  .attr('value', value)
+			    			  .attr('type', 'button')
+							  .attr('height', 100);
+		btn.on('click', onclickfcn);
+		return btn;
+	}
+	
+	self.planning_decision = function() {
+
+		// provide heading 
+		$('#stage').css('display', 'none');
+		query = self.above_stage.append('text')
+				     			.attr('class', 'planning-query')
+			                    .text('How many coins would you like to observe in this game? (Enter a value between 1 and 26)');
+		entry = self.above_stage.append('input')
+									.attr('class', 'planning-input');
+
+		self.btn = self.add_button('Submit', function() {
+
+			val = entry[0][0].value;
+			output(['game', self.round, 'planning_decision', val])
+
+			if ((val * 1 > 0) && (val * 1 < 27)) {
+				self.planned_num_samples = val * 1;
+				self.reset_stage(self.sampling_trial);
+			} else {
+				query.text('Invalid response. Please enter a number between 1 and 26.');
+			};
+		});
 	};
 
 	self.sampling_trial = function() {
-
 		self.trial += 1;
-
 		self.options = {'A': new Option(self.stage,
 								  {'id': 'A',
-								   'color': 'red',
 								   'x': self.stage_w/4,
 								   'y': self.stage_h/3},
 								  self.generate_sample).draw(),
 						'B': new Option(self.stage,
 								  {'id': 'B',
-								   'color': 'blue',
 								   'x': 3 * self.stage_w/4,
 								   'y': self.stage_h/3},
 								  self.generate_sample).draw()};
 	
-
 		if (self.trial == self.expiration) {
-
 			self.expired();
-
 		} else {
-
 			self.options['A'].listen();
 			self.options['B'].listen();
 			self.set_instruction('Click the urn you want to learn about.');
-
 		}
 	}
 
 	self.generate_sample = function(chosen_id) {
-
 		self.options['A'].stop_listening();
 		self.options['B'].stop_listening();
 
@@ -390,51 +413,27 @@ var IndividualSamplingGame = function(round, callback, practice) {
 		self.set_instruction('You chose urn '+chosen_id+' and got a coin worth '+result+' cents.');
 
 		// continue button
-		self.btn = self.buttons.append('input')
-								   .attr('value', 'OK')
-			    				   .attr('type', 'button')
-								   .attr('height', 100);
-
-		self.btn.on('click', function() {
+		self.btn = self.add_button('OK', function() {
 			self.options[chosen_id].clear_sample();	
 
 			if (self.trial == (MAX_N_TRIALS-1)) {
-
 				self.reset_stage(self.max_samples_drawn);
-
 			} else {
-
 				self.prompt_stop_or_continue();
-
 			};
 		});
 	}
-	
+
+
 	self.prompt_stop_or_continue = function() {
 
 		self.btn.remove();
-			
-		// continue button
-		continue_btn = self.buttons.append('input')
-								   .attr('value', 'Continue Learning')
-			    				   .attr('type', 'button')
-								   .attr('height', 100);
-
-		continue_btn.on('click', function() {
-			// output choice
-
+		
+		continue_btn = self.add_button('Continue Learning', function() {
 			self.reset_stage(self.sampling_trial);
 		});
 
-		// continue button
-		stop_btn = self.buttons.append('input')
-								   .attr('value', 'Stop and Choose')
-			    				   .attr('type', 'button')
-								   .attr('height', 100);
-		
-		stop_btn.on('click', function() {
-			// output choice
-
+		stop_btn = self.add_button('Stop and Choose', function() {
 			self.reset_stage(self.final_decision);
 		});
 		
@@ -446,13 +445,11 @@ var IndividualSamplingGame = function(round, callback, practice) {
 
 		self.options = {'A': new Option(self.stage,
 								  {'id': 'A',
-								   'color': 'red',
 								   'x': self.stage_w/4,
 								   'y': self.stage_h/3},
 								  self.show_feedback).draw().listen(),
 						'B': new Option(self.stage,
 								  {'id': 'B',
-								   'color': 'blue',
 								   'x': 3 * self.stage_w/4,
 								   'y': self.stage_h/3},
 								  self.show_feedback).draw().listen()};		
@@ -478,12 +475,7 @@ var IndividualSamplingGame = function(round, callback, practice) {
 		self.set_instruction('The game expired, and urn '+expired+' has disappeared. Urn '+result+' will be used to determine your bonus.');
 		
 		// continue button
-		self.btn = self.below_stage.append('input')
-								   .attr('value', 'OK')
-			    				   .attr('type', 'button')
-								   .attr('height', 100);
-
-		self.btn.on('click', function() {
+		self.btn = self.add_button('OK', function() {
 			self.finish();
 		});
 
@@ -513,25 +505,14 @@ var IndividualSamplingGame = function(round, callback, practice) {
 		output(['game', self.round, self.trial, 'choice', chosen_id])		
 		chosen_values.push(expected_value(self.gamble.options[chosen_id]));
 
-		// continue button
-		self.btn = self.below_stage.append('input')
-								   .attr('value', 'OK')
-			    				   .attr('type', 'button')
-								   .attr('height', 100);
-
-		self.btn.on('click', function() {
-			self.finish();
-		});
-
+		self.btn = self.add_button('OK', self.finish);
 		self.set_instruction('You chose urn '+chosen_id+'. Your earnings from this choice will be shown at the end of the experiment.');
 		
-
 	}
 
 	self.finish = function() {
 		callback();
 	}
-
 
 	self.reset_stage(self.begin);
 	return self;
@@ -565,8 +546,8 @@ var IndividualSamplingExperiment = function() {
 	output(["condition", condition]);
 	output(["counter", counterbalance]);
 
-	//self.begin();
-	Instructions1();
+	self.begin();
+	//Instructions1();
 };
 
 

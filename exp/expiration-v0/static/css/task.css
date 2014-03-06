@@ -291,3 +291,15 @@ strong {
   shape-rendering: crispEdges;
 }
 
+
+.planning-query {
+  display: block;
+  font: 24px sans-serif;
+  margin: 0 auto;
+}
+
+.planning-input {
+  width: 120px;
+  font: 36px sans-serif;
+  text-align: center;
+}
