@@ -296,6 +296,7 @@ strong {
   display: block;
   font: 24px sans-serif;
   margin: 0 auto;
+  width: 600px;
 }
 
 .planning-input {

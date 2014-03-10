@@ -86,7 +86,8 @@ var exp,
 	MAX_N_TRIALS = 26,
 	P_EXPIRE = .1,
 	INIT_BONUS = 1,
-	chosen_values = [];
+	chosen_values = [],
+	DURATION_SAMPLE = 1000;
 
 
 var sample_from_discrete = function(option) {
@@ -104,9 +105,7 @@ var expected_value = function(option) {
 
 // Expiration functions
 var expiration_fcn = function(prob) {
-
 	return (Math.random() < prob) ? true : false;
-
 };
 
 var generate_gamble = function() {
@@ -134,7 +133,6 @@ var generate_gamble_from_set = function() {
 
 
 var Option = function(stage, option_info, callback) {
-
 	var self = this;
 	self.id = option_info.id;
 	self.color = option_info.color;
@@ -149,8 +147,6 @@ var Option = function(stage, option_info, callback) {
 						  .attr('opacity', 1.);
 	
 	self.draw = function() {
-		
-
 		self.obj = self.disp.append('image')
 							.attr('x', self.x-100)
 							.attr('y', self.y-80)
@@ -260,7 +256,6 @@ var Option = function(stage, option_info, callback) {
 	return self;
 };
 
-var entry;
 
 var IndividualSamplingGame = function(round, callback, practice) {
 
@@ -314,7 +309,6 @@ var IndividualSamplingGame = function(round, callback, practice) {
 	}
 
 	self.begin = function() {
-
 		self.above_stage.html('');
 		splash = self.stage.append('g');
 
@@ -337,7 +331,6 @@ var IndividualSamplingGame = function(round, callback, practice) {
 			if (self.tbt) { self.reset_stage(self.sampling_trial); }
 			else { self.reset_stage(self.planning_decision); }
 		});
-
 	}
 
 	self.set_instruction = function(text) {
@@ -345,7 +338,6 @@ var IndividualSamplingGame = function(round, callback, practice) {
 	};
 
 	self.add_button = function(value, onclickfcn) {
-
 		var btn = self.buttons.append('input')
 							  .attr('value', value)
 			    			  .attr('type', 'button')
@@ -390,7 +382,7 @@ var IndividualSamplingGame = function(round, callback, practice) {
 								   'x': 3 * self.stage_w/4,
 								   'y': self.stage_h/3},
 								  self.generate_sample).draw()};
-	
+
 		if (self.trial == self.expiration) {
 			self.expired();
 		} else {
@@ -409,21 +401,43 @@ var IndividualSamplingGame = function(round, callback, practice) {
 
 		// show feedback
 		self.options[chosen_id].draw_sample(result);
+		self.set_instruction('You chose urn '+chosen_id+' and saw a coin worth '+result+' cents.');
 
-		self.set_instruction('You chose urn '+chosen_id+' and got a coin worth '+result+' cents.');
+		if (self.require_confirm_sample) {
+			self.btn = self.add_button('OK', function() {
+				self.options[chosen_id].clear_sample();	
+				return self.decision_stage();
+			});
+		} else {
+			setTimeout(function() {
+				self.options[chosen_id].clear_sample();	
+				return self.decision_stage();				
+			}, DURATION_SAMPLE);
+		};
 
-		// continue button
-		self.btn = self.add_button('OK', function() {
-			self.options[chosen_id].clear_sample();	
-
-			if (self.trial == (MAX_N_TRIALS-1)) {
-				self.reset_stage(self.max_samples_drawn);
-			} else {
-				self.prompt_stop_or_continue();
-			};
-		});
 	}
 
+	self.decision_stage = function() {
+		
+		if (!self.tbt) {
+
+			if (self.trial == (self.planned_num_samples - 1)) {
+				return self.reset_stage(self.max_samples_drawn);
+			} else {
+				return self.reset_stage(self.sampling_trial);
+			}
+
+		} else {
+
+			if (self.trial == (MAX_N_TRIALS - 1)) {
+				return self.reset_stage(self.max_samples_drawn);
+			} else {
+				return self.prompt_stop_or_continue();	
+			};
+
+
+		};
+	}
 
 	self.prompt_stop_or_continue = function() {
 
@@ -454,8 +468,11 @@ var IndividualSamplingGame = function(round, callback, practice) {
 								   'y': self.stage_h/3},
 								  self.show_feedback).draw().listen()};		
 
-		self.set_instruction('You\'ve reached the maximum of '+MAX_N_TRIALS+' turns. Please choose one of the urns.');
-		
+		if (!self.tbt) {
+			self.set_instruction('You\'ve reached your chosen number of samples for this game. Please choose one of the urns.');
+		} else {
+			self.set_instruction('You\'ve reached the maximum of '+MAX_N_TRIALS+' turns. Please choose one of the urns.');
+		};
 	};
 
 	self.expired = function() {
@@ -521,7 +538,6 @@ var IndividualSamplingGame = function(round, callback, practice) {
 
 
 var IndividualSamplingExperiment = function() {
-
 	var self = this;
 
 	self.next = function() {
@@ -546,8 +562,8 @@ var IndividualSamplingExperiment = function() {
 	output(["condition", condition]);
 	output(["counter", counterbalance]);
 
-	self.begin();
-	//Instructions1();
+	//self.begin();
+	Instructions1();
 };
 
 
