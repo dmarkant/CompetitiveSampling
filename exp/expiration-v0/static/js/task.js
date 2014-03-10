@@ -138,6 +138,8 @@ var Option = function(stage, option_info, callback) {
 	self.color = option_info.color;
 	self.x = option_info.x;
 	self.y = option_info.y;
+	self.sample_duration = option_info.sample_duration;
+
 	self.sample_x = self.x;
 	self.sample_y = self.y + 200;
 	self.stage = stage;
@@ -230,7 +232,11 @@ var Option = function(stage, option_info, callback) {
 				   .transition()
 				     .duration(300)
 					 .attr('opacity', 1);		
-		
+
+		if (self.sample_duration != undefined) {
+			setTimeout(self.clear_sample, self.sample_duration);
+		};
+
 	};
 
 	self.clear_sample = function() {
@@ -648,7 +654,8 @@ var Instructions1 = function() {
 						  {'id': 'A',
 						   'color': 'red',
 						   'x': self.stage_w/2,
-						   'y': self.stage_h/4},
+						   'y': self.stage_h/4,
+						   'sample_duration': DURATION_SAMPLE},
 						   generate_sample).draw().listen();
 	
 	var t = 'After you\'ve clicked a few times, press the button below to learn about ' +
@@ -716,13 +723,15 @@ var Instructions2 = function() {
 							  {'id': 'A',
 							   'color': 'red',
 							   'x': self.stage_w/4,
-							   'y': self.stage_h/3},
+							   'y': self.stage_h/3,
+						       'sample_duration': DURATION_SAMPLE},
 							  generate_sample).draw().listen(),
 					'B': new Option(self.stage,
 							  {'id': 'B',
 							   'color': 'blue',
 							   'x': 3 * self.stage_w/4,
-							   'y': self.stage_h/3},
+							   'y': self.stage_h/3,
+							   'sample_duration': DURATION_SAMPLE},
 							  generate_sample).draw().listen()};
 
 	var t = 'Each game is made up of a series of turns. On each turn, you will begin by ' +
@@ -877,13 +886,15 @@ var Instructions3 = function() {
 								  {'id': 'A',
 								   'color': 'red',
 								   'x': self.stage_w/4,
-								   'y': self.stage_h/2-30},
+								   'y': self.stage_h/2-30,
+								   'sample_duration': DURATION_SAMPLE},
 								  generate_sample).draw(),
 						'B': new Option(self.stage,
 								  {'id': 'B',
 								   'color': 'blue',
 								   'x': 3 * self.stage_w/4,
-								   'y': self.stage_h/2-30},
+								   'y': self.stage_h/2-30,
+						           'sample_duration': DURATION_SAMPLE},
 								  generate_sample).draw().expire()};
 
 
