@@ -296,10 +296,13 @@ strong {
   display: block;
   font: 24px sans-serif;
   margin: 0 auto;
+  padding-top: 30px;
   width: 600px;
 }
 
 .planning-input {
+  display: block;
+  margin: 0 auto;
   width: 120px;
   font: 36px sans-serif;
   text-align: center;

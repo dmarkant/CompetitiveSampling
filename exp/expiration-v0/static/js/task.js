@@ -577,9 +577,15 @@ instruction_text_element = function(text) {
 	return '<div class="instruction-body">'+text+'</div>';
 };
 
+add_instruction = function(container, text) {
+	container.append(instruction_text_element(text));
+};
+
 svg_element = function(id, width, height) {
 	return '<div class="svg-container" width="'+width+'" height="'+height+'"><svg width="'+width+'" height="'+height+'" id="'+id+'"></svg></div>'
 };
+
+
 
 
 var Instructions1 = function() {
@@ -590,10 +596,10 @@ var Instructions1 = function() {
 	// create an SVG element
 	self.div = $('#container-instructions');
 
-	var t = 'Welcome! In this experiment you will play a series of lottery ' +
+	add_instruction(self.div, 
+			'Welcome! In this experiment you will play a series of lottery ' +
 			'games, in which you must select one of two <strong>urns</strong> in order ' +
-			'to get a reward. An urn looks like this:'
-	self.div.append(instruction_text_element(t));
+			'to get a reward. An urn looks like this:');
 
 	self.div.append(svg_element('urn-svg', 500, 250));
 	self.stage = d3.select('#urn-svg');
@@ -605,11 +611,11 @@ var Instructions1 = function() {
 						   'x': self.stage_w/2,
 						   'y': self.stage_h/2-20}).draw();
 
-	var t = 'Every new urn that you see has been filled with two types of coins: ' +
+	add_instruction(self.div, 
+			'Every new urn that you see has been filled with two types of coins: ' +
 		    '<strong>positive</strong> coins and <strong>negative</strong> coins. ' +
 			'For example, the urn above has some coins that are labeled with "+20", ' +
-			'as well as coins that are labeled with "-10", which look like this:'
-	self.div.append(instruction_text_element(t));
+			'as well as coins that are labeled with "-10", which look like this:');
 
 	self.div.append(svg_element('coins-svg', 500, 200));
 	self.stage = d3.select('#coins-svg');
@@ -622,18 +628,18 @@ var Instructions1 = function() {
 	self.urn.draw_sample(20, [70, 50]);
 	self.urn.draw_sample(-10, [300, 50]);
 	
-	var t = 'Each new urn contains 100 coins, but there are a few things you don\'t know ' +
+	add_instruction(self.div, 
+			'Each new urn contains 100 coins, but there are a few things you don\'t know ' +
 			'about them. At first, you don\'t know the actual values written on the coins ' +
 			'coming from each urn. Most importantly, you don\'t know the <strong>ratio of ' +
 			'positive coins to negative coins</strong>. For example, the coins could all be ' +
-			'positive, they could all be negative, or the ratio could be anywhere in between.'
-	self.div.append(instruction_text_element(t));
+			'positive, they could all be negative, or the ratio could be anywhere in between.');
 
-	var t = 'The way that you learn about an urn is by clicking on it and seeing a randomly ' +
+	add_instruction(self.div, 
+			'The way that you learn about an urn is by clicking on it and seeing a randomly ' +
 			'drawn coin (which is then put back into the urn, so the total number of coins ' +
 			'never changes). Go ahead and click on the urn below a few times to learn ' +
-			'about the coins it contains:'
-	self.div.append(instruction_text_element(t));
+			'about the coins it contains:');
 	
 	var option = {'H': 30, 'L': -15, 'p': .6};
 	var nsamples = 0;
@@ -658,10 +664,9 @@ var Instructions1 = function() {
 						   'sample_duration': DURATION_SAMPLE},
 						   generate_sample).draw().listen();
 	
-	var t = 'After you\'ve clicked a few times, press the button below to learn about ' +
-			'the game that you\'ll be playing.'
-	self.div.append(instruction_text_element(t));
-
+	add_instruction(self.div, 
+			'After you\'ve clicked a few times, press the button below to learn about ' +
+			'the game that you\'ll be playing.');
 
 	self.btn = d3.select('#container-instructions').append('input')
 								   .attr('value', 'Continue')
@@ -682,24 +687,22 @@ var Instructions2 = function() {
 	psiTurk.showPage('instruct.html');	
 	self.div = $('#container-instructions');
 
-	var t = 'In each game you will be faced with two different urns, each of which ' +
+	add_instruction(self.div, 
+			'In each game you will be faced with two different urns, each of which ' +
 		    'contains different kinds of coins (and different ratios of positive to ' +
 			'negative coins). The goal of each game is to choose the urn that has the ' +
 			'<strong>highest average value</strong>. At the end of the experiment, the ' + 
 			'value of the urn that you choose will get added (or subtracted, if it\'s ' +
-			'negative) to your bonus.';
-	self.div.append(instruction_text_element(t));
+			'negative) to your bonus.');
 
-	var t = 'For example, if the urn that you choose has 50 coins labeled "-10" and 50 ' +
+	add_instruction(self.div,
+			'For example, if the urn that you choose has 50 coins labeled "-10" and 50 ' +
 		    'coins labeled "+30", then at the end the average value for the urn, 20 cents, ' +
-			'will be added to your bonus.';
-	self.div.append(instruction_text_element(t));
+			'will be added to your bonus.');
 
-
-	var t = 'As you just saw, you can learn about either urn by ' +
-			'clicking on one at a time. Go ahead and try for the urns shown below:';
-	self.div.append(instruction_text_element(t));
-	
+	add_instruction(self.div,
+			'As you just saw, you can learn about either urn by ' +
+			'clicking on one at a time. Go ahead and try for the urns shown below:');
 
 	self.div.append(svg_element('urn-svg', 600, 450));
 	self.stage = d3.select('#urn-svg');
@@ -734,16 +737,15 @@ var Instructions2 = function() {
 							   'sample_duration': DURATION_SAMPLE},
 							  generate_sample).draw().listen()};
 
-	var t = 'Each game is made up of a series of turns. On each turn, you will begin by ' +
+	add_instruction(self.div,
+			'Each game is made up of a series of turns. On each turn, you will begin by ' +
 		    'clicking on one urn and seeing the coin that you get. You then have a choice ' + 
 			'to make: you can either 1) <strong>Continue Learning</strong>, in which case ' +
 			'you will go on to the next turn, or you can 2) <strong>Stop and Choose</strong>, ' +
 			'which means that you are ready to choose an urn, which will then be used to ' +
-			'determine your bonus.'
-	self.div.append(instruction_text_element(t));
+			'determine your bonus.');
 
-	var t = 'Click the button below to continue.'
-	self.div.append(instruction_text_element(t));
+	add_instruction(self.div, 'Click the button below to continue.');
 
 	self.btn = d3.select('#container-instructions').append('input')
 								   .attr('value', 'Continue')
@@ -845,6 +847,56 @@ var ExpirationFrequencyChart = function(container, data) {
 
 
 var Instructions3 = function() {
+	output(['instructions', 4]);
+	var self = this;
+	psiTurk.showPage('instruct.html');	
+
+	// create an SVG element
+	self.div = $('#container-instructions');
+
+	if (condition % 2 == 0) {
+		// trial by trial
+		add_instruction(self.div,
+				'Each game will last up to a maximum of '+MAX_N_TRIALS+' turns. At that point, ' +
+				'you will be forced to choose one of the urns if you have not already.');
+
+	} else {
+
+		add_instruction(self.div,
+				'You will begin each game by deciding <strong>how many coins</strong> ' +
+			    'you want to see before choosing one of the urns. ' +
+				'You can enter a number from 1 to the maximum of '+MAX_N_TRIALS+' turns.');
+
+		var d = d3.select('#container-instructions');
+		query = d.append('text')
+				     	.attr('class', 'planning-query')
+			            .html('How many coins would you like to observe in this game? (Enter a value between 1 and 26)');
+		
+		
+		entry = d.append('input')
+						.attr('class', 'planning-input');
+
+		var btn = d.append('input')
+							  .attr('value', 'Submit')
+			    			  .attr('type', 'button')
+							  .attr('height', 100);
+
+		btn.on('click', function() {
+			val = entry[0][0].value;
+			if ((val * 1 > 0) && (val * 1 < 27)) {
+				Instructions4();
+			} else {
+				query.text('Invalid response. Please enter a number between 1 and 26.');
+			};
+		});
+
+	};
+
+
+};
+
+
+var Instructions4 = function() {
 	output(['instructions', 3]);
 	var self = this;
 	psiTurk.showPage('instruct.html');	
@@ -852,17 +904,13 @@ var Instructions3 = function() {
 	// create an SVG element
 	self.div = $('#container-instructions');
 	
-	var t = 'Each game will last up to a maximum of '+MAX_N_TRIALS+' turns. At that point, you will be forced ' +
-		 'to choose one of the urns if you have not already.';
-	self.div.append(instruction_text_element(t));
-
 	if (condition!=0) {
 
-		var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
+		add_instruction(self.div,
+				'Finally, there\'s one more rule that is important. At the start of each turn, ' +
 				'there is a chance that the game will <strong>expire early</strong>. ' +
 				'If this happens, a randomly chosen urn will fade out (see below), and whatever urn is left ' +
-				'will go toward your bonus at the end of the experiment.';
-		self.div.append(instruction_text_element(t));
+				'will go toward your bonus at the end of the experiment.');
 
 		self.div.append(svg_element('urn-svg', 600, 280));
 		self.stage = d3.select('#urn-svg');
@@ -901,43 +949,42 @@ var Instructions3 = function() {
 		// UNIFORM	
 		if (condition==1) {
 
-			var t = 'The chance of the game expiring is the same across all turns (up to the maximum 26th ' +
+			add_instruction(self.div,
+					'The chance of the game expiring is the same across all turns (up to the maximum 26th ' +
 					'turn. For example, if you played the game 100 times, then the graph below shows the ' +
 					'number of games that would expire on each turn. For instance, the game would have expired ' +
-					'on the 2nd turn in 5 out of 100 games. Note that the game never expires on the first turn.';
-			self.div.append(instruction_text_element(t));
+					'on the 2nd turn in 5 out of 100 games. Note that the game never expires on the first turn.');
 			chart = ExpirationFrequencyChart(self.div, uniffreq);
 
 		// NORMAL
 		} else if (condition==2) {
 	
-			var t = 'The chance of the game expiring changes according to the turn. For example, if you ' +
+			add_instruction(self.div,
+					'The chance of the game expiring changes according to the turn. For example, if you ' +
 					'played the game 100 times, then the graph below shows the number of games that would ' +
 					'expire on each turn. For instance, the game would have expired on the 2nd turn in 1 out ' +
 					'of 100 games, while it would have expired on the 16th turn in 12 out of 100 games. ' + 
-				    'Note that the game never expires on the first turn.';
-			self.div.append(instruction_text_element(t));
+				    'Note that the game never expires on the first turn.');
 			chart = ExpirationFrequencyChart(self.div, normfreq);
 		
 		// EXPONENTIAL	
 		} else if (condition==3) {
 			
-			var t = 'The chance of the game expiring changes according to the turn. For example, if you ' +
+			add_instruction(self.div,
+					'The chance of the game expiring changes according to the turn. For example, if you ' +
 					'played the game 100 times, then the graph below shows the number of games that would ' +
 					'expire on each turn. For instance, the game would have expired on the 2nd turn in 1 out ' +
 					'of 100 games, while it would have expired on the 26th (final) turn in 25 out of 100 games.' +
-					'Note that the game never expires on the first turn.';
-			self.div.append(instruction_text_element(t));
+					'Note that the game never expires on the first turn.');
 			chart = ExpirationFrequencyChart(self.div, expfreq);
 						
 		};
 	
-
 	};
 
-	var t = 'You\'ll now play a couple of practice games to become familiar with how it works. ' +
-		    'Click the button below to start the first practice game.';
-	self.div.append(instruction_text_element(t));
+	add_instruction(self.div,
+			'You\'ll now play a couple of practice games to become familiar with how it works. ' +
+		    'Click the button below to start the first practice game.');
 
 	self.btn = d3.select('#container-instructions').append('input')
 								   .attr('value', 'Continue')
@@ -950,6 +997,7 @@ var Instructions3 = function() {
 	});
 
 };
+
 
 
 var InstructionsPractice = function() {
