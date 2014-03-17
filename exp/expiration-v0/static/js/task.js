@@ -34,7 +34,6 @@ uniffreq.unshift(0);
 
 var normfreq = [0., 1., 1., 1., 1., 1., 1., 1., 1., 2., 3., 5., 7., 9., 12., 12., 12., 9, 7., 5., 3., 2., 1., 1., 1., 1.];
 
-
 var expfreq = [0., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 2., 2., 2., 3., 4., 7., 10., 13., 17., 25];
 
 
@@ -289,6 +288,14 @@ var IndividualSamplingGame = function(round, callback, practice) {
 		self.expiration = sample_expiration_from_discrete(expfreq);
 	};
 
+	if (self.practice) {
+	   	if (self.round==0) {
+			self.expiration = 100;
+		} else if (self.round==1) {
+			self.expiration = 5;
+		};
+	};
+
 	output(['game', self.round, 'trialbytrial', self.tbt]);
 	output(['game', self.round, 'expiration', self.expiration]);		
 	output(['game', self.round, 'practice', self.practice]);	
@@ -332,6 +339,17 @@ var IndividualSamplingGame = function(round, callback, practice) {
 				  .attr('text-anchor', 'middle')
 				  .attr('class', 'splash-text')
 				  .text(t);
+
+
+		// instruction messages
+		if (self.practice && self.round==0) {
+			$('#instruction').html('In the first practice game, the game will not expire. Observe as many coins as you ' +
+				  'want, then click Stop and Choose when you want to select an urn.');
+		};
+		if (self.practice && self.round==1) {
+			$('#instruction').html('In the second practice game, the game will expire on the 5th turn. Observe coins by ' +
+				  'clicking on the urns until you see the game expire.');
+		};
 
 		self.btn = self.add_button('Ready to start', function() {
 			if (self.tbt) { self.reset_stage(self.sampling_trial); }
@@ -737,14 +755,6 @@ var Instructions2 = function() {
 							   'sample_duration': DURATION_SAMPLE},
 							  generate_sample).draw().listen()};
 
-	add_instruction(self.div,
-			'Each game is made up of a series of turns. On each turn, you will begin by ' +
-		    'clicking on one urn and seeing the coin that you get. You then have a choice ' + 
-			'to make: you can either 1) <strong>Continue Learning</strong>, in which case ' +
-			'you will go on to the next turn, or you can 2) <strong>Stop and Choose</strong>, ' +
-			'which means that you are ready to choose an urn, which will then be used to ' +
-			'determine your bonus.');
-
 	add_instruction(self.div, 'Click the button below to continue.');
 
 	self.btn = d3.select('#container-instructions').append('input')
@@ -853,25 +863,40 @@ var Instructions3 = function() {
 
 	// create an SVG element
 	self.div = $('#container-instructions');
+	
+	add_instruction(self.div,
+			'Each game is made up of a series of turns. On each turn, you can either ' +
+			'continue learning by clicking on one of the urns and observing a coin that is ' +
+			'randomly drawn from it, <strong>OR</strong> you can click the <strong>Stop and ' +
+			'Choose</strong> button and select the urn you want to go toward your bonus.');
 
 	if (condition % 2 == 0) {
 		// trial by trial
 		add_instruction(self.div,
-				'Each game will last up to a maximum of '+MAX_N_TRIALS+' turns. At that point, ' +
-				'you will be forced to choose one of the urns if you have not already.');
+				'In each game you must observe at least one coin, and can observe up to a maximum ' +
+				'of '+MAX_N_TRIALS+' coins. At that point, you will be forced to choose one of the urns.');
 
+		self.btn = d3.select('#container-instructions').append('input')
+									   .attr('value', 'Continue')
+									   .attr('type', 'button')
+									   .attr('height', 100)
+									   .style('margin-bottom', '30px');
+
+		self.btn.on('click', function() {
+			Instructions4();
+		});
+			
 	} else {
 
 		add_instruction(self.div,
-				'You will begin each game by deciding <strong>how many coins</strong> ' +
-			    'you want to see before choosing one of the urns. ' +
-				'You can enter a number from 1 to the maximum of '+MAX_N_TRIALS+' turns.');
+				'In each game you must observe at least one coin, and can observe up to a maximum ' +
+				'of '+MAX_N_TRIALS+' coins. You will begin each game by deciding <strong>how many coins</strong> ' +
+				'you want to see before choosing one of the urns.');
 
 		var d = d3.select('#container-instructions');
 		query = d.append('text')
 				     	.attr('class', 'planning-query')
 			            .html('How many coins would you like to observe in this game? (Enter a value between 1 and 26)');
-		
 		
 		entry = d.append('input')
 						.attr('class', 'planning-input');
@@ -893,6 +918,7 @@ var Instructions3 = function() {
 	};
 
 
+
 };
 
 
@@ -907,10 +933,10 @@ var Instructions4 = function() {
 	if (condition!=0) {
 
 		add_instruction(self.div,
-				'Finally, there\'s one more rule that is important. At the start of each turn, ' +
-				'there is a chance that the game will <strong>expire early</strong>. ' +
-				'If this happens, a randomly chosen urn will fade out (see below), and whatever urn is left ' +
-				'will go toward your bonus at the end of the experiment.');
+				'Finally, there\'s one more rule that is important. At the start of each game, the computer will ' +
+				'randomly select a turn on which the game will <strong>expire</strong>. If the game expires before ' +
+				'you are finished observing coins, a randomly chosen urn will fade out (see below), and whatever urn ' +
+				'is left will go toward your bonus at the end of the experiment.');
 
 		self.div.append(svg_element('urn-svg', 600, 280));
 		self.stage = d3.select('#urn-svg');
@@ -1007,8 +1033,6 @@ var InstructionsPractice = function() {
 
 	self.next = function() {
 		self.round += 1;
-
-		var gamble = generate_gamble();
 
 		if (self.round < N_PRACTICE_GAMES) {
 			self.view = new IndividualSamplingGame(self.round, self.next, true);
