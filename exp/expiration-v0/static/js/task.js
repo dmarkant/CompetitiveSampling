@@ -168,15 +168,14 @@ var Option = function(stage, option_info, callback) {
 
 	self.highlight = function() {
 
-		self.highlight = self.disp.append('rect')
-								  .attr("rx", 6)
-								  .attr("ry", 6)
-								  .attr("x", self.x-120)
-								  .attr("y", self.y-170)
-								  .attr("width", 240)
+		self.highlight = self.disp.append('circle')
+								  .attr("r", 130)
+								  .attr("cx", self.x)
+								  .attr("cy", self.y+25)
+								  .attr("width", 300)
 								  .attr("height", 300)
-								  .attr('stroke', 'gray')
-								  .attr('stroke-width', 3)
+								  .attr('stroke', '#d3c666')
+								  .attr('stroke-width', 20)
 								  .attr('fill', 'none');
 
 		return self;
@@ -233,7 +232,11 @@ var Option = function(stage, option_info, callback) {
 					 .attr('opacity', 1);		
 
 		if (self.sample_duration != undefined) {
-			setTimeout(self.clear_sample, self.sample_duration);
+			self.stop_listening();
+			setTimeout(function() {
+				self.clear_sample();
+				self.listen();
+			}, self.sample_duration);
 		};
 
 	};
@@ -292,7 +295,7 @@ var IndividualSamplingGame = function(round, callback, practice) {
 	   	if (self.round==0) {
 			self.expiration = 100;
 		} else if (self.round==1) {
-			self.expiration = 5;
+			self.expiration = 4;
 		};
 	};
 
@@ -542,6 +545,10 @@ var IndividualSamplingGame = function(round, callback, practice) {
 	}
 
 	self.show_feedback = function(chosen_id) {
+		self.options['A'].stop_listening();
+		self.options['B'].stop_listening();
+
+		self.options[chosen_id].highlight();
 
 		output(['game', self.round, self.trial, 'choice', chosen_id])		
 		chosen_values.push(expected_value(self.gamble.options[chosen_id]));
@@ -647,7 +654,7 @@ var Instructions1 = function() {
 	self.urn.draw_sample(-10, [300, 50]);
 	
 	add_instruction(self.div, 
-			'Each new urn contains 100 coins, but there are a few things you don\'t know ' +
+			'Every urn contains 100 coins, but there are a few things you don\'t know ' +
 			'about them. At first, you don\'t know the actual values written on the coins ' +
 			'coming from each urn. Most importantly, you don\'t know the <strong>ratio of ' +
 			'positive coins to negative coins</strong>. For example, the coins could all be ' +
@@ -706,11 +713,11 @@ var Instructions2 = function() {
 	self.div = $('#container-instructions');
 
 	add_instruction(self.div, 
-			'In each game you will be faced with two different urns, each of which ' +
-		    'contains different kinds of coins (and different ratios of positive to ' +
+			'In each game you will see two urns, each of which ' +
+		    'contains coins with different values (and different ratios of positive to ' +
 			'negative coins). The goal of each game is to choose the urn that has the ' +
 			'<strong>highest average value</strong>. At the end of the experiment, the ' + 
-			'value of the urn that you choose will get added (or subtracted, if it\'s ' +
+			'average value of the urn that you choose will get added (or subtracted, if it\'s ' +
 			'negative) to your bonus.');
 
 	add_instruction(self.div,
@@ -865,10 +872,10 @@ var Instructions3 = function() {
 	self.div = $('#container-instructions');
 	
 	add_instruction(self.div,
-			'Each game is made up of a series of turns. On each turn, you can either ' +
-			'continue learning by clicking on one of the urns and observing a coin that is ' +
-			'randomly drawn from it, <strong>OR</strong> you can click the <strong>Stop and ' +
-			'Choose</strong> button and select the urn you want to go toward your bonus.');
+			'Each game is made up of a series of turns. On each turn, you will first decide to ' +
+			'either 1) <strong>Continue Learning</strong> by clicking on an urn and observing a ' +
+			'randomly drawn coin, or 2) <strong>Stop and Choose</strong> by selecting the urn ' +
+			'that you want to go toward your bonus.');
 
 	if (condition % 2 == 0) {
 		// trial by trial
@@ -935,7 +942,7 @@ var Instructions4 = function() {
 		add_instruction(self.div,
 				'Finally, there\'s one more rule that is important. At the start of each game, the computer will ' +
 				'randomly select a turn on which the game will <strong>expire</strong>. If the game expires before ' +
-				'you are finished observing coins, a randomly chosen urn will fade out (see below), and whatever urn ' +
+				'you decide to stop observing coins, a randomly chosen urn will fade out (see below), and whichever urn ' +
 				'is left will go toward your bonus at the end of the experiment.');
 
 		self.div.append(svg_element('urn-svg', 600, 280));
