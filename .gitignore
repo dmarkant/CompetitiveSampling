@@ -4,8 +4,6 @@
 
 *.crt
 
-*config.txt
-
 *participants.db
 
 *server.log
