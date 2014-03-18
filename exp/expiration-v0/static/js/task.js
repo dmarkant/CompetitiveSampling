@@ -4,6 +4,11 @@
  *     utils.js
  */
 
+// set conditions
+var CONDITION_TBT = condition % 2;
+var CONDITION_EXP = condition % 4;
+
+
 var GAMBLE_SETS = [{'A': {'H': 68, 'L': -6, 'p': 0.23267108438718864},
   'B': {'H': 79, 'L': -18, 'p': 0.9014312708660349}},
  {'A': {'H': 60, 'L': 0, 'p': 0.3635416348872752},
@@ -278,20 +283,23 @@ var IndividualSamplingGame = function(round, callback, practice) {
 	self.gamble = generate_gamble_from_set();
 
 	// set trial-by-trial vs. planned duration
-	self.tbt = (condition % 2 == 0) ? true : false;
+	self.tbt = (CONDITION_TBT == 0) ? true : false;
+
+	// set expiration condition
+	self.expiration_cond = CONDITION_EXP;
 
 	// sample an expiration trial based on condition
-	if (condition % 4 == 0) {
+	if (self.expiration_condition == 0) {
 		self.expiration = -1;
-	} else if (condition % 4 == 1) {
+	} else if (self.expiration_condition == 1) {
 		self.expiration = sample_expiration_from_discrete(uniffreq);
-	} else if (condition % 4 == 2) {
+	} else if (self.expiration_condition == 2) {
 		self.expiration = sample_expiration_from_discrete(normfreq);
-	} else if (condition % 4 == 3) {
+	} else if (self.expiration_condition == 3) {
 		self.expiration = sample_expiration_from_discrete(expfreq);
 	};
 
-	if (self.practice) {
+	if (self.expiration_condition > 0 && self.practice) {
 	   	if (self.round==0) {
 			self.expiration = 100;
 		} else if (self.round==1) {
@@ -346,12 +354,23 @@ var IndividualSamplingGame = function(round, callback, practice) {
 
 		// instruction messages
 		if (self.practice && self.round==0) {
-			$('#instruction').html('In the first practice game, the game will not expire. Observe as many coins as you ' +
-				  'want, then click Stop and Choose when you want to select an urn.');
+			if (self.expiration_condition == 0) {
+				$('#instruction').html('Observe as many coins as you ' +
+					  'want, then click Stop and Choose when you want to select an urn.');
+			} else {
+				$('#instruction').html('In the first practice game, the game will not expire. Observe as many coins as you ' +
+					  'want, then click Stop and Choose when you want to select an urn.');
+			};
 		};
+
 		if (self.practice && self.round==1) {
-			$('#instruction').html('In the second practice game, the game will expire on the 5th turn. Observe coins by ' +
-				  'clicking on the urns until you see the game expire.');
+			if (self.expiration_condition == 0) {
+				$('#instruction').html('Observe as many coins as you ' +
+					  'want, then click Stop and Choose when you want to select an urn.');
+			} else {
+				$('#instruction').html('In the second practice game, the game will expire on the 5th turn. Observe coins by ' +
+					  'clicking on the urns until you see the game expire.');
+			};
 		};
 
 		self.btn = self.add_button('Ready to start', function() {
@@ -591,6 +610,8 @@ var IndividualSamplingExperiment = function() {
 	};
 
 	output(["condition", condition]);
+	output(["condition_tbt", CONDITION_TBT]);
+	output(["condition_exp", CONDITION_EXP]);
 	output(["counter", counterbalance]);
 
 	//self.begin();
@@ -877,7 +898,7 @@ var Instructions3 = function() {
 			'randomly drawn coin, or 2) <strong>Stop and Choose</strong> by selecting the urn ' +
 			'that you want to go toward your bonus.');
 
-	if (condition % 2 == 0) {
+	if (CONDITION_TBT == 0) {
 		// trial by trial
 		add_instruction(self.div,
 				'In each game you must observe at least one coin, and can observe up to a maximum ' +
@@ -937,7 +958,7 @@ var Instructions4 = function() {
 	// create an SVG element
 	self.div = $('#container-instructions');
 	
-	if (condition!=0) {
+	if (CONDITION_EXP!=0) {
 
 		add_instruction(self.div,
 				'Finally, there\'s one more rule that is important. At the start of each game, the computer will ' +
@@ -980,7 +1001,7 @@ var Instructions4 = function() {
 
 
 		// UNIFORM	
-		if (condition==1) {
+		if (CONDITION_EXP==1) {
 
 			add_instruction(self.div,
 					'The chance of the game expiring is the same across all turns (up to the maximum 26th ' +
@@ -990,7 +1011,7 @@ var Instructions4 = function() {
 			chart = ExpirationFrequencyChart(self.div, uniffreq);
 
 		// NORMAL
-		} else if (condition==2) {
+		} else if (CONDITION_EXP==2) {
 	
 			add_instruction(self.div,
 					'The chance of the game expiring changes according to the turn. For example, if you ' +
@@ -1001,7 +1022,7 @@ var Instructions4 = function() {
 			chart = ExpirationFrequencyChart(self.div, normfreq);
 		
 		// EXPONENTIAL	
-		} else if (condition==3) {
+		} else if (CONDITION_EXP==3) {
 			
 			add_instruction(self.div,
 					'The chance of the game expiring changes according to the turn. For example, if you ' +
@@ -1063,7 +1084,7 @@ var InstructionsQuiz = function() {
 	output(['instructions', 'preq']);
 	var self = this;
 
-	if (condition==0) {
+	if (CONDITION_EXP==0) {
 
 		psiTurk.showPage('preq_noexp.html');	
 
@@ -1092,7 +1113,7 @@ var InstructionsQuiz = function() {
 
 		};
 
-	} else if (condition==1) {
+	} else if (CONDITION_EXP==1) {
 
 		psiTurk.showPage('preq.html');	
 
