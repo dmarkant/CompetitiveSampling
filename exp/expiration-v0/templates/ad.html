@@ -2,30 +2,30 @@
 
 <html>
 	<head>
-		<title>CompCog Psychology Experiment</title>
+		<title>Psychology Experiment</title>
 		<style type="text/css">
 			body {
-				margin: 20px;
+				margin: 0 auto;
 				width: 600px;
 				font-family: verdana, helvetica, sans-serif;
-				background-color: black;
-				color: white;
+				background-color: white;
+				color: black;
 			}
 			p {
-				width: 450px;;
+				width: 600px;;
 				text-align: left;
 			}
 			#logo {
-				float: right;
-				width: 120px;
+                width: 600px;
+                margin-top: 40px;
 			}
 			a {
-				color: purple;
+				color: blue;
 			}
 		</style>
 	</head>
 	<body>
-		<img id="logo" src="{{ server_location }}/static/images/nyu-logo.png" alt="New York University Logo" />
+		<img id="logo" src="{{ server_location }}/static/images/MPIB_Logo_sw.jpg" alt="MPIB Logo" />
 		{% if assignmentid != "ASSIGNMENT_ID_NOT_AVAILABLE" %}
 		<h1>Thank you for accepting this HIT!</h1>
 		<p>By clicking the following URL link, you will be taken to the experiment,
@@ -44,19 +44,21 @@
 
 		{% else %}
 		<h1> Call for participants</h1>
-		<p>The Cognition and Computation Lab at New York University (NYU)
-		is looking for online participants for a brief experiment on how
-		people learn. The only requirements are that you are at least 18
-		years old and are a fluent English speaker.
+        <p>The Center for Adaptive Rationality at the Max Planck Institute
+        for Human Development is seeking online participants for a brief 
+        experiment on how people learn and make decisions. The only requirements
+        are that you are at least 18 years old and are a fluent English speaker.
+        </p>
+		<p>In this task you will play games involving a choice between two
+        options that lead to different rewards. In addition to a $1 payment, you
+        can earn up to a $3 bonus depending on your performance in the task. The 
+        experiment will take approximately 30 minutes.
 		</p>
-		<p>Example example, herp derp.
-		</p>
-                <p>This task can only be completed once. If you have already
-                completed this task before the system will not allow you to run
-                again. If this looks familiar please release the hit so someone
-                else can participate.</p>
+        <p>This task can only be completed once. If you have already
+        completed this task before the system will not allow you to run
+        again.</p>
 
-		Otherwise, please click the "Accept Hit" button on the Amazon site above to begin the task.
+		Please click the "Accept Hit" button on the Amazon site above to begin the task.
 		{% endif %}
 	</body>
 </html>
