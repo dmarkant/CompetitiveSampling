@@ -5,6 +5,8 @@
  */
 
 // set conditions
+var COND_TBT_NAMES = ["trial_by_trial", "planned"];
+var COND_EXP_NAMES = ["no_expiration", "uniform", "normal", "exponential"];
 var CONDITION_TBT = condition % 2;
 var CONDITION_EXP = condition % 4;
 
@@ -286,7 +288,7 @@ var IndividualSamplingGame = function(round, callback, practice) {
 	self.tbt = (CONDITION_TBT == 0) ? true : false;
 
 	// set expiration condition
-	self.expiration_cond = CONDITION_EXP;
+	self.expiration_condition = CONDITION_EXP;
 
 	// sample an expiration trial based on condition
 	if (self.expiration_condition == 0) {
@@ -610,8 +612,8 @@ var IndividualSamplingExperiment = function() {
 	};
 
 	output(["condition", condition]);
-	output(["condition_tbt", CONDITION_TBT]);
-	output(["condition_exp", CONDITION_EXP]);
+	output(["condition_tbt", CONDITION_TBT, COND_TBT_NAMES[CONDITION_TBT]]);
+	output(["condition_exp", CONDITION_EXP, COND_EXP_NAMES[CONDITION_EXP]]);
 	output(["counter", counterbalance]);
 
 	//self.begin();
