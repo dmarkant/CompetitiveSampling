@@ -4,7 +4,6 @@
  *     utils.js
  */
 
-condition = 3;
 
 // set conditions
 var COND_TBT_NAMES = ["trial_by_trial", "planned"];
@@ -12,31 +11,51 @@ var COND_EXP_NAMES = ["no_expiration", "uniform", "normal", "exponential"];
 var CONDITION_TBT = condition % 2;
 var CONDITION_EXP = condition % 4;
 
+var GAMBLE_SETS_PRACTICE = [{'A': {'H': 84, 'L': -91, 'p': 0.6535922940058191},
+  'B': {'H': 69, 'L': -79, 'p': 0.26404970186537124},
+  'id': 0},
+ {'A': {'H': 60, 'L': -96, 'p': 0.6834761604758774},
+  'B': {'H': 32, 'L': -84, 'p': 0.6220711220017412},
+  'id': 1}];
 
-var GAMBLE_SETS = [{'A': {'H': 68, 'L': -6, 'p': 0.23267108438718864},
-  'B': {'H': 79, 'L': -18, 'p': 0.9014312708660349}},
- {'A': {'H': 60, 'L': -1, 'p': 0.3635416348872752},
-  'B': {'H': 95, 'L': -15, 'p': 0.11871918595656406}},
- {'A': {'H': 12, 'L': -44, 'p': 0.6194636272990222},
-  'B': {'H': 54, 'L': -48, 'p': 0.5290562238867278}},
- {'A': {'H': 21, 'L': -19, 'p': 0.3851531760827799},
-  'B': {'H': 34, 'L': -100, 'p': 0.8726139358997979}},
- {'A': {'H': 39, 'L': -43, 'p': 0.2939483199063454},
-  'B': {'H': 87, 'L': -89, 'p': 0.510927829553496}},
- {'A': {'H': 10, 'L': -14, 'p': 0.8676525363957424},
-  'B': {'H': 67, 'L': -51, 'p': 0.8422137830272641}},
- {'A': {'H': 12, 'L': -5, 'p': 0.6946018621067012},
-  'B': {'H': 32, 'L': -38, 'p': 0.4084342449025822}},
- {'A': {'H': 27, 'L': -78, 'p': 0.6066380698460068},
-  'B': {'H': 12, 'L': -2, 'p': 0.4517727639347079}},
- {'A': {'H': 26, 'L': -18, 'p': 0.03539457181965988},
-  'B': {'H': 68, 'L': -90, 'p': 0.6802438702680387}},
- {'A': {'H': 1, 'L': -5, 'p': 0.6657709098899136},
-  'B': {'H': 67, 'L': -96, 'p': 0.3825753263081355}},
- {'A': {'H': 56, 'L': -7, 'p': 0.3521689221423362},
-  'B': {'H': 75, 'L': -26, 'p': 0.7456433830538688}},
- {'A': {'H': 85, 'L': -57, 'p': 0.5982274472298033},
-  'B': {'H': 25, 'L': -42, 'p': 0.6448686520314039}}];
+var GAMBLE_SETS = [{'A': {'H': 100, 'L': -81, 'p': 0.2828957568582273},
+  'B': {'H': 46, 'L': -50, 'p': 0.688010618204376},
+  'id': 2},
+ {'A': {'H': 2, 'L': -50, 'p': 0.3076442308535171},
+  'B': {'H': 66, 'L': -90, 'p': 0.6654380481375493},
+  'id': 3},
+ {'A': {'H': 7, 'L': -27, 'p': 0.14742011700366842},
+  'B': {'H': 100, 'L': -38, 'p': 0.3525237288645058},
+  'id': 4},
+ {'A': {'H': 92, 'L': -88, 'p': 0.22433513544034556},
+  'B': {'H': 89, 'L': -39, 'p': 0.4249429225857746},
+  'id': 5},
+ {'A': {'H': 82, 'L': -11, 'p': 0.2681032922547072},
+  'B': {'H': 88, 'L': -81, 'p': 0.39015213156615314},
+  'id': 6},
+ {'A': {'H': 82, 'L': -63, 'p': 0.18559612493240618},
+  'B': {'H': 76, 'L': -40, 'p': 0.45677509375572567},
+  'id': 7},
+ {'A': {'H': 61, 'L': -41, 'p': 0.5399642760057232},
+  'B': {'H': 76, 'L': -75, 'p': 0.24576876109039525},
+  'id': 8},
+ {'A': {'H': 69, 'L': -79, 'p': 0.26136742889071174},
+  'B': {'H': 61, 'L': -41, 'p': 0.5208423940329786},
+  'id': 9},
+ {'A': {'H': 51, 'L': -89, 'p': 0.4032949426613487},
+  'B': {'H': 29, 'L': -47, 'p': 0.7687257475546246},
+  'id': 10},
+ {'A': {'H': 20, 'L': -71, 'p': 0.9681869263700354},
+  'B': {'H': 77, 'L': -95, 'p': 0.39688500464506915},
+  'id': 11},
+ {'A': {'H': 24, 'L': -58, 'p': 0.3086699981096249},
+  'B': {'H': 94, 'L': -90, 'p': 0.5662741068004916},
+  'id': 12},
+ {'A': {'H': 82, 'L': -97, 'p': 0.40366348179240263},
+  'B': {'H': 40, 'L': -7, 'p': 0.5075273015786953},
+  'id': 13}];
+GAMBLE_SETS = _.shuffle(GAMBLE_SETS);
+
 
 var uniffreq = ConstantArray(25, 5);
 uniffreq.unshift(0);
@@ -90,7 +109,7 @@ function output(arr) {
 // Task object to keep track of the current phase
 var exp,
 	N_PRACTICE_GAMES = 2,
-	NROUNDS = 6,
+	NROUNDS = 12,
 	MAX_N_TRIALS = 26,
 	P_EXPIRE = .1,
 	INIT_BONUS = 1,
@@ -284,7 +303,21 @@ var IndividualSamplingGame = function(round, callback, practice) {
 	self.planned_num_samples = undefined;
 
 	// create a gamble for this game
-	self.gamble = generate_gamble_from_set();
+	// self.gamble = generate_gamble_from_set();
+	var opt = (self.practice) ? GAMBLE_SETS_PRACTICE[self.round] : GAMBLE_SETS[self.round];
+	self.gamble = {'id': opt['id'], 'options': {}};
+	
+	// randomize left-right of options
+	if (Math.random() < 0.5) {
+		self.gamble['options']['A'] = opt['A'];
+		self.gamble['options']['B'] = opt['B'];
+	} else {
+		self.gamble['options']['A'] = opt['B'];
+		self.gamble['options']['B'] = opt['A'];
+	};
+
+	//self.gamble = {'options': opt};
+	//console.log(self.gamble);
 
 	// set trial-by-trial vs. planned duration
 	self.tbt = (CONDITION_TBT == 0) ? true : false;
@@ -313,7 +346,8 @@ var IndividualSamplingGame = function(round, callback, practice) {
 
 	output(['game', self.round, 'trialbytrial', self.tbt]);
 	output(['game', self.round, 'expiration', self.expiration]);		
-	output(['game', self.round, 'practice', self.practice]);	
+	output(['game', self.round, 'practice', self.practice]);
+	output(['game', self.round, 'gamble', 'id', self.gamble.id]);	
 	output(['game', self.round, 'option', 'A', self.gamble.options.A.H, self.gamble.options.A.L, self.gamble.options.A.p])
 	output(['game', self.round, 'option', 'B', self.gamble.options.B.H, self.gamble.options.B.L, self.gamble.options.B.p])
 
@@ -742,8 +776,8 @@ var Instructions2 = function() {
 		    'contains coins with different values (and different ratios of positive to ' +
 			'negative coins). The goal of each game is to choose the urn that has the ' +
 			'<strong>highest average value</strong>. At the end of the experiment, the ' + 
-			'average value of the urn that you choose will get added (or subtracted, if it\'s ' +
-			'negative) to your bonus.');
+			'average value of the urn that you choose will get added to (or subtracted from, if it\'s ' +
+			'negative) your bonus.');
 
 	add_instruction(self.div,
 			'For example, if the urn that you choose has 50 coins labeled "-10" and 50 ' +
@@ -1252,8 +1286,9 @@ var Feedback = function() {
 		    'played, and how they impact your final bonus:';
 	self.div.append(instruction_text_element(t));
 
-	html =  '<div id=feedback-table>'
-	html +=	'<div class=row><div class=left>Initial bonus:</div><div class=right>$'+(INIT_BONUS).toFixed(2)+'</div></div>'
+	html =  '<div id=feedback-table>';
+	html +=	'<div class=row><div class=left></div><div class=right style="border-bottom:1px solid black;">Value</div></div>';
+	html +=	'<div class=row><div class=left>Initial bonus:</div><div class=right>$'+(INIT_BONUS).toFixed(2)+'</div></div>';
 	for (var i=0; i<NROUNDS; i++) {
 		html +=	'<div class=row><div class=left>Game '+(i+1)+':</div><div class=right>'+(chosen_values[i]/100).toFixed(2)+'</div></div>'	
 	};

@@ -62,7 +62,7 @@ def gamble_differences(g):
            spread(g['H']) - spread(g['L'])
 
 
-def generate_gamble(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 1]):
+def generate_gamble(pos_range=[1, 101], neg_range=[-100, 0], p_range=[0, 1]):
 
     A_pos = np.random.randint(pos_range[0], pos_range[1])
     A_neg = np.random.randint(neg_range[0], neg_range[1])
@@ -85,7 +85,7 @@ def generate_gamble(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 1]):
     return {"H": H, "L": L}
 
 
-def generate_gamble_posneg(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 1]):
+def generate_gamble_posneg(pos_range=[1, 101], neg_range=[-100, 0], p_range=[0, 1]):
     done = False
     while not done:
         g = generate_gamble(pos_range=pos_range, neg_range=neg_range, p_range=p_range)
@@ -94,7 +94,7 @@ def generate_gamble_posneg(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 
     return g
 
 
-def generate_gamble_nondom(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 1]):
+def generate_gamble_nondom(pos_range=[1, 101], neg_range=[-100, 0], p_range=[0, 1]):
 
     done = False
     while not done:
@@ -104,7 +104,7 @@ def generate_gamble_nondom(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 
     return g
 
 
-def generate_gamble_posneg_nondom(pos_range=[0, 101], neg_range=[-100, 1], p_range=[0, 1]):
+def generate_gamble_posneg_nondom(pos_range=[1, 101], neg_range=[-100, 0], p_range=[0, 1]):
 
     done = False
     while not done:
