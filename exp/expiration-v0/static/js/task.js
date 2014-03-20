@@ -411,7 +411,7 @@ var IndividualSamplingGame = function(round, callback, practice) {
 				$('#instruction').html('Observe as many coins as you ' +
 					  'want, then click Stop and Choose when you want to select an urn.');
 			} else {
-				$('#instruction').html('In the second practice game, the game will expire on the 5th turn. Observe coins by ' +
+				$('#instruction').html('In the second practice game, <strong>the game will expire on the 5th turn</strong>. Observe coins by ' +
 					  'clicking on the urns until you see the game expire.');
 			};
 		};
