@@ -194,15 +194,20 @@ var Option = function(stage, option_info, callback) {
 		return self;
 	};
 
-	self.highlight = function() {
+	self.highlight = function(state) {
 
-		self.highlight = self.disp.append('circle')
+		if (state=='chosen') color = '#d3c666';
+		else color = '#D8D8D8';
+
+		console.log(color);
+
+		self.highlighted = self.disp.append('circle')
 								  .attr("r", 130)
 								  .attr("cx", self.x)
 								  .attr("cy", self.y+25)
 								  .attr("width", 300)
 								  .attr("height", 300)
-								  .attr('stroke', '#d3c666')
+								  .attr('stroke', color)
 								  .attr('stroke-width', 20)
 								  .attr('fill', 'none');
 
@@ -545,12 +550,12 @@ var IndividualSamplingGame = function(round, callback, practice) {
 								  {'id': 'A',
 								   'x': self.stage_w/4,
 								   'y': self.stage_h/3},
-								  self.show_feedback).draw().listen(),
+								  self.show_feedback).draw().highlight().listen(),
 						'B': new Option(self.stage,
 								  {'id': 'B',
 								   'x': 3 * self.stage_w/4,
 								   'y': self.stage_h/3},
-								  self.show_feedback).draw().listen()};		
+								  self.show_feedback).draw().highlight().listen()};		
 
 		if (!self.tbt) {
 			self.set_instruction('You\'ve reached your chosen number of samples for this game. Please choose one of the urns.');
@@ -589,13 +594,13 @@ var IndividualSamplingGame = function(round, callback, practice) {
 								   'color': 'red',
 								   'x': self.stage_w/4,
 								   'y': self.stage_h/3},
-								  self.show_feedback).draw().listen(),
+								  self.show_feedback).draw().highlight().listen(),
 						'B': new Option(self.stage,
 								  {'id': 'B',
 								   'color': 'blue',
 								   'x': 3 * self.stage_w/4,
 								   'y': self.stage_h/3},
-								  self.show_feedback).draw().listen()};
+								  self.show_feedback).draw().highlight().listen()};
 
 		self.set_instruction('Click on the urn you want!');
 		
@@ -604,8 +609,10 @@ var IndividualSamplingGame = function(round, callback, practice) {
 	self.show_feedback = function(chosen_id) {
 		self.options['A'].stop_listening();
 		self.options['B'].stop_listening();
+		console.log(self.options[chosen_id]);
 
-		self.options[chosen_id].highlight();
+
+		self.options[chosen_id].highlight('chosen');
 
 		output(['game', self.round, self.trial, 'choice', chosen_id])		
 		chosen_values.push(expected_value(self.gamble.options[chosen_id]));
@@ -1151,46 +1158,8 @@ var InstructionsQuiz = function() {
 
 		};
 
-	} else if (CONDITION_EXP==1) {
-
-		psiTurk.showPage('preq.html');	
-
-		var checker = function() {
-			var errors = [];
-
-			if ($('#sampling option:selected').val() != "1") { 
-				errors.push("sampling");
-			};
-			if ($('#maxtrials option:selected').val() != "1") { 
-				errors.push("maxtrials");
-			};
-			if ($('#expiration option:selected').val() != "1") {
-				errors.push("expiration");
-			};
-			if ($('#probexpire option:selected').val() != "1") { // this is different
-				errors.push("probexpire");
-			};
-			if ($('#whichexpire option:selected').val() != "0") {
-				errors.push("whichexpire");
-			};
-			
-			output(['instructions', 'preq', 'errors', errors].flatten());
-		
-			if (errors.length == 0) {
-				InstructionsComplete();
-			} else {
-				$('#continue').hide();
-				for(var i=0; i<errors.length; i++) {
-					$('#'+errors[i]).css("border","2px solid red");
-				};
-				$("#warning").css("color","red");
-				$("#warning").html("<p>Looks like you answered some questions incorrectly (highlighted in red). Please review them and click the \"Repeat\" button at the bottom to see the instructions again.</p>");
-			};
-
-		};
-
 	} else {
-
+		var maxexpire_answers = ["0", "1", "2"];
 		psiTurk.showPage('preq.html');	
 
 		var checker = function() {
@@ -1205,7 +1174,7 @@ var InstructionsQuiz = function() {
 			if ($('#expiration option:selected').val() != "1") {
 				errors.push("expiration");
 			};
-			if ($('#probexpire option:selected').val() != "0") {
+			if ($('#probexpire option:selected').val() != maxexpire_answers[CONDITION_EXP-1]) { // this varies
 				errors.push("probexpire");
 			};
 			if ($('#whichexpire option:selected').val() != "0") {
@@ -1224,11 +1193,8 @@ var InstructionsQuiz = function() {
 				$("#warning").css("color","red");
 				$("#warning").html("<p>Looks like you answered some questions incorrectly (highlighted in red). Please review them and click the \"Repeat\" button at the bottom to see the instructions again.</p>");
 			};
-
 		};
-
-	}
-
+	};
 
 	$('#startover').on('click', function() { 
 		output('instructions', 'restart');
