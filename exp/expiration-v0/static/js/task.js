@@ -1303,15 +1303,10 @@ var Feedback = function() {
 	};
 	
 	$("#continue").click(function () {
-	    record_responses();
-	    psiTurk.teardownTask();
-    	    psiTurk.saveData({
-                success: function(){
-                    psiTurk.computeBonus('compute_bonus', function(){finish()}); 
-                }, 
-                error: prompt_resubmit});
+		record_responses();
+		psiTurk.teardownTask();
+    	psiTurk.saveData({success: finish, error: prompt_resubmit});
 	});
-
 
 };
 
