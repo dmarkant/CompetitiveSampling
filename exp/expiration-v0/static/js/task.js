@@ -8,7 +8,7 @@
 // set conditions
 var COND_TBT_NAMES = ["trial_by_trial", "planned"];
 var COND_EXP_NAMES = ["no_expiration", "uniform", "normal", "exponential"];
-var CONDITION_TBT = condition % 2;
+var CONDITION_TBT = (condition < 4) ? 0 : 1;
 var CONDITION_EXP = condition % 4;
 
 var GAMBLE_SETS_PRACTICE = [{'A': {'H': 84, 'L': -91, 'p': 0.6535922940058191},
