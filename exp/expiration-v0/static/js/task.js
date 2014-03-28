@@ -92,7 +92,6 @@ var pages = [
 	"preq.html",
 	"preq_noexp.html",
 	"test.html",
-	"postquestionnaire.html",
 	"stage.html",
 	"feedback.html"
 ];
@@ -1304,17 +1303,22 @@ var Feedback = function() {
 	};
 	
 	$("#continue").click(function () {
-		record_responses();
-		psiTurk.teardownTask();
-    	psiTurk.saveData({success: finish, error: prompt_resubmit});
+	    record_responses();
+	    psiTurk.teardownTask();
+    	    psiTurk.saveData({
+                success: function(){
+                    psiTurk.computeBonus('compute_bonus', function(){finish()}); 
+                }, 
+                error: prompt_resubmit});
 	});
+
 
 };
 
 
 var completeHIT = function() {
 	// save data one last time here?
-	window.location= adServerLoc + "/complete?uniqueId=" + psiTurk.taskdata.id;
+	window.location = adServerLoc + "?uniqueId=" + psiTurk.taskdata.id;
 }
 
 
