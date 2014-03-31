@@ -70,7 +70,7 @@ Simplest condition to begin with is the following:
     - one option is randomly selected, and assigned an expiration
       according to some distribution F_EXP
 
-    - the other option expires at a fixed time, T_END, which is the
+    - the other option expires at a fixed time which is the
       maximum # of samples that could feasibly be taken
 
 
@@ -88,7 +88,10 @@ that people should do?
 
 """
 
-T_END = 25
+
+NORMFREQ = [0., 1., 1., 1., 1., 1., 1., 1., 1., 2., 3., 5., 7., 9., 12., 12., 12., 9, 7., 5., 3., 2., 1., 1., 1., 1.]
+
+EXPFREQ = [0., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 2., 2., 2., 3., 4., 7., 10., 13., 17., 25]
 
 
 
@@ -305,6 +308,50 @@ def expected_gain_given_exponential_expiration(options, sc, max_samples):
 
     return p, eg
 
+
+
+def expected_gain_given_discrete_normal_expiration(options, mn, sd, max_samples):
+
+    ev_high = expected_value(options['H'])
+    ev_low = expected_value(options['L'])
+    ev_random = 0.5 * ev_high + 0.5 * ev_low
+
+    p  = np.zeros(max_samples, float)
+    eg = np.zeros(max_samples, float)
+
+    f = np.cumsum(np.array(NORMFREQ)/sum(NORMFREQ))
+
+    for trial in range(max_samples):
+
+        # get cumulative probability according to normal
+        p_exp_cum = f[trial]
+        pH = prob_choose_H_all_allocations(options, trial + 1)
+        p[trial] = (1 - p_exp_cum) * pH + p_exp_cum * 0.5
+        eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
+
+    return p, eg
+
+
+def expected_gain_given_discrete_exponential_expiration(options, max_samples):
+
+    ev_high = expected_value(options['H'])
+    ev_low = expected_value(options['L'])
+    ev_random = 0.5 * ev_high + 0.5 * ev_low
+
+    p  = np.zeros(max_samples, float)
+    eg = np.zeros(max_samples, float)
+
+    f = np.cumsum(np.array(EXPFREQ)/sum(EXPFREQ))
+
+    for trial in range(max_samples):
+
+        # get cumulative probability according to normal
+        p_exp_cum = f[trial]
+        pH = prob_choose_H_all_allocations(options, trial + 1)
+        p[trial] = (1 - p_exp_cum) * pH + p_exp_cum * 0.5
+        eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
+
+    return p, eg
 
 
 
