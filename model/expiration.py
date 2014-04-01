@@ -88,6 +88,7 @@ that people should do?
 
 """
 
+UNIFFREQ = [0., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4, 4., 4., 4., 4., 4., 4., 4., 4.]
 
 NORMFREQ = [0., 1., 1., 1., 1., 1., 1., 1., 1., 2., 3., 5., 7., 9., 12., 12., 12., 9, 7., 5., 3., 2., 1., 1., 1., 1.]
 
@@ -309,8 +310,29 @@ def expected_gain_given_exponential_expiration(options, sc, max_samples):
     return p, eg
 
 
+def expected_gain_given_discrete_uniform_expiration(options, max_samples):
 
-def expected_gain_given_discrete_normal_expiration(options, mn, sd, max_samples):
+    ev_high = expected_value(options['H'])
+    ev_low = expected_value(options['L'])
+    ev_random = 0.5 * ev_high + 0.5 * ev_low
+
+    p  = np.zeros(max_samples, float)
+    eg = np.zeros(max_samples, float)
+
+    f = np.cumsum(np.array(UNIFFREQ)/sum(UNIFFREQ))
+
+    for trial in range(max_samples):
+
+        # get cumulative probability according to normal
+        p_exp_cum = f[trial]
+        pH = prob_choose_H_all_allocations(options, trial + 1)
+        p[trial] = (1 - p_exp_cum) * pH + p_exp_cum * 0.5
+        eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
+
+    return p, eg
+
+
+def expected_gain_given_discrete_normal_expiration(options, max_samples):
 
     ev_high = expected_value(options['H'])
     ev_low = expected_value(options['L'])
