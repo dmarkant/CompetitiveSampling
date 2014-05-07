@@ -89,7 +89,7 @@ var sample_expiration_from_discrete = function(freq) {
 
 
 // Initalize psiturk object
-var psiTurk = PsiTurk();
+var psiTurk = PsiTurk(uniqueId, adServerLoc);
 
 // All pages to be loaded
 var pages = [
