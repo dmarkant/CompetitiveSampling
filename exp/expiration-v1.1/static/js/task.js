@@ -3,7 +3,7 @@
  *     psiturk.js
  *     utils.js
  */
-
+var replaceBody = function(x) { $('body').html(x); };
 
 // set conditions
 var COND_TBT_NAMES = ["trial_by_trial", "planned"];
