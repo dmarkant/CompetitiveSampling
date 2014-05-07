@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html>
+    <head>
+      <title>Informed Consent</title>
+      <script src="static/jquery-min.js" type="text/lib/javascript"> </script>
+      <script src="static/cardtask.js" type="text/js/javascript"> </script>
+      <link rel=stylesheet href="static/css/task.css" type="text/css" media="screen">
+      <script type="text/javascript">
+          function onexit() {
+            self.close()
+          }
+      </script>
+    </head>
+    <body>
+      <div class="instruct" id="main">
+   		  <img id="logo" src="{{ server_location }}/static/images/MPIB_Logo_sw.jpg" alt="MPIB Logo" width=800px />       
+          <h1>Declaration of Consent</h1>
+            <p class="cool">Thank you for taking the time to
+            participate in this experiment. Below is a consent form that
+            describes the nature of the experiment, what to expect, and how you
+            will be measured. Please take the time to read this over before
+            deciding to participate in this experiment.</p>
+          <div class="legal">
+              <p>In the study “Learning About Offers” we intend to examine how 
+              people collect information while making a decision. For this purpose 
+              you will play a series of games in which you will make decisions about 
+              uncertain options. Your data will be stored electronically and will be anonymous.
+              </p>
+              <p>The Max Planck Institute for Human Development is an institution 
+              that promotes scientific research. Our work adheres strictly to regulations 
+              governing protection of privacy. The information requested in the study will 
+              be kept confidential and archived and scientifically processed in accordance 
+              with the Data Privacy Act. Personal data will not be passed on to any third 
+              parties. The data will be used solely for research purposes, and any experimental 
+              data that is shared with third parties will not contain any identifying information. 
+              Personal contact data and experimental data will be stored separately from each 
+              other and handled with utmost discretion. Participation in the study is voluntary 
+              and you are able to end your participation at any time. You can revoke your 
+              consent to use your data at any time from that date forward. 
+              </p>
+              <p>The study will last approximately 30 minutes. You will be paid a minimum 
+              compensation of 1 dollar for your participation. In addition, you will be paid 
+              a bonus of up to 3 dollars depending on your performance in the experiment.
+              </p>
+          <p><a href="javascript:window.print()">Print a copy of this consent document to keep.</a></p>
+          </div>
+          <div class="instructions cool" style="font-weight:bold;">
+              I have read and accept the terms and conditions listed above and consent to participate in this study (prerequisite for participating in the study). 
+          </div>
+          <input type="button" class="continue" id="IAgree" value="I Agree" onClick="window.location='/exp?hitId={{ hitid }}&assignmentId={{ assignmentid }}&workerId={{ workerid }}'">
+          <input type="button" id="NoThanks" value="No Thanks" onclick="onexit()">
+      </div>
+    </body>
+</html>

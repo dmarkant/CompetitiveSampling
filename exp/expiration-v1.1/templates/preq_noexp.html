@@ -1,0 +1,42 @@
+<h1>Instructions</h1>
+<div id="container-instructions">
+
+			<div class="instruction-body">Please answer the questions below. If you wish to see the instructions again, click the "Repeat" button at the bottom left of the page.</div>
+
+			<div id="preq" class="questionnaire">
+
+			    <div class="question">
+			        <p class="questiontext">
+                    In each game, what happens when you click on an urn and see a coin? 
+                    </p>
+                    <select id="sampling" name="sampling">
+			            <option value="noresp" SELECTED></option>
+			            <option value="0">The coin is permanently taken out of the urn</option>
+			            <option value="1">The coin is taken out of the urn but then is put back</option>
+			            <option value="2">The coin is put into the other urn</option>
+			        </select>
+			    </div>
+                
+			    <div class="question">
+			        <p class="questiontext">
+			        In each game, what is the maximum number of coins that you could see?
+                    </p>
+			        <select id="maxtrials": name="maxtrials">
+			            <option value="noresp" SELECTED></option>
+			            <option value="0">15</option>
+			            <option value="1">26</option>
+				        <option value="2">Unlimited</option>
+			        </select>
+			    </div>
+
+                <div id = "warning"></div>
+
+                <div id="buttons">
+                    <input type="button" id="startover" name="continue" value="Repeat Instructions" class="button" style="float:left"/>
+                    <input type="button" id="continue" name="continue" value="Submit" class="button" /> 
+                </div>
+			  
+			</div>
+
+</div>
+
