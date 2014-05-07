@@ -94,6 +94,7 @@ NORMFREQ = [0., 1., 1., 1., 1., 1., 1., 1., 1., 2., 3., 5., 7., 9., 12., 12., 12
 
 EXPFREQ = [0., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 2., 2., 2., 3., 4., 7., 10., 13., 17., 25]
 
+EXPFREQ2 = [0., 25., 17., 13., 10., 7., 4., 3., 2., 2., 2., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]
 
 
 def option_sample_means_and_probs(option, N):
@@ -303,6 +304,28 @@ def expected_gain_given_exponential_expiration(options, sc, max_samples):
             p_exp_cum = 0.
         else:
             p_exp_cum = 1 - expon.cdf(max_samples - trial, loc=0, scale=sc)
+        pH = prob_choose_H_all_allocations(options, trial + 1)
+        p[trial] = (1 - p_exp_cum) * pH + p_exp_cum * 0.5
+        eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
+
+    return p, eg
+
+
+def expected_gain_given_discrete_expiration(options, freq):
+    max_samples = len(freq)
+    f = np.cumsum(np.array(freq)/sum(freq))
+
+    ev_high = expected_value(options['H'])
+    ev_low = expected_value(options['L'])
+    ev_random = 0.5 * ev_high + 0.5 * ev_low
+
+    p  = np.zeros(max_samples, float)
+    eg = np.zeros(max_samples, float)
+
+    for trial in range(max_samples):
+
+        # get cumulative probability according to normal
+        p_exp_cum = f[trial]
         pH = prob_choose_H_all_allocations(options, trial + 1)
         p[trial] = (1 - p_exp_cum) * pH + p_exp_cum * 0.5
         eg[trial] = (1 - p_exp_cum) * (pH * ev_high + (1 - pH) * ev_low) + p_exp_cum * ev_random
