@@ -62,6 +62,15 @@ def gamble_differences(g):
            spread(g['H']) - spread(g['L'])
 
 
+
+def generate_option(pos_range=[1, 101], neg_range=[-100, 0], p_range=[0, 1]):
+    pos = np.random.randint(pos_range[0], pos_range[1])
+    neg = np.random.randint(neg_range[0], neg_range[1])
+    p = p_range[0] + np.random.random()*(p_range[1]-p_range[0])
+    return (pos, neg, p)
+
+
+
 def generate_gamble(pos_range=[1, 101], neg_range=[-100, 0], p_range=[0, 1]):
 
     A_pos = np.random.randint(pos_range[0], pos_range[1])
