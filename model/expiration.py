@@ -97,21 +97,6 @@ EXPFREQ = [0., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 2., 2
 EXPFREQ2 = [0., 25., 17., 13., 10., 7., 4., 3., 2., 2., 2., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1., 1.]
 
 
-def option_sample_means_and_probs(option, N):
-    pos, neg, p = option
-    mns = []
-    probs = []
-
-    for n in range(0, N + 1):
-        mn = (n * pos + (N - n) * neg) / float(N)
-        prob = binom.pmf(n, N, p)
-        mns.append(mn)
-        probs.append(prob)
-
-    return np.array(mns), np.array(probs)
-
-
-
 def option_sample_sums_and_probs(option, N):
     """Given an option and a total number of samples drawn from
     that option, find the set of possible observed means and the

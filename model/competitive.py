@@ -34,8 +34,8 @@ labeled the "H" option.
 """
 import numpy as np
 from scipy.stats import binom
+from numpy.random import binomial
 from gambles import *
-
 
 
 
@@ -48,30 +48,32 @@ what is the likelihood that people will end up choosing the H option?
 
 """
 
+def simulate_sample_mean(opt, N, prior=0):
+    """Randomly sample N outcomes from opt and return
+    sample mean.
 
-def option_sample_means_and_probs(option, N):
-    """Given an option and a total number of samples drawn from
-    that option, find the set of possible observed means and the
-    probabilities of those outcomes"""
+    If N==0, return prior value.
+    """
+    pos, neg, p = opt
+    if N == 0:
+        return prior
+    else:
+        n_pos = binomial(N, p)
+        v = (n_pos * pos + (N - n_pos) * neg) / float(N)
+        return v
 
-    pos, neg, p = option
 
-    mns = []
-    probs = []
+def expected_sample_mean(opt, N):
+    est_values, probs = option_sample_means_and_probs(opt, N)
+    est = np.sum([probs[i] * est_values[i] for i in range(len(est_values))])
+    return est
 
-    for n in range(0, N + 1):
 
-        mn = n * pos + (N - n) * neg
-        prob = binom.pmf(n, N, p)
-
-        #print 'number of samples resulting in positive outcome: %s' % n
-        #print 'prob of that happening: %s' % prob
-        #print 'observed sample mean: %s' % mn
-
-        mns.append(mn)
-        probs.append(prob)
-
-    return np.array(mns), np.array(probs)
+def expected_absolute_error(opt, N):
+    ev = expected_value(opt)
+    est_values, probs = option_sample_means_and_probs(opt, N)
+    w_abs_error = [probs[i] * np.abs(est_values[i] - ev) for i in range(len(est_values))]
+    return np.sum(w_abs_error)
 
 
 def prob_choose_H(options, num_samples_H, num_samples_L):

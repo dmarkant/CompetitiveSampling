@@ -34,6 +34,7 @@ labeled the "H" option.
 """
 import numpy as np
 from random import random
+from scipy.stats import binom
 
 
 def value_given_outcomes(option, N_pos, N_neg):
@@ -197,3 +198,18 @@ def print_gamble(opt):
     print "difference in expected value: %s" % ev
     print "difference in median: %s" % m
     print "difference in spread: %s" % s
+
+
+
+def option_sample_means_and_probs(option, N):
+    pos, neg, p = option
+    mns = []
+    probs = []
+
+    for n in range(0, N + 1):
+        mn = (n * pos + (N - n) * neg) / float(N)
+        prob = binom.pmf(n, N, p)
+        mns.append(mn)
+        probs.append(prob)
+
+    return np.array(mns), np.array(probs)
