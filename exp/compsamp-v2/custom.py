@@ -5,8 +5,6 @@ from jinja2 import TemplateNotFound
 from functools import wraps
 from sqlalchemy import or_
 
-from flask.ext.socketio import SocketIO, emit
-
 from psiturk.psiturk_config import PsiturkConfig
 from psiturk.experiment_errors import ExperimentError
 from psiturk.user_utils import PsiTurkAuthorization, nocache
@@ -15,6 +13,8 @@ from psiturk.user_utils import PsiTurkAuthorization, nocache
 from psiturk.db import db_session, init_db
 from psiturk.models import Participant
 from json import dumps, loads
+
+import time
 
 # load the configuration options
 config = PsiturkConfig()
@@ -25,16 +25,41 @@ myauth = PsiTurkAuthorization(config)  # if you want to add a password protect r
 custom_code = Blueprint('custom_code', __name__, template_folder='templates', static_folder='static')
 
 
-#----------------------------------------------
-# sockets
-#----------------------------------------------
-socketio = SocketIO(current_app)
-socket_ns = '/socket.io'
-#socketio.run(current_app, host='localhost', port='22362')
+class EventList(object):
 
-print 'CUSTOM MAIN'
+    def __init__(self):
+        self.events = []
+        self.index = 0
+
+    def post(self, message):
+        self.events.append(message)
+
+    def stream(self):
+
+        while True:
+            if self.index < len(self.events):
+                for ev in self.events[self.index:]:
+                    self.index += 1
+                    yield ev
 
 
+@custom_code.route('/postevent', methods=['POST'])
+def post():
+    # Get a posted event message and broadcast it to all other
+    # connected users
+
+    print request
+    print request.form
+    return 'OK'
+
+
+@custom_code.route('/events', methods=['GET'])
+def subscribe():
+    # Return the event stream
+    return Response(event_stream(), mimetype='text/event-stream')
+
+
+"""
 @custom_code.route('/socket')
 def test_socket():
     return render_template('socket.html')
@@ -75,7 +100,7 @@ def test_connect():
 @socketio.on('disconnect', namespace=socket_ns)
 def test_disconnect():
     print('Client disconnected')
-
+"""
 
 
 

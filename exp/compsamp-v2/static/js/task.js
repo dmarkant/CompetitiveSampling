@@ -107,10 +107,28 @@ var Connection = function(session){
 	var self = this;
 	self.session = session;
 
-	self.send = function(data) {
-		self.socket.emit('send', {'data': data});
-	};
+    self.events = new EventSource('/events');
 
+    self.events.onopen = function() {
+        console.log('opened');
+    };
+
+    self.events.onerror = function() {
+        console.log('error');
+    };
+
+    self.events.onmessage = function(event) {
+        console.log('event arrived:', event);
+    };
+
+	self.send = function(data) {
+
+	    $.ajax('events', {type: 'POST',
+                          data: 'hello'});
+    
+    };
+
+    /*
 	self.broadcast = function(data){
 		console.log(data);
 		self.socket.emit('broadcast', {'data': data});
@@ -142,6 +160,11 @@ var Connection = function(session){
         };
 
 	};
+    */
+
+    console.log('creating connection');
+    self.send('nothing');
+
 
 };
 
@@ -231,6 +254,7 @@ var MultiplayerSession = function(callback) {
 			self.game_msgs.push({'msg_type': 'sample-decision', 'msg_id': data.id, 'uniqueId': data.uniqueId, 'data': data.data});
 
 		};
+
 
 		if (data.type == 'stop-decision' && data.uniqueId!=uniqueId) {
 			
@@ -352,7 +376,7 @@ var MultiplayerSession = function(callback) {
 		});
 		
 		self.connection = new Connection(self);
-		self.connection.open();
+		//self.connection.open();
 
 	};
 
