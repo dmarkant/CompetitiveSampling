@@ -4,6 +4,8 @@
  *     utils.js
  */
 
+
+
 // Initalize psiturk object
 var psiTurk = PsiTurk(uniqueId, adServerLoc);
 
@@ -107,26 +109,9 @@ var Connection = function(session){
 	var self = this;
 	self.session = session;
 
-    self.events = new EventSource('/events');
-
-    self.events.onopen = function() {
-        console.log('opened');
-    };
-
-    self.events.onerror = function() {
-        console.log('error');
-    };
-
-    self.events.onmessage = function(event) {
-        console.log('event arrived:', event);
-    };
-
-	self.send = function(data) {
-
-	    $.ajax('events', {type: 'POST',
-                          data: 'hello'});
-    
-    };
+    $.ajax('http://localhost:8080/init?uid='+uniqueId, 
+            {success: function(data) {console.log(data);}
+            })
 
     /*
 	self.broadcast = function(data){

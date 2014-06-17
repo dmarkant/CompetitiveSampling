@@ -42,7 +42,7 @@ class EventList(object):
                     self.index += 1
                     yield ev
 
-
+"""
 @custom_code.route('/postevent', methods=['POST'])
 def post():
     # Get a posted event message and broadcast it to all other
@@ -59,7 +59,6 @@ def subscribe():
     return Response(event_stream(), mimetype='text/event-stream')
 
 
-"""
 @custom_code.route('/socket')
 def test_socket():
     return render_template('socket.html')
