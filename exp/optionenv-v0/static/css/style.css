@@ -22,9 +22,6 @@ h2 {
     margin-top: 5px;
 }
 
-a {
-	color: #FFCC90;
-}
 
 input {
         width: 200px;
@@ -127,7 +124,14 @@ strong {
   visibility: hidden;
 }
 
+#buttons {
+  margin-top: 20px;
+}
 
+#buttons * {
+  padding: 20px;
+  margin: 5px;
+}
 
 
 

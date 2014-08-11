@@ -1,4 +1,5 @@
 
+
 var COL_BUTTON_PRESSED = "#78A0CA",
     COL_BUTTON_UNPRESS = "#FFD855";
 
@@ -11,7 +12,6 @@ var Connection = function(session){
     self.socket = null;
 
     self.init = function(response) {
-
         // create one-way channel to receive updates from server
         self.token = response.channel;
         self.channel = new goog.appengine.Channel(self.token);
@@ -26,7 +26,6 @@ var Connection = function(session){
         
         self.session.assigned_group = response.groupid;
         self.session.update_groups(response.groups);
-
     };
 
     self.send = function(kind, data) {
@@ -261,7 +260,6 @@ var GroupView = function(id, groupdata, mygroup) {
         };
     };
     
-
 };
 
 
@@ -481,20 +479,3 @@ function onClose() {
     console.log('closed..');
 };
 
-
-/*******************
- * Run Task
- ******************/
-$(window).load( function(){
-    pager = new Pager($('#main'));
-    pager.preloadPages(PAGES);
-    exp = new CompetitiveSamplingExperiment();
-
-    if (SIMULATE==1) {
-        $('#simulation').css('display', 'block');
-    };
-
-    setTimeout(function() {
-        session = new MultiplayerSession();
-    }, Math.random()*5000);
-});

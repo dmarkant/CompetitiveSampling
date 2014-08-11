@@ -3,8 +3,8 @@
  * images from server and replacing a target element
  */
 var Pager = function(target) {
-	self = this;
-	self.pages = {};
+    self = this;
+    self.pages = {};
     self.target = target;
 
 	self.preloadImages = function(imagenames) {
