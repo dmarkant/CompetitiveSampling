@@ -265,10 +265,11 @@ var Option = function(stage, id, n_options) {
 
 	};
 
-	self.draw_sample = function(value, loc, duration) {
+	self.draw_sample = function(value, loc, duration, backon) {
 
 		loc = loc || [self.sample_x-60, self.sample_y-60];
-		
+		backon = backon || false;
+
 		self.coin = self.disp.append('g').attr('id', 'coin');
 
 		self.coin_circle = self.coin.append('circle')
@@ -297,7 +298,10 @@ var Option = function(stage, id, n_options) {
 					 .attr('opacity', 1);		
 		
 		if (duration!=undefined) {
-			setTimeout(self.clear_sample, duration);
+			setTimeout(function() {
+				self.clear_sample();				
+				if (backon) self.listen();
+			}, duration);
 		};
 
 	};
@@ -335,9 +339,10 @@ var Option = function(stage, id, n_options) {
 	};
 
 	self.listen = function(callback) {
-		self.selection_callback = callback;
+		if (callback!=undefined) self.selection_callback = callback;
 		self.disp.on('mousedown', function() {
-			callback(self.id);
+			self.stop_listening();
+			if (self.selection_callback!=undefined) self.selection_callback(self.id);
 		});
 		return self;
 	};
@@ -364,15 +369,15 @@ function clear_buttons() {
 
 function add_next_button(callback, label, accept_keypress) {
 
-	var label = label || 'Continue';
+	var label = label || 'Next';
 	var accept_keypress = accept_keypress || true;
 	
-	$('#buttons').append('<button id=btn-next class="btn btn-default btn-lg">'+label+' (X)</button>');
+	$('#buttons').append('<button id=btn-next class="btn btn-default btn-lg">'+label+' (N)</button>');
 	
 	if (accept_keypress) {
 
 		$(window).bind('keydown', function(e) {
-			if (e.keyCode == '88') {
+			if (e.keyCode == '78') {
 				$(window).unbind('keydown');
 				callback();
 			};

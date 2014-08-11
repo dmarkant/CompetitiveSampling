@@ -7,10 +7,10 @@ svg_element = function(id, width, height) {
 };
 
 function add_next_instruction_button(target) {
-    $('#buttons').append('<button id=btn-continue class="btn btn-default btn-lg">Next (X)</button>');
+    $('#buttons').append('<button id=btn-continue class="btn btn-default btn-lg">Next (N)</button>');
 
     $(window).on('keydown', function(e) {
-        if (e.keyCode == '88') {
+        if (e.keyCode == '78') {
             $(window).unbind('keydown');
             target();
         };
@@ -49,8 +49,9 @@ var Instructions1 = function() {
 
 	var g = generate_gamble(1)['options']['A'];
 	self.urn = new Option(self.stage, 'A', 1).draw();
+
 	self.urn.listen(function() {
-            self.urn.draw_sample(g.random(), undefined, 1000);
+            self.urn.draw_sample(g.random(), undefined, 1000, true);
         });
 
 	self.add_text('Each urn that you see is filled with 100 coins of ' +
@@ -141,11 +142,11 @@ var Instructions2 = function() {
 	};
 
 	var finish = function() {
-		self.add_text('The blue person marks the urn that you chose. At the end ' +
-				      'of the experiment, one of the urns you claim will be randomly ' +
-					  'selected, and your bonus will be the average value of the coins ' +
-					  'in that urn.');
-		add_next_instruction_button(Instructions3);
+            self.add_text('The blue person marks the urn that you chose. At the end ' +
+                          'of the experiment, one of the urns you claim will be randomly ' +
+                          'selected, and your bonus will be the average value of the coins ' +
+                          'in that urn.');
+            add_next_instruction_button(Instructions3);
 	};
 
 	$.each(self.urns, function(i, urn) {
@@ -155,33 +156,52 @@ var Instructions2 = function() {
 
 };
 
+
 var Instructions3 = function() {
-	var self = init_instruction(this, 2);
+    var self = init_instruction(this, 3);
+    
+    self.add_text('Now here\'s the catch: you will be playing against at least one other ' +
+                  'person who is deciding between the same urns as you. On each turn, you\'ll ' +
+                  'get to see whether the other player(s) decided to continue or to stop ' +
+                  'and claim an urn.');
 
-	self.add_text('Before you start playing the game, first you need to get some ' +
-		    'experience with the kinds of urns that will appear. On the next screen you\'ll see ' +
-			'a series of 5 urns. For each, click on the urn 40 times and try to keep track of the ' +
-			'average value of the coins you see. After you click 40 times, you\'ll be asked to enter ' +
-			'a guess about the average value for that urn.');
+    self.add_text('If one of your opponents decides to stop and claim an urn, you will see ' +
+                  'which urn they chose (marked by a gray person symbol). If another person ' +
+                  'claims an urn it is no longer available for you, and you will only be able ' +
+                  'to claim one of the remaining urns.');
 
-	add_next_instruction_button(InstructionsFinal);
+    add_next_instruction_button(InstructionsTraining);
+    
 };
 
+var N_EXAMPLE_URNS = 3;
+var N_SAMPLES_PER_EXAMPLE = 30;
+var InstructionsTraining = function() {
+	var self = init_instruction(this, 2);
 
-var N_EXAMPLE_URNS = 5;
-var N_SAMPLES_PER_EXAMPLE = 10;
+        self.add_text('Before you start playing, you need to get some experience with the kinds '+
+                      'of urns that will appear. On the next screens you\'ll see a series of '+N_EXAMPLE_URNS+
+                      ' urns. For each, you must click on the urn <strong>'+N_SAMPLES_PER_EXAMPLE+' times</strong>. Try to ' +
+                      'get an idea for how valuable the urn is <strong>on average</strong>.');
+
+        self.add_text('After you\'ve seen '+N_SAMPLES_PER_EXAMPLE+' coins from an urn, you\'ll be asked to enter 1) the ' +
+                      'highest coin that you remember seeing, 2) the lowest coin that you remember, ' +
+                      'and 3) a guess about the average value for that urn.');
+
+        self.add_text('The goal of this exercise is to help you learn about the kinds of urns that you ' +
+                      'will encounter, and your accuracy will not affect your final bonus. Good luck!');
+
+	add_next_instruction_button(Instructions4);
+};
+
 var urns_complete = 0;
 var urns_estimates = [];
 var Instructions4 = function() {
-	var self = init_instruction(this, 3);
+	var self = init_instruction(this, 4);
 
-	if (urns_complete == 0) {
-		self.add_text('Here\'s the first urn. Click on it 40 times to learn about ' +
-					  'the coins it contains.');
-	} else {
-		self.add_text('Here\'s the next urn. Click on it 40 times to learn about ' +
-					  'the coins it contains.');
-	};
+        $('h1').html('Urn #'+(urns_complete+1));
+
+        self.add_text('Click on the urn '+N_SAMPLES_PER_EXAMPLE+' times to learn about the coins it contains.');
 
 	var counter = 0;
 
@@ -189,30 +209,34 @@ var Instructions4 = function() {
 		self.urn.stop_listening();
 
 		var t = '<form role="form" style="width:100%;">' +
-				'<div class="form-group" style="width:300px; margin:0 auto;">' +
-				'<label for="name">What do you think is the <i>average value</i> of ' +
-				'coins in this urn?</label>' +
-				'<input type="text" class="form-control" placeholder="Text input">' +
-				'</div></form>';
+                        '<div class="form-group" style="width:300px; margin:0 auto;">' +
+                        '<label for="name">What is the <strong>highest coin</strong> you remember ' +
+                        'seeing from this urn?</label>' +
+                        '<input type="text" class="form-control" placeholder="Text input"></div>' +
+                        '<div class="form-group" style="width:300px; margin:0 auto;">' +                        
+                        '<label for="name">What is the <strong>lowest coin</strong> you remember ' +
+                        'seeing from this urn?</label>' +
+                        '<input type="text" class="form-control" placeholder="Text input"></div>' +
+                        '<div class="form-group" style="width:300px; margin:0 auto;">' +
+                        '<label for="name">What do you think is the <strong>average value</strong> of ' +
+                        'coins in this urn?</label>' +
+                        '<input type="text" class="form-control" placeholder="Text input"></div>' +
+                        '</form>';
 		self.div.append(t);
 
-		$(window).on('keydown', function(e) {
-			if (e.keyCode == 13) {
-				console.log('hite enter');
-				finish();
-			};
-
-		});
-
+        	add_next_instruction_button(finish);
+                
 	};
 
 	var finish = function() {
+                // log responses!
+
 		urns_complete = urns_complete + 1;
 		if (urns_complete == N_EXAMPLE_URNS) {
-			Instructions4();
+			InstructionsFinal();
 		} else {
 			// do another urn
-			Instructions3();
+			Instructions4();
 		};
 	};
 
@@ -223,7 +247,7 @@ var Instructions4 = function() {
 	var g = generate_gamble(1)['options']['A'];
 	self.urn = new Option(self.stage, OPTIONS[urns_complete], 1).draw();
 	self.urn.listen(function() {
-		self.urn.draw_sample(sample_from_discrete(g), undefined, 700);		
+		self.urn.draw_sample(g.random(), undefined, 700, true);		
 		counter = counter + 1;
 		if (counter == N_SAMPLES_PER_EXAMPLE) {
 			guess();
@@ -231,12 +255,6 @@ var Instructions4 = function() {
 
 	});
 	
-
-
-};
-
-
-var Instructions5 = function() {
 
 
 };
