@@ -4,31 +4,37 @@
 switch (Number(condition)) {
 
 	case 0:
-		PLAYERS_PER_SESSION = 2;
+		OPT_ENVIRONMENT = 'continuous-normal';
 		break;
 	
 	case 1:
-		PLAYERS_PER_SESSION = 4;
+		OPT_ENVIRONMENT = 'continuous-skewed';
 		break;
 
 	case 2:
-		PLAYERS_PER_SESSION = 8;
+		OPT_ENVIRONMENT = 'discrete-normal';
 		break;
-}
+
+	case 3:
+		OPT_ENVIRONMENT = 'discrete-skewed';
+		break;
+		
+};
 
 
 var exp,
 	pager,
 	session,
 	connection,
-	N_OPTIONS = [2, 4, 8, 2, 4, 8];
+	PLAYERS_PER_SESSION = 2,	
+	N_OPTIONS = [2, 4, 8, 2, 4, 8, 2, 4, 8];
 	N_PRACTICE_GAMES = 2,
-	NROUNDS = 6,
-	MAX_N_TRIALS = 25,
+	NROUNDS = 9,
+	MAX_N_TRIALS = 50,
 	INIT_BONUS = 1,
 	chosen_values = [],
 	SIM_P_STOP = .25,
-	OBSERVE_OPP_SAMPLES = true;
+	OBSERVE_OPP_SAMPLES = false;
 
 // these are preloaded in exp.html
 var PAGES = ['optionenv-v0/instruct.html',
@@ -38,6 +44,61 @@ var IMAGES = ['static/images/person_other.png',
 			  'static/images/person_self.png'];
 
 var IMAGE_DIR = 'static/exps/optionenv-v0/images/';
+
+
+
+/*
+ * OPTION ENVIRONMENT
+ *
+ */
+function generate_option_continuous_normal() {
+
+	// sample a mean value from uniform
+	mu = rand_range(20, 80);
+	
+
+};
+
+ranran = new Random(124); // change seed 
+
+var Urn = function(id) {
+	var self = this;
+	self.id = id;
+
+	if (OPT_ENVIRONMENT == 'continuous-normal') {
+		self.par = {'mu': randrange(40, 80), 'sd': 30};
+		self.random = function() {
+			return Math.floor(ranran.normal(self.par['mu'], self.par['sd']));
+		};
+		self.expected_value = self.par['mu'];
+	};
+
+	if (OPT_ENVIRONMENT == 'continuous-skewed') {
+		// fill in with weibull distribution
+	};
+
+	if (OPT_ENVIRONMENT == 'discrete-normal') {
+
+		// NEED TO WORK THIS OUT
+
+		o1 = Math.floor(Math.random()*100);
+		o2 = Math.floor(Math.random()*(-100));
+		p = Math.floor(100*Math.random())/100;
+
+		self.par = {'H': o1, 'L': o2, 'p': p};
+		self.random = function() {
+			sample_from_discrete(self.par)
+		};
+		self.expected_value = self.discrete_expected_value(self.par);
+		
+	};
+
+	if (OPT_ENVIRONMENT == 'discrete-skewed') {
+		// fill in for discrete skewed
+	};
+
+};
+
 
 var sample_from_discrete = function(option) {
 
@@ -49,7 +110,7 @@ var sample_from_discrete = function(option) {
 };
 
 
-var expected_value = function(option) {
+var discrete_expected_value = function(option) {
 	return option['H']*option['p'] + option['L']*(1-option['p']);
 };
 
@@ -57,15 +118,9 @@ var expected_value = function(option) {
 var generate_gamble = function(N) {
 
 	var options = {};
-
-	for (var i=0; i<N; i++) {
-
-		pos = Math.floor(Math.random()*100);
-		neg = Math.floor(Math.random()*(-100));
-		p = Math.floor(100*Math.random())/100;
-
-		options[OPTIONS[i]] = {'H': pos, 'L': neg, 'p': p};
-	};
+	$.each(OPTIONS, function(i, id) {
+		options[id] = new Urn(id);
+	});
 
 	return {'options': options};
 };
@@ -93,7 +148,7 @@ var Option = function(stage, id, n_options) {
 			self.y = 30 + self.stage_h/4;
 			break;
 		case 2:
-			self.x = 150 + self.stage_w/2 * self.col;
+			self.x = 220 + (self.stage_w-140)/2 * self.col;
 			self.y = 30 + self.stage_h/4;
 			break;
 		default:
@@ -304,6 +359,59 @@ var Option = function(stage, id, n_options) {
 };
 
 
+function clear_buttons() {
+	$('#buttons').html('');
+};
+
+function add_stop_and_continue_buttons(continue_callback, stop_callback, accept_keypress) {
+
+	var accept_keypress = accept_keypress || true;
+
+	$('#buttons').append('<button id=btn-continue class="btn btn-default btn-info btn-lg">Continue Learning (C)</button>');
+	$('#buttons').append('<button id=btn-stop class="btn btn-default btn-primary btn-lg">Stop and Choose (S)</button>');
+
+	//$('#btn-continue').on('click', continue_callback);
+	//$('#btn-stop').on('click', stop_callback);
+
+	// if allowing keypresses, set up handlers
+	if (accept_keypress) {
+
+		$(window).bind('keydown', function(e) {
+
+			// 'C' for continue
+			if (e.keyCode == '67') {
+				$(window).unbind('keydown');
+				continue_callback();
+
+			};
+
+			// 'S' for stop
+			if (e.keyCode == '83') {
+				$(window).unbind('keydown');
+				stop_callback();
+			};
+		});
+
+		// also set up button click handler, but need to wrap callback in function
+		// that gets rid of keypress handler
+		$('#btn-continue').on('click', function() {
+			$(window).unbind('keydown');
+			continue_callback();
+		});
+		$('#btn-stop').on('click', function() {
+			$(window).unbind('keydown');			
+			stop_callback();
+		});
+
+
+	} else {
+		$('#btn-continue').on('click', continue_callback);
+		$('#btn-stop').on('click', stop_callback);
+	};
+
+};
+
+
 var CompetitiveSamplingGame = function(group, round, callback, practice) {
 
 	var self = this;
@@ -319,13 +427,12 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 	self.stop_trial = 1000;
 
 	self.n_options = N_OPTIONS[round];
-
 	self.gamble = generate_gamble(self.n_options);
 
 	output(['game', self.round, 'practice', self.practice]);
 	output(['game', self.round, 'opponents', self.opponents]);	
-	output(['game', self.round, 'option', 'A', self.gamble.options.A.H, self.gamble.options.A.L, self.gamble.options.A.p])
-	output(['game', self.round, 'option', 'B', self.gamble.options.B.H, self.gamble.options.B.L, self.gamble.options.B.p])
+	//output(['game', self.round, 'option', 'A', self.gamble.options.A.H, self.gamble.options.A.L, self.gamble.options.A.p])
+	//output(['game', self.round, 'option', 'B', self.gamble.options.B.H, self.gamble.options.B.L, self.gamble.options.B.p])
 
 	self.reset_stage = function(callback) {
 		pager.showPage('optionenv-v0/stage.html');
@@ -416,7 +523,9 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		var msg_id = 'sample_decision_'+self.round+'.'+self.trial;
 		$.each(self.options, function(i, opt) { opt.stop_listening(); });
 
-		result = sample_from_discrete(self.gamble.options[chosen_id]);
+		result = self.gamble.options[chosen_id].random();
+
+		//result = sample_from_discrete(self.gamble.options[chosen_id]);
 		output(['game', self.round, self.trial, 'sample', chosen_id, result]);
 		connection.send(msg_id, {'game': self.round, 'trial': self.trial, 'chosen_id': chosen_id, 'result': result});
 		
@@ -448,36 +557,22 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 
 	self.prompt_stop_or_continue = function() {
 
-		// continue button
-		self.continue_btn = self.buttons.append('input')
-								   .attr('value', 'Continue Learning')
-			    				   .attr('type', 'button')
-								   .attr('id', 'continue-'+self.trial)
-								   .attr('height', 100);
-
-		self.continue_btn.on('click', function() { 
-			self.stopped = false;
-			self.urn_selection();
+		add_stop_and_continue_buttons(
+			function() { 
+				self.stopped = false;
+				self.urn_selection();
+			},
+			function() { 
+				self.stopped = true;
+				self.stop_trial = self.trial;
+				self.urn_selection();
 		});
 
-		// stop button
-		self.stop_btn = self.buttons.append('input')
-								   .attr('value', 'Stop and Choose')
-			    				   .attr('type', 'button')
-								   .attr('id', 'stop-'+self.trial)
-								   .attr('height', 100);
-		
-		self.stop_btn.on('click', function() {
-			self.stopped = true;
-			self.stop_trial = self.trial;
-			self.urn_selection();
-		});
-		
 		self.set_instruction('Do you want to <strong>Continue Learning</strong> or <strong>Stop and Choose</strong> one of the options?');
 
 		// simulated choice here
 		if (SIMULATE) {
-			var btn = (Math.random() < SIM_P_STOP) ? self.stop_btn[0][0] : self.continue_btn[0][0];
+			var btn = (Math.random() < SIM_P_STOP) ? $('#btn-stop') : $('#btn-continue');
 			simclick(btn);	
 		};	
 	}
@@ -518,8 +613,7 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		
 			// get rid of any sample outcomes and buttons
 			$.each(self.options, function(i, opt) { opt.clear_sample(); });
-			self.continue_btn.remove();
-			self.stop_btn.remove();
+			clear_buttons();
 			
 			output(['game', self.round, self.trial, 'stoppingdecision', self.stopped]);
 			connection.send(msg_id, {'game': self.round, 'trial': self.trial, 'stopped': self.stopped});
@@ -681,7 +775,8 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 
 	self.finish = function() {
 		output(['game', self.round, self.trial, 'received_id', self.chosen_id])		
-		chosen_values.push(expected_value(self.gamble.options[self.chosen_id]));
+		chosen_values.push(self.gamble.options[self.chosen_id].expected_value);
+		//chosen_values.push(expected_value(self.gamble.options[self.chosen_id]));
 
 		self.set_instruction('All players have finished this game. Click below to continue to the next!');
 		
@@ -737,490 +832,7 @@ var CompetitiveSamplingExperiment = function() {
 };
 
 
-instruction_text_element = function(text) {
-	return '<div class="instruction-body">'+text+'</div>';
-};
 
-svg_element = function(id, width, height) {
-	return '<div class="svg-container" width="'+width+'" height="'+height+'"><svg width="'+width+'" height="'+height+'" id="'+id+'"></svg></div>'
-};
-
-function add_next_instruction_button(target) {
-	$('#buttons').append('<button id=btn-continue class="btn btn-default btn-lg">Continue</button>')
-	$('#btn-continue').on('click', target);
-};
-
-function init_instruction(obj, id) {
-	
-	obj.id = id;
-	output(['instructions', id]);
-	
-	pager.showPage('optionenv-v0/instruct.html');	
-	obj.div = $('#container-instructions');
-
-	obj.add_text = function(t) {
-		obj.div.append(instruction_text_element(t));
-	};
-
-	return obj;
-};
-
-
-var Instructions1 = function() {
-	var self = init_instruction(this, 1);
-
-	self.add_text('Welcome! In this experiment your goal is to claim virtual pots of gold. These ' +
-		    'pots are called <i>urns</i>, and look like this:');
-
-	self.div.append(svg_element('urn-svg', 600, 220));
-	self.stage = d3.select('#urn-svg');
-
-	var g = generate_gamble(1)['options']['A'];
-	self.urn = new Option(self.stage, 'A', 1).draw();
-	self.urn.listen(function() {
-			self.urn.draw_sample(sample_from_discrete(g), undefined, 1000);
-		});
-
-	self.add_text('Each urn that you see is filled with 100 coins of ' +
-		    'differing values. You can learn about the coins that are inside an urn by ' + 
-			'clicking on it. Go ahead and click on the urn above a few times to see what kinds of coins ' +
-			'it contains.');
-
-	self.add_text('When you click on the urn you see a randomly drawn coin (which is then put back ' +
-			'into the urn, so the total number of coins never changes). During the experiment you\'ll ' +
-			'have the chance to claim urns that you think are valuable, and at the end you will receive ' +
-			'a bonus based on the <b>average value of the coins</b> inside the urns you select.');
-
-	add_next_instruction_button(Instructions2);
-};
-
-
-var Instructions2 = function() {
-	var self = init_instruction(this, 2);
-
-	self.add_text('Before you learn about the game you\'ll be playing, first you need to get some ' +
-		    'experience with the kinds of urns that will appear. On the next screen you\'ll see ' +
-			'a series of 5 urns. For each, click on the urn 40 times and try to keep track of the ' +
-			'average value of the coins you see. After you click 40 times, you\'ll be asked to enter ' +
-			'a guess about the average value for that urn.');
-
-	add_next_instruction_button(Instructions4);
-};
-
-var N_EXAMPLE_URNS = 5;
-var N_SAMPLES_PER_EXAMPLE = 10;
-var urns_complete = 0;
-var urns_estimates = [];
-var Instructions3 = function() {
-	var self = init_instruction(this, 3);
-
-	if (urns_complete == 0) {
-		self.add_text('Here\'s the first urn. Click on it 40 times to learn about ' +
-					  'the coins it contains.');
-	} else {
-		self.add_text('Here\'s the next urn. Click on it 40 times to learn about ' +
-					  'the coins it contains.');
-	};
-
-	var counter = 0;
-
-	var guess = function() {
-		self.urn.stop_listening();
-
-		var t = '<form role="form" style="width:100%;">' +
-				'<div class="form-group" style="width:300px; margin:0 auto;">' +
-				'<label for="name">What do you think is the <i>average value</i> of ' +
-				'coins in this urn?</label>' +
-				'<input type="text" class="form-control" placeholder="Text input">' +
-				'</div></form>';
-		self.div.append(t);
-
-		$(window).on('keydown', function(e) {
-			if (e.keyCode == 13) {
-				console.log('hite enter');
-				finish();
-			};
-
-		});
-
-	};
-
-	var finish = function() {
-		urns_complete = urns_complete + 1;
-		if (urns_complete == N_EXAMPLE_URNS) {
-			Instructions4();
-		} else {
-			// do another urn
-			Instructions3();
-		};
-	};
-
-
-	self.div.append(svg_element('urn-svg', 600, 220));
-	self.stage = d3.select('#urn-svg');
-
-	var g = generate_gamble(1)['options']['A'];
-	self.urn = new Option(self.stage, OPTIONS[urns_complete], 1).draw();
-	self.urn.listen(function() {
-		self.urn.draw_sample(sample_from_discrete(g), undefined, 700);		
-		counter = counter + 1;
-		if (counter == N_SAMPLES_PER_EXAMPLE) {
-			guess();
-		};
-
-	});
-	
-
-
-};
-
-var Instructions4 = function() {
-	var self = init_instruction(this, 3);
-	self.add_text('Okay, now you\'re ready to learn more about the game.');
-
-	self.add_text('In this experiment you will be competing ' +
-				  'to claim urns that you think are valuable. In each game you will ' +
-				  'see two urns, and you will be able to learn about them by clicking on them ' +
-				  'as before. When you think that one urn is more valuable than the ' +
-				  'other, you can stop and claim it.');
-
-	self.add_text('Each game is made up of a series of turns. On each turn, you begin by ' +
-		    'clicking on one urn and seeing a randomly drawn coin. You then have a choice ' + 
-			'to make: you can either 1) <strong>Continue Learning</strong>, ' +
-			'or you can 2) <strong>Stop and Choose</strong>, ' +
-			'which means that you are ready to claim an urn.');
-
-	self.add_text('Go ahead and try it for these two urns:');
-
-	self.div.append(svg_element('urn-svg', 600, 260));
-	self.stage = d3.select('#urn-svg');
-
-	var g = generate_gamble(2); // probably replace with fixed example?
-	self.urns = {'A': new Option(self.stage, 'A', 2),
-				 'B': new Option(self.stage, 'B', 2)};
-	self.urns['A'].draw();
-	self.urns['B'].draw();
-
-	var sampling = function() {
-		console.log('now sample');
-
-		$.each(self.urns, function(i, urn) {
-			urn.listen(function() {
-				urn.draw_sample(sample_from_discrete(g['options'][urn.id]));
-				show_buttons();
-			});
-		});
-	};
-	
-	var show_buttons = function() {
-		console.log('show buttons');
-
-		$.each(self.urns, function(i, urn) { urn.stop_listening(); });
-		
-		$('#buttons').append('<button id=btn-continue class="btn btn-default btn-info btn-lg">Continue Learning (C)</button>');
-		$('#buttons').append('<button id=btn-stop class="btn btn-default btn-primary btn-lg">Stop and Choose (S)</button>');
-
-		$('#btn-continue').on('click', function(e) {
-			$('#buttons').html('');
-			$.each(self.urns, function(i, urn) { urn.clear_sample(); });
-			sampling();
-		});
-		$('#btn-stop').on('click', function(e) {
-			$('#buttons').html('');			
-			$.each(self.urns, function(i, urn) { urn.clear_sample(); });
-			choose();
-		});
-
-	};
-
-	var choose = function() {
-		console.log('now choose');
-
-		$.each(self.urns, function(i, urn) {
-			urn.listen(function() {
-				urn.highlight();
-				$.each(self.urns, function(i, urn) { urn.stop_listening(); });
-				finish();
-			});
-		});
-		
-	};
-
-	var finish = function() {
-		self.add_text('The blue person indicates the urn that you chose. At the end ' +
-				      'of the experiment, one of the urns you claim will be randomly ' +
-					  'selected, and your bonus will be the average value of the coins ' +
-					  'in that urn.');
-		add_next_instruction_button(Instructions5);
-	};
-
-	$.each(self.urns, function(i, urn) {
-		urn.draw();
-	});
-	sampling();
-
-
-	//add_next_instruction_button(Instructions5);
-
-};
-
-var Instructions5 = function() {
-
-
-};
-
-
-var Instructions2_old = function() {
-	output(['instructions', 2]);
-	var self = this;
-	pager.showPage('instruct.html');	
-	self.div = $('#container-instructions');
-
-	var t = 'In each game you will be faced with two different urns, each of which ' +
-		    'contains different kinds of coins (and different ratios of positive to ' +
-			'negative coins). The goal of each game is to choose the urn that has the ' +
-			'<strong>highest average value</strong>. At the end of the experiment, the ' + 
-			'value of the urn that you choose will get added (or subtracted, if it\'s ' +
-			'negative) to your bonus.';
-	self.div.append(instruction_text_element(t));
-
-	var t = 'For example, if the urn that you choose has 50 coins labeled "-10" and 50 ' +
-		    'coins labeled "+30", then at the end the average value for the urn, 20 cents, ' +
-			'will be added to your bonus.';
-	self.div.append(instruction_text_element(t));
-
-
-	var t = 'As you just saw, you can learn about either urn by ' +
-			'clicking on one at a time. Go ahead and try for the urns shown below:';
-	self.div.append(instruction_text_element(t));
-	
-
-	self.div.append(svg_element('urn-svg', 600, 450));
-	self.stage = d3.select('#urn-svg');
-	self.stage_w = stage.attr("width");
-	self.stage_h = stage.attr("height");	
-
-	var option_values = {'A': {'H': 25, 'L': -17, 'p': .7},
-						 'B': {'H': 20, 'L': -30, 'p': .3}};
-	
-	var nsamples = {'A': 0, 'B': 0};
-	var generate_sample = function(id) {
-		nsamples[id] += 1;
-		if (nsamples[id] > 1) {
-			self.options[id].clear_sample();
-		}
-		result = sample_from_discrete(option_values[id]);
-		self.options[id].draw_sample(result);
-	};
-	
-	self.options = {'A': new Option(self.stage,
-							  {'id': 'A',
-							   'color': 'red',
-							   'x': self.stage_w/4,
-							   'y': self.stage_h/3},
-							  generate_sample).draw().listen(),
-					'B': new Option(self.stage,
-							  {'id': 'B',
-							   'color': 'blue',
-							   'x': 3 * self.stage_w/4,
-							   'y': self.stage_h/3},
-							  generate_sample).draw().listen()};
-
-	var t = 'Each game is made up of a series of turns. On each turn, you will begin by ' +
-		    'clicking on one urn and seeing the coin that you get. You then have a choice ' + 
-			'to make: you can either 1) <strong>Continue Learning</strong>, in which case ' +
-			'you will go on to the next turn, or you can 2) <strong>Stop and Choose</strong>, ' +
-			'which means that you are ready to choose an urn, which will then be used to ' +
-			'determine your bonus.'
-	self.div.append(instruction_text_element(t));
-
-	var t = 'Click the button below to continue.'
-	self.div.append(instruction_text_element(t));
-
-	self.btn = d3.select('#container-instructions').append('input')
-								   .attr('value', 'Continue')
-			    				   .attr('type', 'button')
-								   .attr('height', 100)
-								   .style('margin-bottom', '30px');
-
-	self.btn.on('click', function() {
-		Instructions3();
-	});
-
-};
-
-
-var Instructions3_old = function() {
-	output(['instructions', 3]);
-	var self = this;
-	pager.showPage('instruct.html');	
-
-	self.div = $('#container-instructions');
-	
-	var t = 'Each game will last up to a maximum of 25 turns. At that point, you will be forced ' +
-		 'to choose one of the urns if you have not already.';
-	self.div.append(instruction_text_element(t));
-	
-	var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
-		    'there is a <strong>1 in 20 chance that the game will expire early</strong>. ' +
-			'If this happens, a randomly chosen urn will disappear, and whatever urn is left ' +
-			'will go toward your bonus at the end of the experiment.'
-	self.div.append(instruction_text_element(t));
-	
-	var t = 'If the game expires early, one of the urns will fade out as you can see below:';
-	self.div.append(instruction_text_element(t));
-
-
-	self.div.append(svg_element('urn-svg', 600, 280));
-	self.stage = d3.select('#urn-svg');
-	self.stage_w = stage.attr("width");
-	self.stage_h = stage.attr("height");	
-
-	var option_values = {'A': {'H': 25, 'L': -17, 'p': .7},
-						 'B': {'H': 20, 'L': -30, 'p': .3}};
-	
-	var nsamples = {'A': 0, 'B': 0};
-	var generate_sample = function(id) {
-		nsamples[id] += 1;
-		if (nsamples[id] > 1) {
-			self.options[id].clear_sample();
-		}
-		result = sample_from_discrete(option_values[id]);
-		self.options[id].draw_sample(result);
-	};
-	
-	self.options = {'A': new Option(self.stage,
-							  {'id': 'A',
-							   'color': 'red',
-							   'x': self.stage_w/4,
-							   'y': self.stage_h/2-30},
-							  generate_sample).draw(),
-					'B': new Option(self.stage,
-							  {'id': 'B',
-							   'color': 'blue',
-							   'x': 3 * self.stage_w/4,
-							   'y': self.stage_h/2-30},
-							  generate_sample).draw().expire()};
-
-
-
-	var t = 'You\'ll now play a couple of practice games to become familiar with how it works. ' +
-		    'Click the button below to start the first practice game.';
-	self.div.append(instruction_text_element(t));
-
-	self.btn = d3.select('#container-instructions').append('input')
-								   .attr('value', 'Continue')
-			    				   .attr('type', 'button')
-								   .attr('height', 100)
-								   .style('margin-bottom', '30px');
-
-	self.btn.on('click', function() {
-		InstructionsPractice();
-	});
-
-};
-
-
-var InstructionsPractice = function() {
-	output(['instructions', 'practice']);
-	var self = this;
-	self.round = -1;
-
-	self.next = function() {
-		self.round += 1;
-
-		var gamble = generate_gamble();
-
-		if (self.round < N_PRACTICE_GAMES) {
-			self.view = new CompetitiveSamplingGame(self.round, gamble, self.next, true);
-		} else {
-			InstructionsQuiz();	
-		};
-	};
-
-	self.finish = function() {
-		InstructionsQuiz();
-
-	};
-
-	self.next();
-
-};
-
-
-
-var InstructionsQuiz = function() {
-	output(['instructions', 'preq']);
-	var self = this;
-	pager.showPage('preq.html');	
-
-	var checker = function() {
-		var errors = [];
-
-		if ($('#maxtrials option:selected').val() != "1") { 
-			errors.push("maxtrials");
-		};
-		if ($('#expiration option:selected').val() != "1") {
-			errors.push("expiration");
-		};
-		if ($('#probexpire option:selected').val() != "2") {
-			errors.push("probexpire");
-		};
-		if ($('#whichexpire option:selected').val() != "0") {
-			errors.push("whichexpire");
-		};
-		
-		output(['instructions', 'preq', 'errors', errors].flatten());
-	
-		if (errors.length == 0) {
-			InstructionsComplete();
-		} else {
-			$('#continue').hide();
-			for(var i=0; i<errors.length; i++) {
-				$('#'+errors[i]).css("border","2px solid red");
-			};
-			$("#warning").css("color","red");
-			$("#warning").html("<p>Looks like you answered some questions incorrectly (highlighted in red). Please review them and click the \"Repeat\" button at the bottom to see the instructions again.</p>");
-		};
-
-	};
-
-
-	$('#startover').on('click', function() { 
-		output('instructions', 'restart');
-		Instructions1();
-	});
-
-	$('#continue').on('click', function() { checker(); });
-
-};
-
-
-var InstructionsComplete = function() {
-	output(['instructions', 'ready']);
-	var self = this;
-	pager.showPage('instruct.html');	
-	self.div = $('#container-instructions');
-	
-	var t = 'Good job! Looks like you\'re ready to start playing. You will play a series of ' +
-			NROUNDS + ' games. After you\'ve finished, you will see the value of all of the urns ' +
-			'that you choose and your final bonus for the experiment.';
-	self.div.append(instruction_text_element(t));
-
-	var t = 'Click below to start the first game. Good luck!';
-	self.div.append(instruction_text_element(t));
-	
-	self.btn = d3.select('#container-instructions').append('input')
-								   .attr('value', 'Continue')
-			    				   .attr('type', 'button')
-								   .attr('height', 100)
-								   .style('margin-bottom', '30px');
-
-	self.btn.on('click', function() {
-		exp.begin();
-	});
-	
-};
 
 
 var Feedback = function() {

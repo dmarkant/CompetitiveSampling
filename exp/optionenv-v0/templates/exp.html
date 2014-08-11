@@ -18,6 +18,7 @@
 		<script src="/static/lib/underscore-min.js" type="text/javascript"> </script>
 		<script src="/static/lib/backbone-min.js" type="text/javascript"> </script>
 		<script src="/static/lib/d3.v3.min.js" type="text/javascript"> </script>
+		<script src="/static/lib/sim.js" type="text/javascript"> </script>
         
         <!--use this for seeding random number generation-->
         <script src=/static/lib/seedrandom.min.js></script> 
@@ -35,14 +36,10 @@
                 var INSTRUCTIONS = true;
 		</script>
 				
-		<!-- utils.js and psiturk.js provide the basic psiturk functionality -->
-		<script src="/static/js/utils.js" type="text/javascript"> </script>
-
-		<!-- task.js is where you experiment code actually lives 
-			for most purposes this is where you want to focus debugging, development, etc...
-		-->
+                <script src="/static/js/utils.js" type="text/javascript"> </script>
 		<script src="/static/exps/optionenv-v0/js/pager.js" type="text/javascript"> </script>        
-		<script src="/static/exps/optionenv-v0/js/task.js" type="text/javascript"> </script>
+                <script src="/static/exps/optionenv-v0/js/task.js" type="text/javascript"> </script>
+		<script src="/static/exps/optionenv-v0/js/instructions.js" type="text/javascript"> </script>
                 <script src="/static/exps/optionenv-v0/js/session.js" type="text/javascript"> </script>
 
                 <script type="text/javascript">
@@ -56,10 +53,12 @@
                             $('#simulation').css('display', 'block');
                         };
 
-                        if (INSTRUCTIONS) {
+                        // Start things off. Simulated players always go straight
+                        // to the multiplayer session. (A random delay is added to 
+                        // minimize the creation of new groups on the server side)
+                        if (INSTRUCTIONS && SIMULATE==0) {
                             exp.instructions();
                         } else {
-
                             setTimeout(function() {
                                 session = new MultiplayerSession();
                             }, Math.random()*5000);
