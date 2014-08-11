@@ -46,7 +46,6 @@ var IMAGES = ['static/images/person_other.png',
 var IMAGE_DIR = 'static/exps/optionenv-v0/images/';
 
 
-
 /*
  * OPTION ENVIRONMENT
  *
@@ -363,15 +362,38 @@ function clear_buttons() {
 	$('#buttons').html('');
 };
 
+function add_next_button(callback, label, accept_keypress) {
+
+	var label = label || 'Continue';
+	var accept_keypress = accept_keypress || true;
+	
+	$('#buttons').append('<button id=btn-next class="btn btn-default btn-lg">'+label+' (X)</button>');
+	
+	if (accept_keypress) {
+
+		$(window).bind('keydown', function(e) {
+			if (e.keyCode == '88') {
+				$(window).unbind('keydown');
+				callback();
+			};
+		});
+	};
+	
+	// also set up button click handler, but need to wrap callback in function
+	// that gets rid of keypress handler
+	$('#btn-next').on('click', function() {
+		$(window).unbind('keydown');
+		callback();
+	});
+		
+};
+
 function add_stop_and_continue_buttons(continue_callback, stop_callback, accept_keypress) {
 
 	var accept_keypress = accept_keypress || true;
 
 	$('#buttons').append('<button id=btn-continue class="btn btn-default btn-info btn-lg">Continue Learning (C)</button>');
 	$('#buttons').append('<button id=btn-stop class="btn btn-default btn-primary btn-lg">Stop and Choose (S)</button>');
-
-	//$('#btn-continue').on('click', continue_callback);
-	//$('#btn-stop').on('click', stop_callback);
 
 	// if allowing keypresses, set up handlers
 	if (accept_keypress) {
@@ -737,17 +759,10 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 
 		var msg_id = 'confirm_selections_'+self.round+'.'+self.trial;
 		
-		// continue button
-		self.btn = self.below_stage.append('input')
-								.attr('value', 'OK')
-								.attr('type', 'button')
-								.attr('height', 100);
-
-
-		self.btn.on('click', function() {
-			self.btn.remove();
+		add_next_button(function() {
+			$('#btn-next').remove();
 			connection.send(msg_id, {'game': self.round, 'trial': self.trial});		
-		});
+		}, 'OK')
 
 		session.check_or_wait_for(msg_id, 
 							      [self.opponents, userid].flatten(),
@@ -768,30 +783,15 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		);
 
 
-		if (SIMULATE) simclick(self.btn[0][0]);
-
+		if (SIMULATE) simclick($('#btn-next'));
 	};
-
 
 	self.finish = function() {
 		output(['game', self.round, self.trial, 'received_id', self.chosen_id])		
 		chosen_values.push(self.gamble.options[self.chosen_id].expected_value);
-		//chosen_values.push(expected_value(self.gamble.options[self.chosen_id]));
-
 		self.set_instruction('All players have finished this game. Click below to continue to the next!');
-		
-		// continue button
-		self.btn = self.below_stage.append('input')
-								.attr('value', 'OK')
-								.attr('type', 'button')
-								.attr('height', 100);
-
-		self.btn.on('click', function() {
-			callback();
-		});
-
-		if (SIMULATE) simclick(self.btn[0][0]);
-
+		add_next_button(callback, 'OK');
+		if (SIMULATE) simclick($('#btn-next'));
 	};
 
 	self.reset_stage(self.begin);

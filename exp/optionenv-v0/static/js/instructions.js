@@ -7,8 +7,19 @@ svg_element = function(id, width, height) {
 };
 
 function add_next_instruction_button(target) {
-	$('#buttons').append('<button id=btn-continue class="btn btn-default btn-lg">Continue</button>')
-	$('#btn-continue').on('click', target);
+    $('#buttons').append('<button id=btn-continue class="btn btn-default btn-lg">Next (X)</button>');
+
+    $(window).on('keydown', function(e) {
+        if (e.keyCode == '88') {
+            $(window).unbind('keydown');
+            target();
+        };
+    });
+
+    $('#btn-continue').on('click', function() {
+        $(window).unbind('keydown');
+        target();
+    });
 };
 
 function init_instruction(obj, id) {
