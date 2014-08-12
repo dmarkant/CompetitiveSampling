@@ -97,19 +97,23 @@ var Instructions2 = function() {
 	self.urns['B'].draw();
 
 	var sampling = function() {
-		console.log('now sample');
+            console.log('now sample');
 
-		$.each(self.urns, function(i, urn) {
-			urn.listen(function() {
-                            var r = g['options'][urn.id].random();
-                            console.log(r);
-                            urn.draw_sample(r);
-                            show_buttons();
-			});
-		});
+            $('#belowStage').css('display', 'block');
+            $('#instruction').html('Click on the urn you want to learn about');
+                
+            $.each(self.urns, function(i, urn) {
+                    urn.listen(function() {
+                        var r = g['options'][urn.id].random();
+                        urn.draw_sample(r);
+                        show_buttons();
+                    });
+            });
 	};
 	
 	var show_buttons = function() {
+            $('#instruction').html('');
+            
 		console.log('show buttons');
 		$.each(self.urns, function(i, urn) { urn.stop_listening(); });
 		
@@ -129,6 +133,9 @@ var Instructions2 = function() {
 	};
 
 	var choose = function() {
+            $('#belowStage').css('display', 'block');
+            $('#instruction').html('Claim the urn that you think is more valuable');
+            
 		console.log('now choose');
 
 		$.each(self.urns, function(i, urn) {
@@ -142,6 +149,8 @@ var Instructions2 = function() {
 	};
 
 	var finish = function() {
+            $('#instruction').html('');
+            
             self.add_text('The blue person marks the urn that you chose. At the end ' +
                           'of the experiment, one of the urns you claim will be randomly ' +
                           'selected, and your bonus will be the average value of the coins ' +
@@ -175,7 +184,7 @@ var Instructions3 = function() {
 };
 
 var N_EXAMPLE_URNS = 3;
-var N_SAMPLES_PER_EXAMPLE = 30;
+var N_SAMPLES_PER_EXAMPLE = 5;
 var InstructionsTraining = function() {
 	var self = init_instruction(this, 2);
 
@@ -201,30 +210,33 @@ var Instructions4 = function() {
 
         $('h1').html('Urn #'+(urns_complete+1));
 
-        self.add_text('Click on the urn '+N_SAMPLES_PER_EXAMPLE+' times to learn about the coins it contains.');
+        $('#belowStage').css('display', 'block');
+        $('#instruction').html('Click on the urn '+N_SAMPLES_PER_EXAMPLE+' times to learn about the coins it contains.');
 
 	var counter = 0;
 
 	var guess = function() {
-		self.urn.stop_listening();
+            $('#instruction').html('');
+                
+            self.urn.stop_listening();
 
-		var t = '<form role="form" style="width:100%;">' +
-                        '<div class="form-group" style="width:300px; margin:0 auto;">' +
-                        '<label for="name">What is the <strong>highest coin</strong> you remember ' +
-                        'seeing from this urn?</label>' +
-                        '<input type="text" class="form-control" placeholder="Text input"></div>' +
-                        '<div class="form-group" style="width:300px; margin:0 auto;">' +                        
-                        '<label for="name">What is the <strong>lowest coin</strong> you remember ' +
-                        'seeing from this urn?</label>' +
-                        '<input type="text" class="form-control" placeholder="Text input"></div>' +
-                        '<div class="form-group" style="width:300px; margin:0 auto;">' +
-                        '<label for="name">What do you think is the <strong>average value</strong> of ' +
-                        'coins in this urn?</label>' +
-                        '<input type="text" class="form-control" placeholder="Text input"></div>' +
-                        '</form>';
-		self.div.append(t);
+            var t = '<form role="form" style="width:100%;">' +
+                    '<div class="form-group" style="width:300px; margin:0 auto;">' +
+                    '<label for="name">What is the <strong>highest coin</strong> you remember ' +
+                    'seeing from this urn?</label>' +
+                    '<input type="text" class="form-control" placeholder="Text input"></div>' +
+                    '<div class="form-group" style="width:300px; margin:0 auto;">' +                        
+                    '<label for="name">What is the <strong>lowest coin</strong> you remember ' +
+                    'seeing from this urn?</label>' +
+                    '<input type="text" class="form-control" placeholder="Text input"></div>' +
+                    '<div class="form-group" style="width:300px; margin:0 auto;">' +
+                    '<label for="name">What do you think is the <strong>average value</strong> of ' +
+                    'coins in this urn?</label>' +
+                    '<input type="text" class="form-control" placeholder="Text input"></div>' +
+                    '</form>';
+            self.div.append(t);
 
-        	add_next_instruction_button(finish);
+            add_next_instruction_button(finish);
                 
 	};
 
