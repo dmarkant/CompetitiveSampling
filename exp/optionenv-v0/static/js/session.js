@@ -335,6 +335,17 @@ var MultiplayerSession = function() {
 
     };
 
+    self.add_group = function(group) {
+        // if doesn't exist already, add to list of groups
+        var gids = [];
+        for (var key in self.groups) {
+            gids.push(key);
+        };
+
+        console.log(group.gid);
+        console.log(gids);
+    };
+
     self.confirm_ready_to_play = function() {
         // expose button
         var msg = '<p>All players have joined!<br />Click below to confirm that you\'re ready to play.</p>';
