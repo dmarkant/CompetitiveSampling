@@ -845,8 +845,8 @@ var CompetitiveSamplingExperiment = function() {
 	};
 
 	self.instructions = function() {
-		//Instructions1();
-		InstructionsFinal();
+		Instructions1();
+		//InstructionsFinal();
 	};
 
 	self.begin = function(group) {

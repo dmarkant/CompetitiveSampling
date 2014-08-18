@@ -2,9 +2,11 @@ instruction_text_element = function(text) {
 	return '<div class="instruction-body">'+text+'</div>';
 };
 
+
 svg_element = function(id, width, height) {
 	return '<div class="svg-container" width="'+width+'" height="'+height+'"><svg width="'+width+'" height="'+height+'" id="'+id+'"></svg></div>'
 };
+
 
 function add_next_instruction_button(target) {
     $('#buttons').append('<button id=btn-continue class="btn btn-default btn-lg">Next (N)</button>');
@@ -22,8 +24,8 @@ function add_next_instruction_button(target) {
     });
 };
 
+
 function init_instruction(obj, id) {
-	
 	obj.id = id;
 	output(['instructions', id]);
 	
@@ -186,8 +188,8 @@ var Instructions3 = function() {
     
 };
 
-var N_EXAMPLE_URNS = 3;
-var N_SAMPLES_PER_EXAMPLE = 5;
+var N_EXAMPLE_URNS = 4;
+var N_SAMPLES_PER_EXAMPLE = 25;
 var InstructionsTraining = function() {
 	var self = init_instruction(this, 2);
 
@@ -269,9 +271,6 @@ var Instructions4 = function() {
 		};
 
 	});
-	
-
-
 };
 
 
@@ -288,8 +287,6 @@ var InstructionsFinal = function() {
                   'have joined a group that you finish all of the games. Please stay focused on the ' +
                   'experiment and do not let your attention wander.');
 
-
-
     add_next_instruction_button(function() {
         $('#main').html('');
 
@@ -299,158 +296,6 @@ var InstructionsFinal = function() {
         });
         
     });
-
-};
-
-
-var Instructions2_old = function() {
-	output(['instructions', 2]);
-	var self = this;
-	pager.showPage('instruct.html');	
-	self.div = $('#container-instructions');
-
-	var t = 'In each game you will be faced with two different urns, each of which ' +
-		    'contains different kinds of coins (and different ratios of positive to ' +
-			'negative coins). The goal of each game is to choose the urn that has the ' +
-			'<strong>highest average value</strong>. At the end of the experiment, the ' + 
-			'value of the urn that you choose will get added (or subtracted, if it\'s ' +
-			'negative) to your bonus.';
-	self.div.append(instruction_text_element(t));
-
-	var t = 'For example, if the urn that you choose has 50 coins labeled "-10" and 50 ' +
-		    'coins labeled "+30", then at the end the average value for the urn, 20 cents, ' +
-			'will be added to your bonus.';
-	self.div.append(instruction_text_element(t));
-
-
-	var t = 'As you just saw, you can learn about either urn by ' +
-			'clicking on one at a time. Go ahead and try for the urns shown below:';
-	self.div.append(instruction_text_element(t));
-	
-
-	self.div.append(svg_element('urn-svg', 600, 450));
-	self.stage = d3.select('#urn-svg');
-	self.stage_w = stage.attr("width");
-	self.stage_h = stage.attr("height");	
-
-	var option_values = {'A': {'H': 25, 'L': -17, 'p': .7},
-						 'B': {'H': 20, 'L': -30, 'p': .3}};
-	
-	var nsamples = {'A': 0, 'B': 0};
-	var generate_sample = function(id) {
-		nsamples[id] += 1;
-		if (nsamples[id] > 1) {
-			self.options[id].clear_sample();
-		}
-		result = sample_from_discrete(option_values[id]);
-		self.options[id].draw_sample(result);
-	};
-	
-	self.options = {'A': new Option(self.stage,
-							  {'id': 'A',
-							   'color': 'red',
-							   'x': self.stage_w/4,
-							   'y': self.stage_h/3},
-							  generate_sample).draw().listen(),
-					'B': new Option(self.stage,
-							  {'id': 'B',
-							   'color': 'blue',
-							   'x': 3 * self.stage_w/4,
-							   'y': self.stage_h/3},
-							  generate_sample).draw().listen()};
-
-	var t = 'Each game is made up of a series of turns. On each turn, you will begin by ' +
-		    'clicking on one urn and seeing the coin that you get. You then have a choice ' + 
-			'to make: you can either 1) <strong>Continue Learning</strong>, in which case ' +
-			'you will go on to the next turn, or you can 2) <strong>Stop and Choose</strong>, ' +
-			'which means that you are ready to choose an urn, which will then be used to ' +
-			'determine your bonus.'
-	self.div.append(instruction_text_element(t));
-
-	var t = 'Click the button below to continue.'
-	self.div.append(instruction_text_element(t));
-
-	self.btn = d3.select('#container-instructions').append('input')
-								   .attr('value', 'Continue')
-			    				   .attr('type', 'button')
-								   .attr('height', 100)
-								   .style('margin-bottom', '30px');
-
-	self.btn.on('click', function() {
-		Instructions3();
-	});
-
-};
-
-
-var Instructions3_old = function() {
-	output(['instructions', 3]);
-	var self = this;
-	pager.showPage('instruct.html');	
-
-	self.div = $('#container-instructions');
-	
-	var t = 'Each game will last up to a maximum of 25 turns. At that point, you will be forced ' +
-		 'to choose one of the urns if you have not already.';
-	self.div.append(instruction_text_element(t));
-	
-	var t = 'Finally, there\'s one more rule that is important. At the start of each turn, ' +
-		    'there is a <strong>1 in 20 chance that the game will expire early</strong>. ' +
-			'If this happens, a randomly chosen urn will disappear, and whatever urn is left ' +
-			'will go toward your bonus at the end of the experiment.'
-	self.div.append(instruction_text_element(t));
-	
-	var t = 'If the game expires early, one of the urns will fade out as you can see below:';
-	self.div.append(instruction_text_element(t));
-
-
-	self.div.append(svg_element('urn-svg', 600, 280));
-	self.stage = d3.select('#urn-svg');
-	self.stage_w = stage.attr("width");
-	self.stage_h = stage.attr("height");	
-
-	var option_values = {'A': {'H': 25, 'L': -17, 'p': .7},
-						 'B': {'H': 20, 'L': -30, 'p': .3}};
-	
-	var nsamples = {'A': 0, 'B': 0};
-	var generate_sample = function(id) {
-		nsamples[id] += 1;
-		if (nsamples[id] > 1) {
-			self.options[id].clear_sample();
-		}
-		result = sample_from_discrete(option_values[id]);
-		self.options[id].draw_sample(result);
-	};
-	
-	self.options = {'A': new Option(self.stage,
-							  {'id': 'A',
-							   'color': 'red',
-							   'x': self.stage_w/4,
-							   'y': self.stage_h/2-30},
-							  generate_sample).draw(),
-					'B': new Option(self.stage,
-							  {'id': 'B',
-							   'color': 'blue',
-							   'x': 3 * self.stage_w/4,
-							   'y': self.stage_h/2-30},
-							  generate_sample).draw().expire()};
-
-
-
-	var t = 'You\'ll now play a couple of practice games to become familiar with how it works. ' +
-		    'Click the button below to start the first practice game.';
-	self.div.append(instruction_text_element(t));
-
-	self.btn = d3.select('#container-instructions').append('input')
-								   .attr('value', 'Continue')
-			    				   .attr('type', 'button')
-								   .attr('height', 100)
-								   .style('margin-bottom', '30px');
-
-	self.btn.on('click', function() {
-		InstructionsPractice();
-	});
-
 };
 
 
@@ -479,7 +324,6 @@ var InstructionsPractice = function() {
 	self.next();
 
 };
-
 
 
 var InstructionsQuiz = function() {
