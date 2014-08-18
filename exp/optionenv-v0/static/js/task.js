@@ -22,6 +22,32 @@ switch (Number(condition)) {
 };
 
 
+
+var STATES = [
+	'INITIALIZED',
+	'INSTRUCTIONS_COMPLETE',
+	'JOINED_GROUP',
+	'EXP_STARTED',
+	'EXP_COMPLETE',
+	'LEFT_EARLY',
+	'POSTQ_COMPLETE'
+];
+
+
+function update_state(newstate, callback) {
+	STATE = STATES.indexOf(newstate);
+
+	$.ajax({
+		type: 'POST',
+		url: 'updatestatus',
+		data: {'uid': userid,
+			   'state': STATES.indexOf(newstate)},
+		success: callback
+	});
+
+};
+
+
 var exp,
 	pager,
 	session,
@@ -819,7 +845,8 @@ var CompetitiveSamplingExperiment = function() {
 	};
 
 	self.instructions = function() {
-		Instructions1();
+		//Instructions1();
+		InstructionsFinal();
 	};
 
 	self.begin = function(group) {

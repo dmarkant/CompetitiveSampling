@@ -32,6 +32,7 @@
 	        var condition = "{{ condition }}"; // the condition number
                 var counterbalance = "{{ counterbalance }}"; // a number indexing counterbalancing conditions
                 var SIMULATE = "{{ simulated }}";
+                var STATE = "{{ state }}";
                 var PLAYERS_PER_SESSION = "{{ max_group_size }}";
                 var INSTRUCTIONS = true;
 		</script>
@@ -51,18 +52,23 @@
 
                         if (SIMULATE==1) {
                             $('#simulation').css('display', 'block');
-                        };
 
-                        // Start things off. Simulated players always go straight
-                        // to the multiplayer session. (A random delay is added to 
-                        // minimize the creation of new groups on the server side)
-                        if (INSTRUCTIONS && SIMULATE==0) {
-                            exp.instructions();
-                        } else {
+                            // Simulated players always go straight to 
+                            // multiplayer connection (with random delay
+                            // added to minimize creation of new groups)
                             setTimeout(function() {
                                 session = new MultiplayerSession();
                             }, Math.random()*5000);
+                            
+                        } else {
+
+                            if (INSTRUCTIONS && STATE == 0) {
+                                exp.instructions();
+                            } else {
+                                session = new MultiplayerSession();
+                            };
                         };
+
                     });
                                 
                 </script>

@@ -179,6 +179,9 @@ var Instructions3 = function() {
                   'claims an urn it is no longer available for you, and you will only be able ' +
                   'to claim one of the remaining urns.');
 
+    self.add_text('If more than one player decides to stop on the same turn, those players will ' +
+                  'claim urns in a randomly chosen order.');
+
     add_next_instruction_button(InstructionsTraining);
     
 };
@@ -276,9 +279,25 @@ var InstructionsFinal = function() {
     var self = init_instruction(this, 'final');
     self.add_text('You\'re ready to start playing!');
 
+    self.add_text('On the next screen you will join an open group. Once your group has ' +
+                  'enough players, you will begin a series of 9 games. Please be patient while ' +
+                  'waiting for other players to join, as different people will spend different ' +
+                  'amounts of time on the instructions you just completed.');
+
+    self.add_text('Since you are playing against other people, it is very important that once you ' +
+                  'have joined a group that you finish all of the games. Please stay focused on the ' +
+                  'experiment and do not let your attention wander.');
+
+
+
     add_next_instruction_button(function() {
         $('#main').html('');
-        session = new MultiplayerSession();	
+
+        update_state('INSTRUCTIONS_COMPLETE', function(data) {
+                    console.log('updated status!', data); 
+                    session = new MultiplayerSession(); 
+        });
+        
     });
 
 };

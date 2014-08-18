@@ -312,6 +312,8 @@ var MultiplayerSession = function() {
 
     self.update_groups = function(groups) {
 
+        console.log(groups);
+
         for (var i=0; i<groups.length; i++) {
 
             var gid = groups[i].groupid;
