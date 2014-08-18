@@ -395,15 +395,15 @@ function clear_buttons() {
 
 function add_next_button(callback, label, accept_keypress) {
 
-	var label = label || 'Next';
+	var label = label || 'Continue';
 	var accept_keypress = accept_keypress || true;
 	
-	$('#buttons').append('<button id=btn-next class="btn btn-default btn-lg">'+label+' (N)</button>');
+	$('#buttons').append('<button id=btn-next class="btn btn-default btn-lg">'+label+' (C)</button>');
 	
 	if (accept_keypress) {
 
 		$(window).bind('keydown', function(e) {
-			if (e.keyCode == '78') {
+			if (e.keyCode == '67') {
 				$(window).unbind('keydown');
 				callback();
 			};
@@ -793,7 +793,7 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		add_next_button(function() {
 			$('#btn-next').remove();
 			connection.send(msg_id, {'game': self.round, 'trial': self.trial});		
-		}, 'OK')
+		}, 'Continue')
 
 		session.check_or_wait_for(msg_id, 
 							      [self.opponents, userid].flatten(),
@@ -821,7 +821,7 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		output(['game', self.round, self.trial, 'received_id', self.chosen_id])		
 		chosen_values.push(self.gamble.options[self.chosen_id].expected_value);
 		self.set_instruction('All players have finished this game. Click below to continue to the next!');
-		add_next_button(callback, 'OK');
+		add_next_button(callback, 'Continue');
 		if (SIMULATE) simclick($('#btn-next'));
 	};
 
@@ -851,8 +851,11 @@ var CompetitiveSamplingExperiment = function() {
 
 	self.begin = function(group) {
 		self.group = group;
-		if (!self.instructions_completed) self.instructions();
-		else self.next();
+		if (!self.instructions_completed) {
+			self.instructions();
+		} else {
+			self.next();
+		};
 	};
 
 	self.finish = function() {
@@ -942,6 +945,19 @@ var Feedback = function() {
     	psiTurk.saveData({success: finish, error: prompt_resubmit});
 	});
 
+};
+
+
+function catch_leave() {
+	$(window).on("beforeunload", function(){
+
+		$.ajax({
+			type: 'POST',
+			url: 'leave',
+			data: {'uid': userid}
+		});
+		return "By leaving or reloading this page, you opt out of the experiment.  Are you sure you want to leave the experiment?";
+	});
 };
 
 /*

@@ -427,6 +427,7 @@ var MultiplayerSession = function() {
                 self.assigned_group = gid;
                 self.groups[gid].mygroup = true;
                 self.groups[gid].highlight_joined();
+                //catch_leave();
             };
 
             // if enough players, move on to confirmation
