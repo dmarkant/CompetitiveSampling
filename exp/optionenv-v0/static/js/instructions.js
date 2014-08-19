@@ -229,15 +229,15 @@ var Instructions4 = function() {
                     '<div class="form-group" style="width:300px; margin:0 auto;">' +
                     '<label for="name">What is the <strong>highest coin</strong> you remember ' +
                     'seeing from this urn?</label>' +
-                    '<input type="text" class="form-control" placeholder="Text input"></div>' +
+                    '<input type="text" class="form-control" placeholder="Enter number"></div>' +
                     '<div class="form-group" style="width:300px; margin:0 auto;">' +                        
                     '<label for="name">What is the <strong>lowest coin</strong> you remember ' +
                     'seeing from this urn?</label>' +
-                    '<input type="text" class="form-control" placeholder="Text input"></div>' +
+                    '<input type="text" class="form-control" placeholder="Enter number"></div>' +
                     '<div class="form-group" style="width:300px; margin:0 auto;">' +
                     '<label for="name">What do you think is the <strong>average value</strong> of ' +
                     'coins in this urn?</label>' +
-                    '<input type="text" class="form-control" placeholder="Text input"></div>' +
+                    '<input type="text" class="form-control" placeholder="Enter number"></div>' +
                     '</form>';
             self.div.append(t);
 
