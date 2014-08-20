@@ -380,3 +380,13 @@ strong {
     display: none;
     width: 200px;
 }
+
+
+.progress-bar {
+    background-color: #BDBDBD;
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
+}

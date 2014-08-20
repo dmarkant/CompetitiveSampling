@@ -86,6 +86,8 @@ function generate_option_continuous_normal() {
 
 ranran = new Random(124); // change seed 
 
+
+
 var Urn = function(id) {
 	var self = this;
 	self.id = id;
@@ -112,9 +114,9 @@ var Urn = function(id) {
 
 		self.par = {'H': o1, 'L': o2, 'p': p};
 		self.random = function() {
-			sample_from_discrete(self.par)
+			return sample_from_discrete(self.par);
 		};
-		self.expected_value = self.discrete_expected_value(self.par);
+		self.expected_value = discrete_expected_value(self.par);
 		
 	};
 

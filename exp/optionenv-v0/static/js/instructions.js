@@ -213,10 +213,15 @@ var urns_estimates = [];
 var Instructions4 = function() {
 	var self = init_instruction(this, 4);
 
-        $('h1').html('Urn #'+(urns_complete+1));
+    $('h1').html('Urn #'+(urns_complete+1));
 
-        $('#belowStage').css('display', 'block');
-        $('#instruction').html('Click on the urn '+N_SAMPLES_PER_EXAMPLE+' times to learn about the coins it contains.');
+    $('#belowStage').css('display', 'block');
+    $('#instruction').html('<div class="progress">' +
+                           '<div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">' +
+                           '</div></div>' +
+                           'Click on the urn '+N_SAMPLES_PER_EXAMPLE+' times to learn about the coins it contains.');
+
+    $('.progress-bar').removeClass('active');
 
 	var counter = 0;
 
@@ -266,6 +271,7 @@ var Instructions4 = function() {
 	self.urn.listen(function() {
 		self.urn.draw_sample(g.random(), undefined, 700, true);		
 		counter = counter + 1;
+        $('.progress-bar').css('width', 100*counter/N_SAMPLES_PER_EXAMPLE + '%');
 		if (counter == N_SAMPLES_PER_EXAMPLE) {
 			guess();
 		};
