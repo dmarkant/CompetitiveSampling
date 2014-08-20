@@ -106,12 +106,16 @@ var Urn = function(id) {
 
 	if (OPT_ENVIRONMENT == 'discrete-normal') {
 
-		// NEED TO WORK THIS OUT
+		var nd1 = NormalDistribution(10, 30);
+		var o1 = nd1.sampleInt();
+		
+		var nd2 = NormalDistribution(40, 90);
+		var o2 = nd2.sampleInt();
 
-		o1 = Math.floor(Math.random()*100);
-		o2 = Math.floor(Math.random()*(-100));
-		p = Math.floor(100*Math.random())/100;
+		var p = jStat.beta.sample(4, 4);
 
+		console.log('[o1, o2, p]:', [o1, o2, p]);
+		
 		self.par = {'H': o1, 'L': o2, 'p': p};
 		self.random = function() {
 			return sample_from_discrete(self.par);
@@ -122,6 +126,23 @@ var Urn = function(id) {
 
 	if (OPT_ENVIRONMENT == 'discrete-skewed') {
 		// fill in for discrete skewed
+		//
+		var nd1 = NormalDistribution(10, 30);
+		var o1 = nd1.sampleInt();
+		
+		var nd2 = NormalDistribution(40, 90);
+		var o2 = nd2.sampleInt();
+
+		var p = jStat.beta.sample(7, 1);
+
+		console.log('[o1, o2, p]:', [o1, o2, p]);
+		
+		self.par = {'H': o1, 'L': o2, 'p': p};
+		self.random = function() {
+			return sample_from_discrete(self.par);
+		};
+		self.expected_value = discrete_expected_value(self.par);
+		// 
 	};
 
 };
@@ -856,7 +877,12 @@ var CompetitiveSamplingExperiment = function() {
 		if (!self.instructions_completed) {
 			self.instructions();
 		} else {
-			self.next();
+
+			update_state('EXP_STARTED', function(data) {
+            	console.log('updated status (EXP_STARTED)?:', data); 
+				self.next();
+			});
+
 		};
 	};
 
@@ -951,6 +977,7 @@ var Feedback = function() {
 
 
 function catch_leave() {
+
 	$(window).on("beforeunload", function(){
 
 		$.ajax({
@@ -958,7 +985,7 @@ function catch_leave() {
 			url: 'leave',
 			data: {'uid': userid}
 		});
-		return "By leaving or reloading this page, you opt out of the experiment.  Are you sure you want to leave the experiment?";
+		//return "By leaving or reloading this page, you opt out of the experiment.  Are you sure you want to leave the experiment?";
 	});
 };
 
