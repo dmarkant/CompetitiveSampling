@@ -131,6 +131,7 @@ var GroupView = function(id, groupdata, mygroup) {
         if (self.mygroup) {
             self.highlight_joined();
         } else if (self.players.length == PLAYERS_PER_SESSION) {
+            console.log('highlighting full!');
             self.highlight_full();
         };
 
@@ -177,7 +178,9 @@ var GroupView = function(id, groupdata, mygroup) {
         console.log('removing player '+playerid+' from group');
         self.players = _.without(self.players, playerid);
         self.reset_counter(self.players.length);
-        if (self.mygroup) self.update_prompt('Someone left! Waiting for others to join...');
+
+        if (self.mygroup && message!=undefined) self.update_prompt(message);
+        if (callback != undefined) callback();
     };
 
     self.update_prompt = function(message) {
@@ -345,17 +348,18 @@ var MultiplayerSession = function() {
             var gid = groups[i].groupid;
             var mygroup = gid == self.assigned_group;
 
-            self.groups[gid] = new GroupView(i, groups[i], mygroup);
-            self.groups[gid].create($('#session-groups')).listen();
+            console.log('assigned group:', self.assigned_group);
+
+            //self.groups[gid] = new GroupView(i, groups[i], mygroup);
+            //self.groups[gid].create($('#session-groups')).listen();
             
-            /*
             // only display a group if it is mygroup or
             // (mygroup is unassigned and it has space available)
             if (mygroup || (groups[i].available > 0 && self.assigned_group==null)) {
                 self.groups[gid] = new GroupView(i, groups[i], mygroup);
                 self.groups[gid].create($('#session-groups')).listen();
             };
-            */
+            
         };
 
         if (self.assigned_group!=null) {
@@ -368,6 +372,15 @@ var MultiplayerSession = function() {
 
 
     self.confirm_ready_to_play = function() {
+        // hide other groups
+        /*console.log('hiding other groups');
+        $.each(self.groups, function(i, group) {
+            if (group.groupid != self.assigned_group) {
+                $('#group-'+group.groupid).css('display', 'none');
+            };
+        });*/
+
+
         // expose button
         var msg = '<p>All players have joined!<br />Click below to confirm that you\'re ready to play.</p>';
         self.groups[self.assigned_group].update_prompt(msg);
@@ -450,25 +463,45 @@ var MultiplayerSession = function() {
         if (msg.kind == 'joined_group') {
 
             var gid = msg.data.groupid;
-            var grp = self.groups[gid];
-            grp.add_player(msg.source);
-            grp.update_assigned();
 
-            // if message was from self, assign to group
-            if (msg.source == userid) {
-                self.assigned_group = gid;
-                self.groups[gid].mygroup = true;
-                self.groups[gid].highlight_joined();
-                catch_leave();
+            if (gid in self.groups) {
+                var grp = self.groups[gid];
+                grp.add_player(msg.source);
+                grp.update_assigned();
+
+                // if message was from self, assign to group
+                if (msg.source == userid) {
+                    self.assigned_group = gid;
+                    grp.mygroup = true;
+                    grp.highlight_joined();
+                    catch_leave();
+
+                    //console.log('hiding other groups');
+                    $.each(self.groups, function(i, group) {
+                        //console.log(self.assigned_group);
+                        //console.log(group.groupid != self.assigned_group)
+                        if (group.groupid != self.assigned_group) {
+                            //console.log('hidiing');
+                            $('#group-'+group.id).css('display', 'none');
+                        };
+                    });
+                                
+                };
+
+                if (grp.mygroup) {
+                    // if enough players, move on to confirmation
+                    if (grp.players.length == PLAYERS_PER_SESSION) {
+                        self.confirm_ready_to_play();                
+                    } else {
+                        if (msg.source == userid) grp.update_prompt('Thanks! Waiting for others to join...');
+                    };  
+                } else {
+                    if (grp.players.length == PLAYERS_PER_SESSION) {
+                        grp.highlight_full();
+                    };   
+                };
+
             };
-
-            // if enough players, move on to confirmation
-            if (grp.players.length == PLAYERS_PER_SESSION) {
-                self.confirm_ready_to_play();                
-            } else {
-                if (msg.source == userid) grp.update_prompt('Thanks! Waiting for others to join...');
-            };  
-
         };
 
         if (msg.kind == 'ready_to_play') {
@@ -483,15 +516,28 @@ var MultiplayerSession = function() {
         };
 
         if (msg.kind == 'left_group') {
-            // if someone leaves, need to adjust gracefully 
-            if (STATES[STATE] != 'EXP_STARTED') {
-                self.groups[msg.data.groupid].remove_player(msg.source, 
-                                                            'Someone left! Waiting for others to join...');
-            } else {
-                // if had already started the main experiment, abort early
-                self.groups[msg.data.groupid].remove_player(msg.source,
-                                                            'Someone left early! :(',
-                                                            self.abort);
+
+            if (msg.data.groupid in self.groups) {
+
+                if (self.assigned_group == msg.data.groupid) {
+                    // leaver was in my group
+
+                    if (STATES[STATE] != 'EXP_STARTED') {
+                        self.groups[msg.data.groupid].remove_player(msg.source, 
+                                                                    'Someone left! Waiting for others to join...');
+                    } else {
+                        // if had already started the main experiment, abort early
+                        self.groups[msg.data.groupid].remove_player(msg.source,
+                                                                    'Someone left early! :(',
+                                                                    self.abort);
+                    };
+
+
+                } else {
+                    // leaver wasn't in my group, so just update
+                    self.groups[msg.data.groupid].remove_player(msg.source);
+                };
+
             };
         };
 

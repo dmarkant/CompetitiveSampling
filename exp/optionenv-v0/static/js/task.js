@@ -750,9 +750,9 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 
 	self.my_urn_selection = function(msg_data) {
 
-		$.each(self.options, function(i, opt) { 
-			console.log('available up to now?', opt.id, opt.available); 
-		});
+		//$.each(self.options, function(i, opt) { 
+		//	console.log('available up to now?', opt.id, opt.available); 
+		//});
 
 		// remove any chosen options from the choice set
 		var taken = [];
@@ -760,7 +760,7 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 			taken.push(msg_data[i].data.chosen_id);
 		};
 
-		console.log('taken this turn?', taken);
+		//console.log('taken this turn?', taken);
 
 		var send_selection = function(chosen_id) {
 			self.chosen_id = chosen_id;
@@ -784,7 +784,7 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 				opt.listen(send_selection);			
 			};
 		});
-		console.log('still available:', avail);
+		//console.log('still available:', avail);
 		self.set_instruction('Click on the urn you want!');
 
 		// simulated choice
@@ -837,7 +837,7 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		);
 
 
-		if (SIMULATE) simclick($('#btn-next'));
+		simclick($('#btn-next'));
 	};
 
 	self.finish = function() {
