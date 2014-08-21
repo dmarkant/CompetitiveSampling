@@ -542,6 +542,15 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		self.instruction.html('<div id="turn-number">TURN '+(self.trial+1)+'</div>'+text);
 	};
 
+	self.toggle_instruction_color = function(on) {
+		if (on) {
+			//$('#turn-number').css({'color': 'green', 'border': '1px solid green'});
+			$('#turn-number').css({'background-color': '#04B404', 'color': 'white'});
+		} else {
+			//$('#turn-number').css({'color': 'gray', 'border': '1px solid gray'});	
+			$('#turn-number').css({'background-color': 'white', 'color': 'gray'});	
+		};
+	};
 
 	self.begin = function() {
 
@@ -586,6 +595,7 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 			});
 
 			self.set_instruction('Click the urn you want to learn about.');
+			self.toggle_instruction_color(true);
 
 			if (SIMULATE) {
 				var opt = avail.sample(1)[0];
@@ -607,6 +617,7 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		connection.send(msg_id, {'game': self.round, 'trial': self.trial, 'chosen_id': chosen_id, 'result': result});
 		
 		// show feedback
+		self.toggle_instruction_color(false);
 		self.options[chosen_id].draw_sample(result);
 		self.wait_for_samples();
 	};
