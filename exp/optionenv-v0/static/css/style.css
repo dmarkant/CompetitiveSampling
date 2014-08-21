@@ -93,6 +93,10 @@ strong {
   text-align: center;
 }
 
+#session-instruction {
+  margin-top: 10px;
+}
+
 #session-groups {
 }
 
@@ -101,10 +105,12 @@ strong {
 .group-coord {
   background: #E6E6E6;
   text-align: center;
-  width: 100%;
+  width: 90%;
   border: 5px solid #BDBDBD;
   text-align: center;
-  margin: 10px;
+  margin: 0 auto;
+  margin-top: 10px;
+  padding: 0px;
   padding-top: 10px;
   font-family: Verdana;
 }

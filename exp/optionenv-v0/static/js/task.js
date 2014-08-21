@@ -60,7 +60,8 @@ var exp,
 	INIT_BONUS = 1,
 	chosen_values = [],
 	SIM_P_STOP = .25,
-	OBSERVE_OPP_SAMPLES = false;
+	OBSERVE_OPP_SAMPLES = false,
+	BASE_PAYMENT = .5;
 
 // these are preloaded in exp.html
 var PAGES = ['optionenv-v0/instruct.html',
@@ -887,14 +888,37 @@ var CompetitiveSamplingExperiment = function() {
 	};
 
 	self.finish = function() {
+		update_state('EXP_COMPLETE', function(data) {
+			console.log('updated status (EXP_COMPLETE)?:', data); 
+		});
 		Feedback();
 	};
 
+	self.abort = function() {
+		update_state('EXP_ABORTED', function(data) {
+			console.log('updated status (EXP_ABORTED)?:', data); 
+		});
+		Abort();
+	};
+	
 	self.proceed = self.begin;
-
 };
 
 
+var Abort = function() {
+	$('#main').html('');
+	var self = init_instruction(this, 'abort');
+	$('h1').css('display', 'none');	
+	self.add_text('Oops! Looks like there was an error or someone in your group left the experiment '+
+				  'early.');
+				  
+	self.add_text('Unfortunately, you won\'t be able to complete the rest of the experiment. However, '+
+				  'you will still receive your base payment of $'+BASE_PAYMENT.toFixed(2)+'. Please click below '+
+				  'to continue.');
+	
+	//add_next_instruction_button(Instructions4);
+
+};
 
 
 

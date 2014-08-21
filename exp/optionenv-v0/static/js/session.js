@@ -348,7 +348,7 @@ var MultiplayerSession = function() {
             var gid = groups[i].groupid;
             var mygroup = gid == self.assigned_group;
 
-            console.log('assigned group:', self.assigned_group);
+            //console.log('assigned group:', self.assigned_group);
 
             //self.groups[gid] = new GroupView(i, groups[i], mygroup);
             //self.groups[gid].create($('#session-groups')).listen();
@@ -368,6 +368,8 @@ var MultiplayerSession = function() {
             };
         };
 
+        $('#session-instruction').html('Join one of the groups below (if all are filled, '+
+                                       'try reloading the page.)');
     };
 
 
@@ -476,6 +478,8 @@ var MultiplayerSession = function() {
                     grp.highlight_joined();
                     catch_leave();
 
+                    $('#session-instruction').html('');
+
                     //console.log('hiding other groups');
                     $.each(self.groups, function(i, group) {
                         //console.log(self.assigned_group);
@@ -549,9 +553,11 @@ var MultiplayerSession = function() {
     };
 
     self.abort = function() {
-
         console.log('finishing the experiment because something went wrong.');
 
+        setTimeout(function() {
+            exp.abort();
+        }, 500);
     };
 
     // open one way channel to push messages from server
