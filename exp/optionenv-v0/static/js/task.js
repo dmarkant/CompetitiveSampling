@@ -1015,9 +1015,10 @@ var Exit = function() {
 	console.log('COMPLETE');
 
 	if (ADURL != "None") {
-	
+
 		// save data one last time here?
-		window.location=ADURL + "/complete?uniqueId=" + UNIQUEID;
+		var newloc ='http://'+ ADURL + "?uniqueId=" + UNIQUEID;
+		window.location=newloc;
 
 	};
 };
