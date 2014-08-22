@@ -52,20 +52,23 @@ var exp,
 	pager,
 	session,
 	connection,
+	final_bonus,
 	PLAYERS_PER_SESSION = 2,	
 	N_OPTIONS = [2, 4, 8, 2, 4, 8, 2, 4, 8];
 	N_PRACTICE_GAMES = 2,
-	NROUNDS = 9,
+	NROUNDS = 1,
 	MAX_N_TRIALS = 50,
-	INIT_BONUS = 1,
+	INIT_BONUS = 0,
 	chosen_values = [],
 	SIM_P_STOP = .25,
 	OBSERVE_OPP_SAMPLES = false,
 	BASE_PAYMENT = .5;
 
+
 // these are preloaded in exp.html
 var PAGES = ['optionenv-v0/instruct.html',
-			 'optionenv-v0/stage.html'];
+			 'optionenv-v0/stage.html',
+			 'optionenv-v0/feedback.html'];
 
 var IMAGES = ['static/images/person_other.png',
 			  'static/images/person_self.png'];
@@ -899,6 +902,17 @@ var CompetitiveSamplingExperiment = function() {
 	};
 
 	self.finish = function() {
+
+		// calculate final bonus
+		final_bonus = INIT_BONUS;
+		for (var i=0; i<NROUNDS; i++) {
+			final_bonus += chosen_values[i]/1000;
+		};
+		output(['instructions', 'feedback', 'final_bonus', final_bonus]);
+
+		// get rid of leaving trigger
+		$(window).unbind("beforeunload");
+		
 		update_state('EXP_COMPLETE', function(data) {
 			console.log('updated status (EXP_COMPLETE)?:', data); 
 		});
@@ -927,37 +941,29 @@ var Abort = function() {
 				  'you will still receive your base payment of $'+BASE_PAYMENT.toFixed(2)+'. Please click below '+
 				  'to continue.');
 	
-	//add_next_instruction_button(Instructions4);
+	add_next_instruction_button(Exit);
 
 };
 
 
 
 var Feedback = function() {
-	output(['instructions', 'feedback']);
-
-	// calculate final bonus
-	var final_bonus = INIT_BONUS;
-	for (var i=0; i<NROUNDS; i++) {
-		final_bonus += chosen_values[i]/100;
-	};
-	output(['instructions', 'feedback', 'final_bonus', final_bonus]);
-
-
+	$('#main').html('');
+	$('#session').html('');
 	var self = this;
-	pager.showPage('feedback.html');	
+	pager.showPage('optionenv-v0/feedback.html');	
 	self.div = $('#container-instructions');
+	
 
 	var t = 'All done! Now you can see the results of your choices across all the games you ' +
 		    'played, and how they impact your final bonus:';
 	self.div.append(instruction_text_element(t));
 
-	html =  '<div id=feedback-table>'
-	html +=	'<div class=row><div class=left>Initial bonus:</div><div class=right>$'+(INIT_BONUS).toFixed(2)+'</div></div>'
+	html =  '<div id=feedback-table>';
 	for (var i=0; i<NROUNDS; i++) {
-		html +=	'<div class=row><div class=left>Game '+(i+1)+':</div><div class=right>'+(chosen_values[i]/100).toFixed(2)+'</div></div>'	
+		html +=	'<div class=row><div class=left>Game '+(i+1)+':</div><div class=right>'+(chosen_values[i]/100).toFixed(2)+'</div></div>';	
 	};
-	html +=	'<div class=row style="border-top: 1px solid black; font-weight: bold;"><div class=left>Final bonus:</div><div class=right>$'+Math.max(0, final_bonus).toFixed(2)+'</div></div>'	
+	html +=	'<div class=row style="border-top: 1px solid black; font-weight: bold;"><div class=left>Final bonus:</div><div class=right>$'+Math.max(0, final_bonus).toFixed(2)+'</div></div>';	
 	html += '</div>'
 	self.div.append(html);
 
@@ -965,47 +971,24 @@ var Feedback = function() {
 	var t = 'You will be eligible to receive the bonus after you\'ve answered the following questions:'
 	self.div.append(instruction_text_element(t));
 
-	var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your HIT. This might happen if you lose your internet connection. Press the button to resubmit.</p><button id='resubmit'>Resubmit</button>";
+	var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your HIT. Press the button to resubmit.</p><button id='resubmit'>Resubmit</button>";
 
 	record_responses = function() {
 
-		psiTurk.recordTrialData(['postquestionnaire', 'submit']);
+		//psiTurk.recordTrialData(['postquestionnaire', 'submit']);
 
 		$('textarea').each( function(i, val) {
-			psiTurk.recordUnstructuredData(this.id, this.value);
+			//psiTurk.recordUnstructuredData(this.id, this.value);
 		});
 		$('select').each( function(i, val) {
-			psiTurk.recordUnstructuredData(this.id, this.value);		
+			//psiTurk.recordUnstructuredData(this.id, this.value);		
 		});
 
+		Exit();
 	};
 	
-	finish = function() {
-		completeHIT();
-	};
-	
-	prompt_resubmit = function() {
-		replaceBody(error_message);
-		$("#resubmit").click(resubmit);
-	};
-
-	resubmit = function() {
-		replaceBody("<h1>Trying to resubmit...</h1>");
-		reprompt = setTimeout(prompt_resubmit, 10000);
-		
-		psiTurk.saveData({
-			success: function() {
-				clearInterval(reprompt); 
-				finish();
-			}, 
-			error: prompt_resubmit}
-		);
-	};
-	
-	$("#continue").click(function () {
+	$("#btn-submit").click(function() {
 		record_responses();
-		psiTurk.teardownTask();
-    	psiTurk.saveData({success: finish, error: prompt_resubmit});
 	});
 
 };
@@ -1024,11 +1007,19 @@ function catch_leave() {
 	});
 };
 
-/*
-var completeHIT = function() {
-	// save data one last time here?
-	window.location= adServerLoc + "/complete?uniqueId=" + psiTurk.taskdata.id;
-}
-*/
+
+
+
+var Exit = function() {
+
+	console.log('COMPLETE');
+
+	if (ADURL != "None") {
+	
+		// save data one last time here?
+		window.location=ADURL + "/complete?uniqueId=" + UNIQUEID;
+
+	};
+};
 
 // vi: noexpandtab tabstop=4 shiftwidth=4
