@@ -425,7 +425,7 @@ function add_next_button(callback, label, accept_keypress) {
 	var label = label || 'Continue';
 	var accept_keypress = accept_keypress || true;
 	
-	$('#buttons').append('<button id=btn-next class="btn btn-default btn-lg">'+label+' (C)</button>');
+	$('#buttons').append('<button id=btn-next class="btn btn-default btn-lg">'+label+' (press \'C\')</button>');
 	
 	if (accept_keypress) {
 
@@ -452,8 +452,8 @@ function add_stop_and_continue_buttons(continue_callback, stop_callback, accept_
 
 	var accept_keypress = accept_keypress || true;
 
-	$('#buttons').append('<button id=btn-continue class="btn btn-default btn-info btn-lg">Continue Learning (C)</button>');
-	$('#buttons').append('<button id=btn-stop class="btn btn-default btn-primary btn-lg">Stop and Choose (S)</button>');
+	$('#buttons').append('<button id=btn-continue class="btn btn-default btn-info btn-lg">Continue Learning (press \'C\')</button>');
+	$('#buttons').append('<button id=btn-stop class="btn btn-default btn-primary btn-lg">Stop and Choose (press \'S\')</button>');
 
 	// if allowing keypresses, set up handlers
 	if (accept_keypress) {

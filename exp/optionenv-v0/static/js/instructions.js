@@ -9,7 +9,7 @@ svg_element = function(id, width, height) {
 
 
 function add_next_instruction_button(target) {
-    $('#buttons').append('<button id=btn-continue class="btn btn-default btn-lg">Continue (C)</button>');
+    $('#buttons').append('<button id=btn-continue class="btn btn-default btn-lg">Continue (press \'C\')</button>');
 
     $(window).on('keydown', function(e) {
         if (e.keyCode == '67') {
