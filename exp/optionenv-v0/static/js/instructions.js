@@ -18,10 +18,12 @@ function add_next_instruction_button(target) {
         };
     });
 
-    $('#btn-continue').on('click', function() {
-        $(window).unbind('keydown');
-        target();
-    });
+    if (SIMULATE==1) {
+        $('#btn-continue').on('click', function() {
+            $(window).unbind('keydown');
+            target();
+        });
+    };
 };
 
 
@@ -66,6 +68,7 @@ var Instructions1 = function() {
 			'have the chance to claim urns that you think are valuable, and at the end you will receive ' +
 			'a bonus based on the <b>average value of the coins</b> inside the urns you select.');
 
+    self.add_text('Press the \'C\' button to continue.');
 	add_next_instruction_button(Instructions2);
 };
 

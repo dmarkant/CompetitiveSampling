@@ -56,7 +56,7 @@ var exp,
 	PLAYERS_PER_SESSION = 2,	
 	N_OPTIONS = [2, 4, 8, 2, 4, 8, 2, 4, 8];
 	N_PRACTICE_GAMES = 2,
-	NROUNDS = 1,
+	NROUNDS = 9,
 	MAX_N_TRIALS = 50,
 	INIT_BONUS = 0,
 	chosen_values = [],
@@ -439,10 +439,12 @@ function add_next_button(callback, label, accept_keypress) {
 	
 	// also set up button click handler, but need to wrap callback in function
 	// that gets rid of keypress handler
-	$('#btn-next').on('click', function() {
-		$(window).unbind('keydown');
-		callback();
-	});
+	if (SIMULATE==1) {
+		$('#btn-next').on('click', function() {
+			$(window).unbind('keydown');
+			callback();
+		});
+	};
 		
 };
 
@@ -474,14 +476,17 @@ function add_stop_and_continue_buttons(continue_callback, stop_callback, accept_
 
 		// also set up button click handler, but need to wrap callback in function
 		// that gets rid of keypress handler
-		$('#btn-continue').on('click', function() {
-			$(window).unbind('keydown');
-			continue_callback();
-		});
-		$('#btn-stop').on('click', function() {
-			$(window).unbind('keydown');			
-			stop_callback();
-		});
+		
+		if (SIMULATE==1) {
+			$('#btn-continue').on('click', function() {
+				$(window).unbind('keydown');
+				continue_callback();
+			});
+			$('#btn-stop').on('click', function() {
+				$(window).unbind('keydown');			
+				stop_callback();
+			});
+		};
 
 
 	} else {
