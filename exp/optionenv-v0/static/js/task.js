@@ -113,19 +113,19 @@ var generate_gamble_from_optset = function(round) {
 									   opt['B_ev'])};
 
 			
-	return options;
+	return {'options': options};
 };
 
 
 
 var UrnFromPar = function(id, low, high, p, ev) {
-
+	var self = this;
 	self.par = {'H': high, 'L': low, 'p': p};
 	self.expected_value = ev;
 	self.random = function() {
 		return sample_from_discrete(self.par);
 	};
-
+	return self;
 };
 
 
