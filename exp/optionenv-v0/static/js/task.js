@@ -10,9 +10,23 @@ function log(data) {
 
 
 switch (Number(condition)) {
+	
+	case 0:
+		OPT_CONDITION = 0;
+		break;
+	case 1:
+		OPT_CONDITION = 1;
+		break;
+
+};
+
+
+/*
+switch (Number(condition)) {
 
 	case 0:
 		OPT_ENVIRONMENT = 'continuous-normal';
+		OPT_CONDITION = 0;
 		break;
 	
 	case 1:
@@ -28,7 +42,7 @@ switch (Number(condition)) {
 		break;
 		
 };
-
+*/
 
 
 var STATES = [
@@ -111,8 +125,6 @@ var generate_gamble_from_optset = function(round) {
 									   opt['B_high'], 
 									   opt['B_p'], 
 									   opt['B_ev'])};
-
-			
 	return {'options': options};
 };
 
@@ -549,8 +561,6 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 	self.practice = practice;
 	self.trial = -1;
 
-	console.log(sample_uniform_with_seed(2, OPTSETS, self.group.groupid));
-
 	self.opponents = self.group.get_opponents(round);
 	self.opponents_active = [];
 	self.opponents_stopped = [];
@@ -946,7 +956,7 @@ var CompetitiveSamplingExperiment = function() {
 
 		log('resampling options based on group id');
 		OPTSETS_SAMPLED = sample_uniform_with_seed(NROUNDS, OPTSETS, self.group.groupid);
-		
+	
 		if (!self.instructions_completed) {
 			self.instructions();
 		} else {

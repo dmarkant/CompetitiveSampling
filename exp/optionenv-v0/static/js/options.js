@@ -14,7 +14,7 @@ function load_option_sets(path) {
 			success: function(data) {
 				$.each(data.split('\n'), function() {
 					var optset = this.split(',');
-					if (optset[0]!="") {
+					if (optset[0]!="" && optset[2]==OPT_CONDITION) {
 						results.push({'id': Number(optset[1]),
 									  'env': Number(optset[2]),
 									  'A_low': Number(optset[3]),
@@ -48,4 +48,21 @@ function sample_uniform_with_seed(n, set, seed) {
 
 };
 
+/*
+function sample_balanced_with_seed(seed, set, factor, n_per_cell) {
+    // divide the set according to the factor provided. Then within
+    // each subset, pick a random starting point and sample n_per_cell
+    // items
+    //
+    // Returns a combined, shuffled list
 
+    console.log('resampled balanced');
+    console.log(seed, factor, n_per_cell);
+
+    
+
+    var  = _.where(set, {'env': 0});
+    console.log(tmp);
+
+};
+*/
