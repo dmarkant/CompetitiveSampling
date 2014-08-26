@@ -1,5 +1,13 @@
 
 
+function log(data) {
+
+	// add to output file
+
+	console.log(data);
+
+};
+
 
 switch (Number(condition)) {
 
@@ -53,10 +61,12 @@ var exp,
 	session,
 	connection,
 	final_bonus,
-	PLAYERS_PER_SESSION = 2,	
-	N_OPTIONS = [2, 4, 8, 2, 4, 8, 2, 4, 8];
+	PLAYERS_PER_SESSION = 2,
+	N_OPTIONS = [2, 2, 2, 2, 2, 2, 2, 2, 2];
 	N_PRACTICE_GAMES = 2,
-	NROUNDS = 9,
+	OPTIONS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+	OPTION_FADE_OPACITY = 0.3,
+	NROUNDS = 8,
 	MAX_N_TRIALS = 50,
 	INIT_BONUS = 0,
 	chosen_values = [],
@@ -77,21 +87,49 @@ var IMAGE_DIR = 'static/exps/optionenv-v0/images/';
 
 
 /*
- * OPTION ENVIRONMENT
+ * LOADING OPTION SETS
  *
  */
-function generate_option_continuous_normal() {
+var OPTSETS_PATH = 'static/exps/optionenv-v0/exp1_option_sets.csv';
+var OPTSETS = load_option_sets(OPTSETS_PATH);
 
-	// sample a mean value from uniform
-	mu = rand_range(20, 80);
-	
+// replace with randomization based on groupid
+var OPTSETS_SAMPLED = OPTSETS.slice(0, NROUNDS);
+
+
+var generate_gamble_from_optset = function(round) {
+	var opt = OPTSETS_SAMPLED[round];
+	console.log('creating gamble from optset record for round '+round);
+
+	var options = {'A': new UrnFromPar('A', 
+									   opt['A_low'], 
+									   opt['A_high'], 
+									   opt['A_p'], 
+									   opt['A_ev']),
+				   'B': new UrnFromPar('B', 
+									   opt['B_low'], 
+									   opt['B_high'], 
+									   opt['B_p'], 
+									   opt['B_ev'])};
+
+			
+	return options;
+};
+
+
+
+var UrnFromPar = function(id, low, high, p, ev) {
+
+	self.par = {'H': high, 'L': low, 'p': p};
+	self.expected_value = ev;
+	self.random = function() {
+		return sample_from_discrete(self.par);
+	};
 
 };
 
+
 ranran = new Random(124); // change seed 
-
-
-
 var Urn = function(id) {
 	var self = this;
 	self.id = id;
@@ -152,6 +190,8 @@ var Urn = function(id) {
 };
 
 
+
+
 var sample_from_discrete = function(option) {
 
 	if (Math.random() < option.p) {
@@ -178,8 +218,9 @@ var generate_gamble = function(N) {
 };
 
 
-var OPTIONS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-var OPTION_FADE_OPACITY = 0.3;
+
+
+
 
 var Option = function(stage, id, n_options) {
 
@@ -420,6 +461,7 @@ function clear_buttons() {
 	$('#buttons').html('');
 };
 
+
 function add_next_button(callback, label, accept_keypress) {
 
 	var label = label || 'Continue';
@@ -497,6 +539,8 @@ function add_stop_and_continue_buttons(continue_callback, stop_callback, accept_
 };
 
 
+
+
 var CompetitiveSamplingGame = function(group, round, callback, practice) {
 
 	var self = this;
@@ -505,6 +549,8 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 	self.practice = practice;
 	self.trial = -1;
 
+	console.log(sample_uniform_with_seed(2, OPTSETS, self.group.groupid));
+
 	self.opponents = self.group.get_opponents(round);
 	self.opponents_active = [];
 	self.opponents_stopped = [];
@@ -512,7 +558,10 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 	self.stop_trial = 1000;
 
 	self.n_options = N_OPTIONS[round];
-	self.gamble = generate_gamble(self.n_options);
+
+	//self.gamble = generate_gamble(self.n_options);
+	self.gamble = generate_gamble_from_optset(self.round);
+
 
 	output(['game', self.round, 'practice', self.practice]);
 	output(['game', self.round, 'opponents', self.opponents]);	
@@ -894,6 +943,10 @@ var CompetitiveSamplingExperiment = function() {
 
 	self.begin = function(group) {
 		self.group = group;
+
+		log('resampling options based on group id');
+		OPTSETS_SAMPLED = sample_uniform_with_seed(NROUNDS, OPTSETS, self.group.groupid);
+		
 		if (!self.instructions_completed) {
 			self.instructions();
 		} else {
