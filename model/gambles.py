@@ -43,8 +43,8 @@ def value_given_outcomes(option, N_pos, N_neg):
 
 
 def expected_value(option):
-    O_pos, O_neg, p_pos = option
-    return O_pos * p_pos + O_neg * (1 - p_pos)
+    A, B, p_A = option
+    return p_A * A + (1 - p_A) * B
 
 
 def midpoint(option):
@@ -61,6 +61,17 @@ def gamble_differences(g):
     return expected_value(g['H']) - expected_value(g['L']), \
            midpoint(g['H']) - midpoint(g['L']), \
            spread(g['H']) - spread(g['L'])
+
+
+
+
+def expected_absolute_error(opt, N):
+    ev = expected_value(opt)
+    est_values, probs = option_sample_means_and_probs(opt, N)
+    w_abs_error = [probs[i] * np.abs(est_values[i] - ev) for i in range(len(est_values))]
+    return np.sum(w_abs_error)
+
+
 
 
 
@@ -202,12 +213,12 @@ def print_gamble(opt):
 
 
 def option_sample_means_and_probs(option, N):
-    pos, neg, p = option
+    A, B, p = option
     mns = []
     probs = []
 
     for n in range(0, N + 1):
-        mn = (n * pos + (N - n) * neg) / float(N)
+        mn = (n * A + (N - n) * B) / float(N)
         prob = binom.pmf(n, N, p)
         mns.append(mn)
         probs.append(prob)
