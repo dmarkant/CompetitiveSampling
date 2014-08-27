@@ -288,7 +288,7 @@ var InstructionsFinal = function() {
     self.add_text('You\'re ready to start playing!');
 
     self.add_text('On the next screen you will join an open group. Once your group has ' +
-                  'enough players, you will begin a series of 9 games. Please be patient while ' +
+                  'enough players, you will begin a series of '+NROUNDS+' games. Please be patient while ' +
                   'waiting for other players to join, as different people will spend different ' +
                   'amounts of time on the instructions you just completed.');
 
