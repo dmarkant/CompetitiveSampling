@@ -102,7 +102,7 @@ def option_sample_sums_and_probs(option, N):
     that option, find the set of possible observed means and the
     probabilities of those outcomes"""
 
-    pos, neg, p = option
+    pos, neg, p = option[:3]
 
     mns = []
     probs = []
@@ -206,6 +206,16 @@ def expected_mean_difference(options, num_samples):
 
     # here have to have at least one sample allocated to each option
     pass
+
+
+def expected_loss(options, num_samples):
+    ev_high = expected_value(options['H'])
+    ev_low = expected_value(options['L'])
+
+    pH = prob_choose_H_all_allocations(options, num_samples)
+    best = np.max([ev_high, ev_low])
+
+    return ev_high - (pH * ev_high + (1 - pH) * ev_low)
 
 
 def expected_gain_given_fixed_expiration(options, p_expire, max_samples, start=None):

@@ -36,6 +36,7 @@ import numpy as np
 from scipy.stats import binom
 from numpy.random import binomial
 from gambles import *
+import random
 
 
 
@@ -152,4 +153,113 @@ def competitive_expected_gain(options, agent_num_samples, opponent_num_samples):
                     expected_value(options['L']) * (1 - pH_opponent)
 
     return gain_agent, gain_opponent
+
+
+
+
+
+"""
+Agent-based simulation
+
+
+"""
+def sample_stop_trials(comp_env, T_MAX, C):
+
+    if comp_env is 'uniform':
+        stoptrials = np.random.randint(1, T_MAX, C)
+
+    return stoptrials
+
+
+def sample_preference_orders(options, n_samples, n_stopping):
+    pref_orders = []
+    for i in range(n_stopping):
+
+        # assign sampling trials to options
+        sampled_options = np.random.choice(range(len(options)), n_samples)
+
+        # count samples per option
+        n_sample_by_option = [np.sum(sampled_options==i) for i in range(len(options))]
+
+        # get estimated value of each option based on # of samples
+        est_value = np.array([simulate_sample_mean(options[i], n_sample_by_option[i]) for i in range(len(options))])
+        pref_orders.append((-est_value).argsort())
+
+    return pref_orders
+
+
+def resolve_choices(consumed, pref_orders, choice_order, includeself=False):
+    obtained_index = None
+
+    #print 'already consumed:', consumed
+
+    # for each chooser, go through ranked preferences and
+    # consume the first one that is available
+    for chooser in choice_order:
+
+        #print 'chooser:', chooser
+
+        done = False
+        i = -1
+        while not done:
+            i += 1
+
+            #print 'i:', i
+
+            option_index = pref_orders[chooser][i]
+            if option_index not in consumed:
+                consumed.append(option_index)
+                done = True
+
+                if chooser==0 and includeself:
+                    obtained_index = option_index
+
+    return consumed, obtained_index
+
+
+
+def sim_obtained_loss(opt, C=1, target_trial=1, T_MAX=50, comp_env='uniform'):
+    """
+    Agent-based simulation, returning the obtained loss relative to best option
+    opt: option set
+
+    Keyword args:
+    C -- number of competitors (in addition to self)
+    target_trial -- trial on which loss is evaluated
+    comp_env -- the competition environment; belief about others' stopping
+    """
+    options = [opt['H'][:3], opt['L'][:3]]
+    expected_values = [opt['H'][3], opt['L'][3]]
+
+    stoptrials = sample_stop_trials(comp_env, T_MAX, C)
+    consumed = []
+    obtained_value = None
+
+    for trial in range(1, target_trial+1):
+
+        # get preference orders for all stopping competitors
+        pref_orders = []
+        n_stopping = np.sum(stoptrials==trial)
+        other_pref_orders = sample_preference_orders(options, trial, n_stopping)
+
+        if trial==target_trial:
+            pref_orders = sample_preference_orders(options, trial, 1)
+            n_stopping += 1 # add self to number of people stopping on this trial
+
+        # get preference orders for others
+        for po in other_pref_orders:
+            pref_orders.append(po)
+
+        #print 'pref_orders:', pref_orders
+
+        # get randomized choice order
+        choice_order = range(n_stopping)
+        random.shuffle(choice_order)
+
+        # resolve choices
+        consumed, obtained_ind = resolve_choices(consumed, pref_orders, choice_order, includeself=True if trial==target_trial else False)
+
+    obtained_value = expected_values[obtained_ind]
+    best = np.max(expected_values)
+    return best - obtained_value
 

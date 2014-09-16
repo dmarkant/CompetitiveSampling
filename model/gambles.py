@@ -43,7 +43,7 @@ def value_given_outcomes(option, N_pos, N_neg):
 
 
 def expected_value(option):
-    A, B, p_A = option
+    A, B, p_A = option[:3]
     return p_A * A + (1 - p_A) * B
 
 
@@ -213,7 +213,7 @@ def print_gamble(opt):
 
 
 def option_sample_means_and_probs(option, N):
-    A, B, p = option
+    A, B, p = option[:3]
     mns = []
     probs = []
 
