@@ -182,7 +182,12 @@ def sample_preference_orders(options, n_samples, n_stopping):
         n_sample_by_option = [np.sum(sampled_options==i) for i in range(len(options))]
 
         # get estimated value of each option based on # of samples
-        est_value = np.array([simulate_sample_mean(options[i], n_sample_by_option[i]) for i in range(len(options))])
+        if np.min(n_sample_by_option)==0:
+            # if one of the options hasn't been sampled yet, prefer the one
+            # that has
+            est_value = np.array([n for n in n_sample_by_option])
+        else:
+            est_value = np.array([simulate_sample_mean(options[i], n_sample_by_option[i], prior=50) for i in range(len(options))])
         pref_orders.append((-est_value).argsort())
 
     return pref_orders
@@ -191,20 +196,14 @@ def sample_preference_orders(options, n_samples, n_stopping):
 def resolve_choices(consumed, pref_orders, choice_order, includeself=False):
     obtained_index = None
 
-    #print 'already consumed:', consumed
-
     # for each chooser, go through ranked preferences and
     # consume the first one that is available
     for chooser in choice_order:
-
-        #print 'chooser:', chooser
 
         done = False
         i = -1
         while not done:
             i += 1
-
-            #print 'i:', i
 
             option_index = pref_orders[chooser][i]
             if option_index not in consumed:
@@ -262,4 +261,54 @@ def sim_obtained_loss(opt, C=1, target_trial=1, T_MAX=50, comp_env='uniform'):
     obtained_value = expected_values[obtained_ind]
     best = np.max(expected_values)
     return best - obtained_value
+
+
+def sim_obtained_loss_given_stop_time(opt, comp_stop_trial, own_stop_trial):
+    """
+    Agent-based simulation, returning the obtained loss relative to best option
+    opt: option set
+
+    Keyword args:
+    C -- number of competitors (in addition to self)
+    target_trial -- trial on which loss is evaluated
+    comp_env -- the competition environment; belief about others' stopping
+    """
+    options = [opt['H'][:3], opt['L'][:3]]
+    expected_values = [opt['H'][3], opt['L'][3]]
+
+    stoptrials = np.array([comp_stop_trial])
+    target_trial = own_stop_trial
+    consumed = []
+    obtained_value = None
+
+    for trial in range(1, target_trial+1):
+
+        # get preference orders for all stopping competitors
+        pref_orders = []
+
+        n_stopping = np.sum(stoptrials==trial)
+        other_pref_orders = sample_preference_orders(options, trial, n_stopping)
+
+        if trial==target_trial:
+            pref_orders = sample_preference_orders(options, trial, 1)
+            n_stopping += 1 # add self to number of people stopping on this trial
+
+        # get preference orders for others
+        for po in other_pref_orders:
+            pref_orders.append(po)
+
+        #print n_stopping
+        #print pref_orders
+
+        # get randomized choice order
+        choice_order = range(n_stopping)
+        random.shuffle(choice_order)
+
+        # resolve choices
+        consumed, obtained_ind = resolve_choices(consumed, pref_orders, choice_order, includeself=True if trial==target_trial else False)
+
+    obtained_value = expected_values[obtained_ind]
+    best = np.max(expected_values)
+    return best - obtained_value
+
 
