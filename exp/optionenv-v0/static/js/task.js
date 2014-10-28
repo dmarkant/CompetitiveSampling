@@ -10,39 +10,18 @@ function log(data) {
 
 
 switch (Number(condition)) {
-	
+
 	case 0:
+		OPT_ENVIRONMENT = 'discrete-normal';
 		OPT_CONDITION = 0;
 		break;
+	
 	case 1:
+		OPT_ENVIRONMENT = 'discrete-skewed';
 		OPT_CONDITION = 1;
 		break;
 
 };
-
-
-/*
-switch (Number(condition)) {
-
-	case 0:
-		OPT_ENVIRONMENT = 'continuous-normal';
-		OPT_CONDITION = 0;
-		break;
-	
-	case 1:
-		OPT_ENVIRONMENT = 'continuous-skewed';
-		break;
-
-	case 2:
-		OPT_ENVIRONMENT = 'discrete-normal';
-		break;
-
-	case 3:
-		OPT_ENVIRONMENT = 'discrete-skewed';
-		break;
-		
-};
-*/
 
 
 var STATES = [
@@ -76,7 +55,7 @@ var exp,
 	connection,
 	final_bonus,
 	PLAYERS_PER_SESSION = 2,
-	N_OPTIONS = [2, 2, 2, 2, 2, 2, 2, 2, 2];
+	N_OPTIONS = [4, 4, 2, 4, 2, 4, 2, 4];
 	N_PRACTICE_GAMES = 2,
 	OPTIONS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
 	OPTION_FADE_OPACITY = 0.3,
@@ -415,8 +394,6 @@ var Option = function(stage, id, n_options) {
 	self.draw_samples_by_opponents = function() {
 
 		self.opp_samples = self.disp.append('g').attr('id', 'opp_samples');
-
-		console.log(self.n_opp_samples);
 
 		for (var i=0; i<self.n_opp_samples; i++) {
 
@@ -947,8 +924,8 @@ var CompetitiveSamplingExperiment = function() {
 	};
 
 	self.instructions = function() {
-		//Instructions1();
-		InstructionsFinal();
+		Instructions1();
+		//InstructionsFinal();
 	};
 
 	self.begin = function(group) {
