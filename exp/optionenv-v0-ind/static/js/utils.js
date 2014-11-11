@@ -66,21 +66,6 @@ Array.prototype.writeIndices = function( n ) {
 
 
 
-Array.prototype.sum = function(selector) {
-    if (typeof selector !== 'function') {
-        selector = function(item) {
-            return item;
-        }
-    }
-    var sum = 0;
-    for (var i = 0; i < this.length; i++) {
-        sum += selector(this[i]);
-    }
-    return sum;
-};
-
-
-
 function range(N) {
     return [].writeIndices(N);
 }
@@ -112,6 +97,10 @@ function descending (a,b) {
     return b-a;
 };
 
+
+function output(arr) {
+    console.log(arr);
+};
 
 /*
  *  normRand: returns normally distributed random numbers

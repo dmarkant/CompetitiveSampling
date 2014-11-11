@@ -65,11 +65,8 @@ function simclick(obj, rt) {
 
 
 function get_matchup(n_players, index) {
-   
-    if (n_players == 1) {
-        return [[0]];
     
-    } else if (n_players == 2) {
+    if (n_players == 2) {
         return [[0, 1]];
 
     } else if (n_players == 4) {
@@ -106,7 +103,6 @@ var GroupView = function(id, groupdata, mygroup) {
     var self = this;
     self.id = id;
     self.groupid = groupdata.groupid;
-    self.seed    = groupdata.seed;
     self.players = groupdata.players;
     self.mygroup = mygroup;
     self.counter = 0;

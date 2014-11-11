@@ -1,32 +1,26 @@
 
 
+function log(data) {
+
+	// add to output file
+
+	console.log(data);
+
+};
+
 
 switch (Number(condition)) {
 
 	case 0:
-		COMPETING = false;
 		OPT_ENVIRONMENT = 'discrete-normal';
 		OPT_CONDITION = 0;
 		break;
 	
 	case 1:
-		COMPETING = false;
 		OPT_ENVIRONMENT = 'discrete-skewed';
 		OPT_CONDITION = 1;
 		break;
 
-	case 2:
-		COMPETING = true;
-		OPT_ENVIRONMENT = 'discrete-normal';
-		OPT_CONDITION = 0;
-		break;
-	
-	case 3:
-		COMPETING = true;
-		OPT_ENVIRONMENT = 'discrete-skewed';
-		OPT_CONDITION = 1;
-		break;
-		
 };
 
 
@@ -41,24 +35,37 @@ var STATES = [
 ];
 
 
+function update_state(newstate, callback) {
+	STATE = STATES.indexOf(newstate);
+
+	$.ajax({
+		type: 'POST',
+		url: 'updatestatus',
+		data: {'uid': userid,
+			   'state': STATES.indexOf(newstate)},
+		success: callback
+	});
+
+};
+
+
 var exp,
 	pager,
 	session,
 	connection,
 	final_bonus,
-	datarr = [],
-	N_OPTIONS = [2, 4, 2, 4, 2, 4, 2, 4],
-	N_PRACTICE_GAMES = 0,
+	PLAYERS_PER_SESSION = 1,
+	N_OPTIONS = [2, 4, 2, 4, 2, 4, 2, 4];
+	N_PRACTICE_GAMES = 2,
 	OPTIONS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
 	OPTION_FADE_OPACITY = 0.3,
 	NROUNDS = 8,
+	MAX_N_TRIALS = 50,
 	INIT_BONUS = 0,
 	chosen_values = [],
 	SIM_P_STOP = .25,
 	OBSERVE_OPP_SAMPLES = false,
-	BASE_PAYMENT = .5,
-	BONUS_SCALE = .004,
-	LOGGING = true;
+	BASE_PAYMENT = .5;
 
 
 // these are preloaded in exp.html
@@ -72,49 +79,6 @@ var IMAGES = ['static/images/person_other.png',
 var IMAGE_DIR = 'static/exps/optionenv-v0/images/';
 
 
-
-/*
- * SAVING DATA
- *
- */
-function update_state(newstate, callback) {
-	STATE = STATES.indexOf(newstate);
-
-	$.ajax({
-		type: 'POST',
-		url: 'updatestatus',
-		data: {'uid': userid,
-			   'state': STATES.indexOf(newstate)},
-		success: callback
-	});
-
-	savedata();
-};
-
-
-function output(data) {
-
-	// add to output file
-	datarr.push({"uid": userid, "dateTime": (new Date().getTime()), "data": data})
-
-	// optionally show in console
-	if (LOGGING) console.log(data);
-};
-
-
-function savedata() {
-
-	$.ajax({
-		type: 'POST',
-		url: 'save',
-		data: {'uid': userid,
-			   'data': JSON.stringify(datarr)}
-	});
-
-};
-
-
-
 /*
  * LOADING OPTION SETS
  *
@@ -122,40 +86,123 @@ function savedata() {
 var OPTSETS_PATH = 'static/exps/optionenv-v0/exp1_option_sets.csv';
 var OPTSETS = load_option_sets(OPTSETS_PATH);
 
+// replace with randomization based on groupid
+var OPTSETS_SAMPLED = OPTSETS.slice(0, NROUNDS);
+
 
 var generate_gamble_from_optset = function(round) {
-	var n_opt = N_OPTIONS[round];
+	var opt = OPTSETS_SAMPLED[round];
+	console.log('creating gamble from optset record for round '+round);
 
-	// pick a random starting point based on 
-	// groupid
-	var optsets_sampled = sample_uniform_with_seed(N_OPTIONS.sum() / 2, OPTSETS, exp.group.seed);
+	var options = {'A': new UrnFromPar('A', 
+									   opt['A_low'], 
+									   opt['A_high'], 
+									   opt['A_p'], 
+									   opt['A_ev']),
+				   'B': new UrnFromPar('B', 
+									   opt['B_low'], 
+									   opt['B_high'], 
+									   opt['B_p'], 
+									   opt['B_ev'])};
+	return {'options': options};
+};
 
-	// get starting position for this round
-	var ind = N_OPTIONS.slice(0, round).sum() / 2;
 
-	// options are stored as pairs
-	var options = {};
 
-	for (var i=0; i<(n_opt/2); i++) {
-		// pick random index
-		var opt_ind = ind + i;
-
-		var opt = optsets_sampled[opt_ind];
-		var label = OPTIONS[i*2];
-		options[label] = new UrnFromPar(label,
-									    opt['A_low'], 
-									    opt['A_high'], 
-									    opt['A_p'], 
-									    opt['A_ev']);
-
-		var label = OPTIONS[i*2+1];
-		options[label] = new UrnFromPar(label,
-									    opt['B_low'], 
-									    opt['B_high'], 
-									    opt['B_p'], 
-									    opt['B_ev']);
-
+var UrnFromPar = function(id, low, high, p, ev) {
+	var self = this;
+	self.par = {'H': high, 'L': low, 'p': p};
+	self.expected_value = ev;
+	self.random = function() {
+		return sample_from_discrete(self.par);
 	};
+	return self;
+};
+
+
+ranran = new Random(124); // change seed 
+var Urn = function(id) {
+	var self = this;
+	self.id = id;
+
+	if (OPT_ENVIRONMENT == 'continuous-normal') {
+		self.par = {'mu': randrange(40, 80), 'sd': 30};
+		self.random = function() {
+			return Math.floor(ranran.normal(self.par['mu'], self.par['sd']));
+		};
+		self.expected_value = self.par['mu'];
+	};
+
+	if (OPT_ENVIRONMENT == 'continuous-skewed') {
+		// fill in with weibull distribution
+	};
+
+	if (OPT_ENVIRONMENT == 'discrete-normal') {
+
+		var nd1 = NormalDistribution(10, 30);
+		var o1 = nd1.sampleInt();
+		
+		var nd2 = NormalDistribution(40, 90);
+		var o2 = nd2.sampleInt();
+
+		var p = jStat.beta.sample(4, 4);
+
+		console.log('[o1, o2, p]:', [o1, o2, p]);
+		
+		self.par = {'H': o1, 'L': o2, 'p': p};
+		self.random = function() {
+			return sample_from_discrete(self.par);
+		};
+		self.expected_value = discrete_expected_value(self.par);
+		
+	};
+
+	if (OPT_ENVIRONMENT == 'discrete-skewed') {
+		// fill in for discrete skewed
+		//
+		var nd1 = NormalDistribution(10, 30);
+		var o1 = nd1.sampleInt();
+		
+		var nd2 = NormalDistribution(40, 90);
+		var o2 = nd2.sampleInt();
+
+		var p = jStat.beta.sample(7, 1);
+
+		console.log('[o1, o2, p]:', [o1, o2, p]);
+		
+		self.par = {'H': o1, 'L': o2, 'p': p};
+		self.random = function() {
+			return sample_from_discrete(self.par);
+		};
+		self.expected_value = discrete_expected_value(self.par);
+		// 
+	};
+
+};
+
+
+
+var sample_from_discrete = function(option) {
+
+	if (Math.random() < option.p) {
+		return option.H;
+	} else {
+		return option.L;
+	};
+};
+
+
+var discrete_expected_value = function(option) {
+	return option['H']*option['p'] + option['L']*(1-option['p']);
+};
+
+
+var generate_gamble = function(N) {
+
+	var options = {};
+	$.each(OPTIONS, function(i, id) {
+		options[id] = new Urn(id);
+	});
 
 	return {'options': options};
 };
@@ -163,10 +210,241 @@ var generate_gamble_from_optset = function(round) {
 
 
 
-/*
- * BUTTON HANDLING
- *
- */
+
+
+var Option = function(stage, id, n_options) {
+
+	var self = this;
+	self.id = id;
+	self.index = OPTIONS.indexOf(self.id);
+	self.stage = stage;
+
+	// work out positioning based on stage size and number of options
+	self.row = Math.floor(self.index / 4);
+	self.col = self.index % 4;
+	self.stage_w = Number(self.stage.attr("width"));
+	self.stage_h = Number(self.stage.attr("height"));
+
+	switch (n_options) {
+		case 1:
+			self.x = self.stage_w/2;
+			self.y = 30 + self.stage_h/4;
+			break;
+		case 2:
+			self.x = 220 + (self.stage_w-140)/2 * self.col;
+			self.y = 30 + self.stage_h/4;
+			break;
+		default:
+			self.x = 100 + self.stage_w/4 * self.col;
+			self.y = 80 + self.stage_h/2 * self.row;
+	};
+
+	self.sample_x = self.x;
+	self.sample_y = self.y + 50;
+	
+	// state variables
+	self.chosen = false;
+	self.available = true;
+	self.n_opp_samples = 0;
+
+	self.disp = self.stage.append('g')
+						  .attr('id', self.id)
+						  .attr('opacity', 1.);
+	
+	self.draw = function() {
+		self.obj = self.disp.append('image')
+							.attr('x', self.x-100)
+							.attr('y', self.y-80)
+							.attr('width', 200)
+							.attr('height', 200)
+							.attr('xlink:href', IMAGE_DIR + 'pot.png');
+
+		self.label = self.disp.append('text')
+							  .attr('x', self.x)
+							  .attr('y', self.y+60)
+							  .attr('text-anchor', 'middle')
+							  .attr('class', 'optionlabel')
+							  .attr('stroke', 'gray')
+							  .text(self.id);
+
+		if (self.chosen) {
+			self.highlight();
+		} else {
+
+			if (!self.available) {
+				self.disp.attr('opacity', OPTION_FADE_OPACITY);
+				self.expiration_label = self.stage.append('text')
+									.attr('x', self.x)
+									.attr('y', self.y+140)
+									.attr('class', 'expirationlabel')
+									.attr('text-anchor', 'middle')
+									.attr('fill', '#DF0101')
+									.text('CLAIMED')
+									.attr('opacity', 0.);
+
+			};
+		};
+
+
+		return self;
+	};
+
+	self.highlight = function() {
+
+		self.chosen = true;
+
+		self.obj.attr('opacity', OPTION_FADE_OPACITY);
+		self.label.attr('opacity', OPTION_FADE_OPACITY);
+
+		self.highlighter = self.disp.append('image')
+								    .attr('x', self.x-50)
+								    .attr('y', self.y-10)
+								    .attr('width', 100)
+								    .attr('height', 100)
+								    .attr('xlink:href', IMAGE_DIR + 'person_self.png');
+
+		self.expiration_label = self.stage.append('text')
+							 .attr('x', self.x)
+							 .attr('y', self.y+140)
+							 .attr('class', 'expirationlabel')
+							 .attr('text-anchor', 'middle')
+							 .attr('fill', '#E6E6E6')
+							 .text('CLAIMED')
+							 .attr('opacity', 0.)
+							 .transition()
+							   .delay(300)
+							   .duration(200)
+							   .attr('opacity', 1);
+		
+		return self;
+	};
+
+	self.expire = function() {
+
+		self.available = false;
+
+		self.disp.transition()
+			     .attr('opacity', OPTION_FADE_OPACITY);
+		
+		self.highlighter = self.disp.append('image')
+								  .attr('x', self.x-50)
+								  .attr('y', self.y-10)
+								  .attr('width', 100)
+								  .attr('height', 100)
+								  .attr('xlink:href', IMAGE_DIR + 'person_other.png');
+
+		self.expiration_label = self.stage.append('text')
+							 .attr('x', self.x)
+							 .attr('y', self.y+140)
+							 .attr('class', 'expirationlabel')
+							 .attr('text-anchor', 'middle')
+							 .attr('fill', '#E6E6E6')
+							 .text('CLAIMED')
+							 .attr('opacity', 0.)
+							 .transition()
+							   .delay(300)
+							   .duration(200)
+							   .attr('opacity', 1);
+		
+
+	};
+
+	self.draw_sample = function(value, loc, duration, backon) {
+
+		loc = loc || [self.sample_x-60, self.sample_y-60];
+		backon = backon || false;
+
+		self.coin = self.disp.append('g').attr('id', 'coin');
+
+		self.coin_circle = self.coin.append('circle')
+									.attr('r', 50)
+									.attr('cx', self.x)
+									.attr('cy', self.y+60)
+									.attr('width', 100)
+									.attr('height', 100)
+									.attr('stroke', '#E4DF61')
+									.attr('stroke-width', 5)
+									.attr('fill', '#FFF971')
+									.transition()
+									  .duration(300)
+									  .attr('opacity', 1);
+
+		self.coin_label = self.coin.append('text')
+				   .attr('x', loc[0]+60)
+				   .attr('y', loc[1]+85)
+				   .attr('text-anchor', 'middle')
+				   .attr('fill', '#A39D00')
+				   .attr('class', 'samplefeedback')
+				   .text(value)
+				   .attr('opacity', 0)
+				   .transition()
+				     .duration(300)
+					 .attr('opacity', 1);		
+		
+		if (duration!=undefined) {
+			setTimeout(function() {
+				self.clear_sample();				
+				if (backon) self.listen();
+			}, duration);
+		};
+
+	};
+
+	self.draw_samples_by_opponents = function() {
+
+		self.opp_samples = self.disp.append('g').attr('id', 'opp_samples');
+
+		for (var i=0; i<self.n_opp_samples; i++) {
+
+			self.opp_samples.append('circle')
+							.attr('class', 'opp_sample_'+self.id)
+							.attr('r', 15)
+							.attr('cx', self.x - 70 + i * 35)
+							.attr('cy', self.y + 135)
+							.attr('width', 30)
+							.attr('height', 30)
+							.attr('stroke', '#E4DF61')
+							.attr('stroke-width', 3)
+							.attr('fill', '#FFF971')
+							.transition()
+								.duration(300)
+								.attr('opacity', 1);
+
+		};
+
+	};
+
+	self.clear_sample = function() {
+		if (self.coin != undefined) self.coin.remove();
+		if (self.opp_samples != undefined) self.opp_samples.remove();
+		self.n_opp_samples = 0;
+	};
+
+	self.listen = function(callback) {
+		if (callback!=undefined) self.selection_callback = callback;
+		self.disp.on('mousedown', function() {
+			self.stop_listening();
+			if (self.selection_callback!=undefined) self.selection_callback(self.id);
+		});
+		return self;
+	};
+
+	self.click = function() {
+		self.selection_callback(self.id);
+	};
+
+	self.stop_listening = function() {
+		self.disp.on('mousedown', function() {} );
+	};
+
+	self.erase = function() {
+		self.stage.select(self.id).remove();
+	};
+
+	return self;
+};
+
+
 function clear_buttons() {
 	$('#buttons').html('');
 };
@@ -228,6 +506,7 @@ function add_stop_and_continue_buttons(continue_callback, stop_callback, accept_
 
 		// also set up button click handler, but need to wrap callback in function
 		// that gets rid of keypress handler
+		
 		if (SIMULATE==1) {
 			$('#btn-continue').on('click', function() {
 				$(window).unbind('keydown');
@@ -249,10 +528,6 @@ function add_stop_and_continue_buttons(continue_callback, stop_callback, accept_
 
 
 
-/*
- * SAMPLING GAME
- * 
- */
 
 var CompetitiveSamplingGame = function(group, round, callback, practice) {
 
@@ -269,21 +544,15 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 	self.stop_trial = 1000;
 
 	self.n_options = N_OPTIONS[round];
+
+	//self.gamble = generate_gamble(self.n_options);
 	self.gamble = generate_gamble_from_optset(self.round);
 
-	if (self.opponents.length > 0) {
-		output(['game', self.round, 'opponents', self.opponents]);		
-	} else {
-		output(['game', self.round, 'opponents', 'none']);		
-	};		
 
 	output(['game', self.round, 'practice', self.practice]);
-
-	for (var i=0; i<self.n_options; i++) {
-		var label = OPTIONS[i];
-		output(['game', self.round, 'option', label, self.gamble.options[label].par.H, self.gamble.options[label].par.L, self.gamble.options[label].par.p, self.gamble.options[label].expected_value])
-	};
-
+	output(['game', self.round, 'opponents', self.opponents]);	
+	//output(['game', self.round, 'option', 'A', self.gamble.options.A.H, self.gamble.options.A.L, self.gamble.options.A.p])
+	//output(['game', self.round, 'option', 'B', self.gamble.options.B.H, self.gamble.options.B.L, self.gamble.options.B.p])
 
 	self.reset_stage = function(callback) {
 		pager.showPage('optionenv-v0/stage.html');
@@ -307,11 +576,7 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		if (self.practice==true) {
 			self.above_stage.html('<h1>Practice game '+(self.round+1)+'/'+N_PRACTICE_GAMES+'</h1>');
 		} else {
-			if (self.opponents.length > 0) {
-				self.above_stage.html('<h1>Game '+(self.round+1)+'/'+NROUNDS+'</h1><h2>'+self.n_options+' urns, '+self.opponents.length+' opponents</h2>');
-			} else {
-				self.above_stage.html('<h1>Game '+(self.round+1)+'/'+NROUNDS+'</h1><h2>'+self.n_options+' urns</h2>');
-			};			
+			self.above_stage.html('<h1>Game '+(self.round+1)+'/'+NROUNDS+'</h1><h2>'+self.n_options+' urns, '+self.opponents.length+' opponents</h2>');
 		}
 	};
 
@@ -320,13 +585,15 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		self.instruction.html('<div id="turn-number">TURN '+(self.trial+1)+'</div>'+text);
 	};
 
-
 	self.toggle_instruction_color = function(on) {
-		/* turns green to indicate ready to sample, otherwise white */
-		if (on) $('#turn-number').css({'background-color': '#04B404', 'color': 'white'});
-		else $('#turn-number').css({'background-color': 'white', 'color': 'gray'});	
+		if (on) {
+			//$('#turn-number').css({'color': 'green', 'border': '1px solid green'});
+			$('#turn-number').css({'background-color': '#04B404', 'color': 'white'});
+		} else {
+			//$('#turn-number').css({'color': 'gray', 'border': '1px solid gray'});	
+			$('#turn-number').css({'background-color': 'white', 'color': 'gray'});	
+		};
 	};
-
 
 	self.begin = function() {
 
@@ -388,27 +655,22 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 
 		result = self.gamble.options[chosen_id].random();
 
+		//result = sample_from_discrete(self.gamble.options[chosen_id]);
 		output(['game', self.round, self.trial, 'sample', chosen_id, result]);
 		connection.send(msg_id, {'game': self.round, 'trial': self.trial, 'chosen_id': chosen_id, 'result': result});
 		
 		// show feedback
 		self.toggle_instruction_color(false);
 		self.options[chosen_id].draw_sample(result);
-
-		if (COMPETING) {
-			self.wait_for_samples();
-		} else {
-			if (self.stopped) self.urn_selection();
-			else self.prompt_stop_or_continue();
-		}
+		self.wait_for_samples();
 	};
 
 
 	self.wait_for_samples = function() {
 		self.set_instruction('Waiting for the other players...');		
 		var msg_id = 'sample_decision_'+self.round+'.'+self.trial;
-		output('waiting for sampling decisions from:', self.opponents_active.join(';'));
-		output('active opponents:', self.opponents_active.join(';'));
+		console.log('waiting for sampling decisions from:', self.opponents_active);
+		console.log('opponents active:', self.opponents_active);
 
 		// wait for samples from other people in this game
 		session.check_or_wait_for(msg_id, self.opponents_active, function(msg_data) {
@@ -429,24 +691,12 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		add_stop_and_continue_buttons(
 			function() { 
 				self.stopped = false;
-				// get rid of any sample outcomes and buttons
-				$.each(self.options, function(i, opt) { opt.clear_sample(); });
-				clear_buttons();
-				output(['game', self.round, self.trial, 'stoppingdecision', self.stopped]);			
-				
-				if (COMPETING) self.urn_selection();
-				else self.stopping_feedback([]);
+				self.urn_selection();
 			},
 			function() { 
 				self.stopped = true;
-				// get rid of any sample outcomes and buttons
-				$.each(self.options, function(i, opt) { opt.clear_sample(); });
-				clear_buttons();
-				output(['game', self.round, self.trial, 'stoppingdecision', self.stopped]);			
-				
 				self.stop_trial = self.trial;
-				if (COMPETING) self.urn_selection();
-				else self.my_urn_selection([]); 
+				self.urn_selection();
 		});
 
 		self.set_instruction('Do you want to <strong>Continue Learning</strong> or <strong>Stop and Choose</strong> one of the options?');
@@ -493,10 +743,10 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 		} else {
 		
 			// get rid of any sample outcomes and buttons
-			//$.each(self.options, function(i, opt) { opt.clear_sample(); });
-			//clear_buttons();
-			//output(['game', self.round, self.trial, 'stoppingdecision', self.stopped]);
+			$.each(self.options, function(i, opt) { opt.clear_sample(); });
+			clear_buttons();
 			
+			output(['game', self.round, self.trial, 'stoppingdecision', self.stopped]);
 			connection.send(msg_id, {'game': self.round, 'trial': self.trial, 'stopped': self.stopped});
 
 			// all players see each other's stopping decisions and which 
@@ -515,13 +765,14 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 						stoppers.push(msg_data[i].source);
 					};
 				};
+				console.log('stoppers:', stoppers);
 
 				if (stoppers.length==0) {
-					// if no one has stopped, then go on to feedback
+					console.log('nobody else stopped')
 					self.stopping_feedback([]);
 				} else {
-					// otherwise, need messages from all stoppers about
-					// their choices before can move on
+					// otherwise, need messages from all stoppers
+					// before can move on
 					session.check_or_wait_for(msg_id, stoppers, self.stopping_feedback);
 				};
 
@@ -537,8 +788,10 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 					});
 					
 					if (earlier.length==0) {
+						console.log('noone before me');
 						self.my_urn_selection([]);
 					} else {
+						console.log('need to wait for earlier first');
 						session.check_or_wait_for(msg_id, earlier, self.my_urn_selection);
 					};
 
@@ -562,21 +815,21 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 			taken.push(msg_data[i].data.chosen_id);
 		};
 
+		//console.log('taken this turn?', taken);
+
 		var send_selection = function(chosen_id) {
 			self.chosen_id = chosen_id;
 			self.options[chosen_id].chosen = true;
 			self.options[chosen_id].highlight();
 
-
 			var msg_id = 'urn_selection_'+self.round+'.'+self.trial;
 			connection.send(msg_id, {'game': self.round, 
 									 'trial': self.trial, 
 									 'chosen_id': chosen_id});
-
-			if (COMPETING) self.set_instruction('Waiting for other players to choose...');
-			else self.stopping_feedback([]);
+			self.set_instruction('Waiting for other players to choose...');
 		};
 
+		// something here no worky!
 		var avail = [];
 		$.each(self.options, function(i, opt) {
 			if (taken.indexOf(opt.id) != -1 || !opt.available) {
@@ -586,6 +839,7 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 				opt.listen(send_selection);			
 			};
 		});
+		//console.log('still available:', avail);
 		self.set_instruction('Click on the urn you want!');
 
 		// simulated choice
@@ -610,52 +864,41 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 			if (!available && opt.id!=self.chosen_id) opt.expire();
 		});
 
-		// only in competitive case, require confirmation of seeing 
-		// the choices of other players before everyone can move on	
-		if (COMPETING) {
+		self.set_instruction(str_taken + ' players claimed an urn this turn.');
 
-			self.set_instruction(str_taken + ' players claimed an urn this turn.');
-			var msg_id = 'confirm_selections_'+self.round+'.'+self.trial;
+		var msg_id = 'confirm_selections_'+self.round+'.'+self.trial;
+		
+		add_next_button(function() {
+			$('#btn-next').remove();
+			connection.send(msg_id, {'game': self.round, 'trial': self.trial});		
+		}, 'Continue')
 
-			add_next_button(function() {
-				$('#btn-next').remove();
-				connection.send(msg_id, {'game': self.round, 'trial': self.trial});		
-			}, 'Continue')
-				
-			session.check_or_wait_for(msg_id, 
-									[self.opponents, userid].flatten(),
-									function(msg_data) {
-										
-										// if all players have stopped, finish the game
-										if (self.available.length==0 || (self.stopped && self.opponents_stopped.length == self.opponents.length)) {
-											self.finish();
-										} else {
-											self.sampling_trial();
-										};
-									},
-									function(msg_data) {
-										$.each(msg_data, function(i, msg) {
-											if (msg.source == userid) self.set_instruction('Waiting for other players...');
-										});	
-									}
-			);
-		} else {
-			if (self.stopped) self.finish();
-			else self.sampling_trial();
-		};
+		session.check_or_wait_for(msg_id, 
+							      [self.opponents, userid].flatten(),
+								  function(msg_data) {
+									  
+									// if all players have stopped, finish the game
+									if (self.available.length==0 || (self.stopped && self.opponents_stopped.length == self.opponents.length)) {
+										self.finish();
+									} else {
+										self.sampling_trial();
+									};
+								  },
+								  function(msg_data) {
+									$.each(msg_data, function(i, msg) {
+										if (msg.source == userid) self.set_instruction('Waiting for other players...');
+									});	
+								  }
+		);
+
 
 		simclick($('#btn-next'));
 	};
 
 	self.finish = function() {
-		var ev = self.gamble.options[self.chosen_id].expected_value;
-		output(['game', self.round, self.trial, 'received_id', self.chosen_id, ev]);
-		chosen_values.push(ev);
-
-		savedata();
-
-		if (COMPETING) self.set_instruction('All players have finished this game. Click below to continue to the next!');
-		else self.set_instruction('You\'ve finished this game. Click below to continue to the next!');
+		output(['game', self.round, self.trial, 'received_id', self.chosen_id])		
+		chosen_values.push(self.gamble.options[self.chosen_id].expected_value);
+		self.set_instruction('All players have finished this game. Click below to continue to the next!');
 		add_next_button(callback, 'Continue');
 		if (SIMULATE) simclick($('#btn-next'));
 	};
@@ -665,10 +908,6 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 };
 
 
-/*
- * MAIN EXPERIMENT FUNCTION
- *
- */
 
 var CompetitiveSamplingExperiment = function() {
 	var self = this;
@@ -691,12 +930,15 @@ var CompetitiveSamplingExperiment = function() {
 	self.begin = function(group) {
 		self.group = group;
 
+		log('resampling options based on group id');
+		OPTSETS_SAMPLED = sample_uniform_with_seed(NROUNDS, OPTSETS, self.group.groupid);
+	
 		if (!self.instructions_completed) {
 			self.instructions();
 		} else {
 
 			update_state('EXP_STARTED', function(data) {
-            	output('updated status (EXP_STARTED)?:', data); 
+            	console.log('updated status (EXP_STARTED)?:', data); 
 				self.next();
 			});
 
@@ -708,7 +950,7 @@ var CompetitiveSamplingExperiment = function() {
 		// calculate final bonus
 		final_bonus = INIT_BONUS;
 		for (var i=0; i<NROUNDS; i++) {
-			final_bonus += chosen_values[i] * BONUS_SCALE;
+			final_bonus += chosen_values[i]/1000;
 		};
 		output(['instructions', 'feedback', 'final_bonus', final_bonus]);
 
@@ -716,24 +958,18 @@ var CompetitiveSamplingExperiment = function() {
 		$(window).unbind("beforeunload");
 		
 		update_state('EXP_COMPLETE', function(data) {
-			output('updated status (EXP_COMPLETE)?:', data); 
+			console.log('updated status (EXP_COMPLETE)?:', data); 
 		});
 		Feedback();
 	};
 
 	self.abort = function() {
 		update_state('EXP_ABORTED', function(data) {
-			output('updated status (EXP_ABORTED)?:', data); 
+			console.log('updated status (EXP_ABORTED)?:', data); 
 		});
 		Abort();
 	};
 	
-	// output important settings
-	output(['par', 'N_OPTIONS', N_OPTIONS.join(';')]);
-	output(['par', 'BASE_PAYMENT', BASE_PAYMENT]);
-	output(['par', 'BONUS_SCALE', BONUS_SCALE]);
-
-	// start!
 	self.proceed = self.begin;
 };
 
@@ -769,7 +1005,7 @@ var Feedback = function() {
 
 	html =  '<div id=feedback-table>';
 	for (var i=0; i<NROUNDS; i++) {
-		html +=	'<div class=row><div class=left>Game '+(i+1)+':</div><div class=right>'+(chosen_values[i] * BONUS_SCALE).toFixed(2)+'</div></div>';	
+		html +=	'<div class=row><div class=left>Game '+(i+1)+':</div><div class=right>'+(chosen_values[i]/100).toFixed(2)+'</div></div>';	
 	};
 	html +=	'<div class=row style="border-top: 1px solid black; font-weight: bold;"><div class=left>Final bonus:</div><div class=right>$'+Math.max(0, final_bonus).toFixed(2)+'</div></div>';	
 	html += '</div>'
@@ -783,11 +1019,13 @@ var Feedback = function() {
 
 	record_responses = function() {
 
+		//psiTurk.recordTrialData(['postquestionnaire', 'submit']);
+
 		$('textarea').each( function(i, val) {
-			output(['postquestion', this.id, this.value]);
+			//psiTurk.recordUnstructuredData(this.id, this.value);
 		});
 		$('select').each( function(i, val) {
-			output(['postquestion', this.id, this.value]);
+			//psiTurk.recordUnstructuredData(this.id, this.value);		
 		});
 
 		Exit();
@@ -818,9 +1056,7 @@ function catch_leave() {
 
 var Exit = function() {
 
-	output(['COMPLETE']);
-
-	savedata();
+	console.log('COMPLETE');
 
 	if (ADURL != "None") {
 

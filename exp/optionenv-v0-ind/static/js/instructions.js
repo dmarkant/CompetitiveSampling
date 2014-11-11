@@ -78,23 +78,11 @@ var Instructions1 = function() {
 var Instructions2 = function() {
 	var self = init_instruction(this, 3);
 
-    if (!COMPETING) {
-        self.add_text('In this experiment your goal is to ' +
-                    'claim urns that you think are valuable. In each game you will ' +
-                    'see two urns, and you will learn about them by clicking on them ' +
-                    'as before. When you think that one urn is more valuable than the ' +
-                    'other, you can stop and claim it.');
-
-    } else {
-
-        self.add_text('In this experiment you will compete with others ' +
-                    'to claim urns that you think are valuable. In each game you will ' +
-                    'see two urns, and you will learn about them by clicking on them ' +
-                    'as before. When you think that one urn is more valuable than the ' +
-                    'other, you can stop and claim it.');
-            
-    }
-
+	self.add_text('In this experiment you will compete ' +
+				  'to claim urns that you think are valuable. In each game you will ' +
+				  'see two urns, and you will be able to learn about them by clicking on them ' +
+				  'as before. When you think that one urn is more valuable than the ' +
+				  'other, you can stop and claim it.');
 
 	self.add_text('Each game is made up of a series of turns. On each turn, you begin by ' +
 		    'clicking on one urn and seeing a randomly drawn coin. You then have a choice ' + 
@@ -172,9 +160,7 @@ var Instructions2 = function() {
                           'of the experiment, one of the urns you claim will be randomly ' +
                           'selected, and your bonus will be the average value of the coins ' +
                           'in that urn.');
-
-            if (!COMPETING) add_next_instruction_button(InstructionsTraining);
-            else add_next_instruction_button(Instructions3);
+            add_next_instruction_button(Instructions3);
 	};
 
 	$.each(self.urns, function(i, urn) {
@@ -227,10 +213,6 @@ var InstructionsTraining = function() {
 
 var urns_complete = 0;
 var urns_estimates = [];
-
-
-
-
 var Instructions4 = function() {
 	var self = init_instruction(this, 4);
 
@@ -244,6 +226,7 @@ var Instructions4 = function() {
 
     $('.progress-bar').removeClass('active');
 
+	var counter = 0;
 
 	var guess = function() {
             $('#instruction').html('');
@@ -254,15 +237,15 @@ var Instructions4 = function() {
                     '<div class="form-group" style="width:300px; margin:0 auto;">' +
                     '<label for="name">What is the <strong>highest coin</strong> you remember ' +
                     'seeing from this urn?</label>' +
-                    '<input id="highest" type="text" class="form-control" placeholder="Enter number"></div>' +
+                    '<input type="text" class="form-control" placeholder="Enter number"></div>' +
                     '<div class="form-group" style="width:300px; margin:0 auto;">' +                        
                     '<label for="name">What is the <strong>lowest coin</strong> you remember ' +
                     'seeing from this urn?</label>' +
-                    '<input id="lowest" type="text" class="form-control" placeholder="Enter number"></div>' +
+                    '<input type="text" class="form-control" placeholder="Enter number"></div>' +
                     '<div class="form-group" style="width:300px; margin:0 auto;">' +
                     '<label for="name">What do you think is the <strong>average value</strong> of ' +
                     'coins in this urn?</label>' +
-                    '<input id="ev" type="text" class="form-control" placeholder="Enter number"></div>' +
+                    '<input type="text" class="form-control" placeholder="Enter number"></div>' +
                     '</form>';
             self.div.append(t);
 
@@ -271,10 +254,7 @@ var Instructions4 = function() {
 	};
 
 	var finish = function() {
-        // log responses
-		$('input').each( function(i, val) {
-			output(['training', urns_complete, this.id, this.value]);
-		});
+                // log responses!
 
 		urns_complete = urns_complete + 1;
 		if (urns_complete == N_EXAMPLE_URNS) {
@@ -289,36 +269,10 @@ var Instructions4 = function() {
 	self.div.append(svg_element('urn-svg', 800, 220));
 	self.stage = d3.select('#urn-svg');
 
-
-    // have to control the sequence here
-    var opt = OPTSETS[urns_complete];
-    g = new UrnFromPar(OPTIONS[urns_complete],
-                       opt['A_low'], 
-                       opt['A_high'], 
-                       opt['A_p'], 
-                       opt['A_ev']);
-
-
-    var samples = [];
-    for (var i=0; i<N_SAMPLES_PER_EXAMPLE; i++) {
-        samples.push(g.random());
-    };
-
-    // make sure at least one occurrence of both outcomes
-    if (samples.indexOf(g.par['H']) == -1) {
-        samples[randrange(0, samples.length)] = g.par['H'];
-    };
-    if (samples.indexOf(g.par['L']) == -1) {
-        samples[randrange(0, samples.length)] = g.par['L'];
-    };
-
-    output(['training', urns_complete, 'samples', samples.join(';')]);
-
-	var counter = 0;
-
+	var g = generate_gamble(1)['options']['A'];
 	self.urn = new Option(self.stage, OPTIONS[urns_complete], 1).draw();
 	self.urn.listen(function() {
-		self.urn.draw_sample(samples[counter], undefined, 700, true);		
+		self.urn.draw_sample(g.random(), undefined, 700, true);		
 		counter = counter + 1;
         $('.progress-bar').css('width', 100*counter/N_SAMPLES_PER_EXAMPLE + '%');
 		if (counter == N_SAMPLES_PER_EXAMPLE) {
@@ -333,25 +287,14 @@ var InstructionsFinal = function() {
     var self = init_instruction(this, 'final');
     self.add_text('You\'re ready to start playing!');
 
-    if (!COMPETING) {
+    self.add_text('On the next screen you will join an open group. Once your group has ' +
+                  'enough players, you will begin a series of '+NROUNDS+' games. Please be patient while ' +
+                  'waiting for other players to join, as different people will spend different ' +
+                  'amounts of time on the instructions you just completed.');
 
-        self.add_text('On the next screen you will join an open game. After you join, you ' +
-                      'will begin a series of '+NROUNDS+' games. Once you have started you ' +
-                      'must finish all games to receive payment. Please stay focused on the ' +
-                      'experiment and do not let your attention wander.'); 
-
-    } else {
-
-        self.add_text('On the next screen you will join an open group. Once your group has ' +
-                    'enough players, you will begin a series of '+NROUNDS+' games. Please be patient while ' +
-                    'waiting for other players to join, as different people will spend different ' +
-                    'amounts of time on the instructions you just completed.');
-
-        self.add_text('Since you are playing against other people, it is very important that once you ' +
-                    'have joined a group that you finish all of the games. Please stay focused on the ' +
-                    'experiment and do not let your attention wander.');
-
-    }
+    self.add_text('Since you are playing against other people, it is very important that once you ' +
+                  'have joined a group that you finish all of the games. Please stay focused on the ' +
+                  'experiment and do not let your attention wander.');
 
     add_next_instruction_button(function() {
         $('#main').html('');
