@@ -45,8 +45,8 @@ function sample_uniform_with_seed(n, set, seed) {
     var ran = new Random(seed);
     var i = Math.floor(ran.uniform(0, set.length - n));
 
-    console.log('seed:', seed);
-    console.log('sampled:', i);
+    //console.log('seed:', seed);
+    //console.log('sampled:', i);
     return set.slice(i, i + n);
 
 };
@@ -101,7 +101,7 @@ var Urn = function(id) {
 
 		var p = jStat.beta.sample(4, 4);
 
-		console.log('[o1, o2, p]:', [o1, o2, p]);
+		//console.log('[o1, o2, p]:', [o1, o2, p]);
 		
 		self.par = {'H': o1, 'L': o2, 'p': p};
 		self.random = function() {
@@ -122,7 +122,7 @@ var Urn = function(id) {
 
 		var p = jStat.beta.sample(7, 1);
 
-		console.log('[o1, o2, p]:', [o1, o2, p]);
+		//console.log('[o1, o2, p]:', [o1, o2, p]);
 		
 		self.par = {'H': o1, 'L': o2, 'p': p};
 		self.random = function() {
