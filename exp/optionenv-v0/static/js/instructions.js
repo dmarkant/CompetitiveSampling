@@ -114,7 +114,6 @@ var Instructions2 = function() {
 	self.urns['B'].draw();
 
 	var sampling = function() {
-            console.log('now sample');
 
             $('#belowStage').css('display', 'block');
             $('#instruction').html('Click on the urn you want to learn about');
@@ -131,7 +130,6 @@ var Instructions2 = function() {
 	var show_buttons = function() {
             $('#instruction').html('');
             
-		console.log('show buttons');
 		$.each(self.urns, function(i, urn) { urn.stop_listening(); });
 		
 		add_stop_and_continue_buttons(
@@ -153,8 +151,6 @@ var Instructions2 = function() {
             $('#belowStage').css('display', 'block');
             $('#instruction').html('Claim the urn that you think is more valuable');
             
-		console.log('now choose');
-
 		$.each(self.urns, function(i, urn) {
 			urn.listen(function() {
 				urn.highlight();
@@ -357,7 +353,7 @@ var InstructionsFinal = function() {
         $('#main').html('');
 
         update_state('INSTRUCTIONS_COMPLETE', function(data) {
-                    console.log('updated status!', data); 
+                    output('updated state (INSTRUCTIONS_COMPLETE)', data); 
                     session = new MultiplayerSession(); 
         });
         
