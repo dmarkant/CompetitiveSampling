@@ -729,6 +729,12 @@ var CompetitiveSamplingExperiment = function() {
 	};
 	
 	// output important settings
+	output(['par', 'EXP_ID', expid]);
+	output(['par', 'USER_ID', userid]);
+	output(['par', 'CONDITION', condition]);
+	output(['par', 'COUNTER', counterbalance]);
+	output(['par', 'ADURL' ADURL]);
+	output(['par', 'PLAYERS_PER_SESSION', PLAYERS_PER_SESSION]);
 	output(['par', 'N_OPTIONS', N_OPTIONS.join(';')]);
 	output(['par', 'BASE_PAYMENT', BASE_PAYMENT]);
 	output(['par', 'BONUS_SCALE', BONUS_SCALE]);
