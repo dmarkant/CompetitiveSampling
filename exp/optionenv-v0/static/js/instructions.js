@@ -63,10 +63,16 @@ var Instructions1 = function() {
 			'clicking on it. Go ahead and click on the urn above a few times to see what kinds of coins ' +
 			'it contains.');
 
-	self.add_text('When you click on the urn you see a randomly drawn coin (which is then put back ' +
-			'into the urn, so the total number of coins never changes). During the experiment you\'ll ' +
-			'have the chance to claim urns that you think are valuable, and at the end you will receive ' +
-			'a bonus based on the <b>average value of the coins</b> inside the urns you select.');
+    self.add_text('When you click on the urn you see a randomly drawn coin (which is then put back ' +
+            'into the urn, so the total number of coins never changes). During the experiment you\'ll ' +
+            'have the chance to claim urns that you think are valuable. At the end you will receive ' +
+            'a bonus based on the <b>average value of the coins</b> inside the urns you claim. 
+            
+    self.add_text('For example, an urn that is half 20-point coins and half 40-point coins will have an ' +
+            'average value of 30 points. In contrast, an urn with ninety 20-point coins and ten 40-point ' +
+            'coins will have an average value of 22 points. Thus, the potential bonus from an urn is determined by the value ' +
+            'of the coins it contains, as well as their relative proportion.');
+
 
     self.add_text('Press the \'C\' button to continue.');
 	add_next_instruction_button(Instructions2);
@@ -94,7 +100,6 @@ var Instructions2 = function() {
                     'other, you can stop and claim it.');
             
     }
-
 
 	self.add_text('Each game is made up of a series of turns. On each turn, you begin by ' +
 		    'clicking on one urn and seeing a randomly drawn coin. You then have a choice ' + 
