@@ -831,7 +831,7 @@ var Exit = function() {
 	if (ADURL != "None") {
 
 		// save data one last time here?
-		var newloc ='http://'+ ADURL + "?uniqueId=" + UNIQUEID;
+		var newloc = ADURL + "?uniqueId=" + UNIQUEID;
 		window.location=newloc;
 
 	};
