@@ -167,6 +167,18 @@ var generate_gamble_from_optset = function(round) {
  * BUTTON HANDLING
  *
  */
+function simclick(obj, rt) {
+
+    if (rt === undefined) rt = 1000;
+
+    if (SIMULATE==1) {
+        setTimeout(function() {
+            obj.click();
+        }, Math.random()*1000 + rt);
+    };
+};
+
+
 function clear_buttons() {
 	$('#buttons').html('');
 };
@@ -673,7 +685,8 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 var CompetitiveSamplingExperiment = function() {
 	var self = this;
 	self.group = null;
-	self.instructions_completed = true; // !! temporary
+	self.instructions_completed = false;
+	self.training_completed = false;
 	self.round = -1;
 	chosen_values = [];
 
@@ -683,16 +696,16 @@ var CompetitiveSamplingExperiment = function() {
 		else self.finish();
 	};
 
-	self.instructions = function() {
-		Instructions1();
-		//InstructionsFinal();
-	};
-
-	self.begin = function(group) {
-		self.group = group;
+	self.proceed = function() {
 
 		if (!self.instructions_completed) {
-			self.instructions();
+
+			Instructions1();
+
+		} else if (!self.training_completed) {
+
+			InstructionsTraining();	
+
 		} else {
 
 			update_state('EXP_STARTED', function(data) {
@@ -739,8 +752,6 @@ var CompetitiveSamplingExperiment = function() {
 	output(['par', 'BASE_PAYMENT', BASE_PAYMENT]);
 	output(['par', 'BONUS_SCALE', BONUS_SCALE]);
 
-	// start!
-	self.proceed = self.begin;
 };
 
 

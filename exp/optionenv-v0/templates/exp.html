@@ -50,6 +50,11 @@
 
         <script type="text/javascript">
         
+            function readysound() {
+                var snd = new Audio('static/exps/optionenv-v0/sounds/readytoplay.wav');
+                snd.play();
+            };
+
             $(window).load( function(){
                 pager = new Pager($('#main'));
                 pager.preloadPages(PAGES);
@@ -62,17 +67,15 @@
                     // multiplayer connection (with random delay
                     // added to minimize creation of new groups)
                     setTimeout(function() {
-                        session = new MultiplayerSession();
+                        exp.instructions_completed = true;
+                        exp.training_completed = true;
+                        session = new MultiplayerSession(PLAYERS_PER_SESSION, exp);
                     }, Math.random()*7000);
                     
                 } else {
-
-                    if (INSTRUCTIONS && STATE == 0) {
-                        exp.instructions();
-                    } else {
-                        session = new MultiplayerSession();
-                    };
+                    exp.proceed();
                 };
+
 
             });
                         

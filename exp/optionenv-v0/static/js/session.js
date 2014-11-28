@@ -1,7 +1,19 @@
-
+var SESSION_LOGGING = true;
 
 var COL_BUTTON_PRESSED = "#78A0CA",
     COL_BUTTON_UNPRESS = "#FFD855";
+
+
+var session_data = [];
+function session_output(data) {
+
+	// add to output file
+	session_data.push({"dateTime": (new Date().getTime()), "data": data})
+
+	// optionally show in console
+	if (SESSION_LOGGING) console.log(data);
+};
+
 
 var Connection = function(session){
 
@@ -23,13 +35,20 @@ var Connection = function(session){
         };
         self.socket.onerror = onError;
         self.socket.onclose = onClose;
-        
+
+        // if user already exists and belongs to a 
+        // group, the groupid is returned from the 
+        // connect request below        
         self.session.assigned_group = response.groupid;
+
+        // create the groups interface
         self.session.update_groups(response.groups);
     };
 
+    // Send a message that will be broadcast to 
+    // other members of the same group.
     self.send = function(kind, data) {
-   
+
         // add userid to outgoing message
         var message = {'kind': kind,
                        'source': userid,
@@ -44,23 +63,11 @@ var Connection = function(session){
 
     };
 
+    // Create connection
     $.ajax('connect?uid=' + userid, 
             {success: function(data) { self.init(data); }}
             );
 
-};
-
-
-function simclick(obj, rt) {
-
-    if (rt === undefined) rt = 1000;
-
-    if (SIMULATE==1) {
-        //console.log('sim click:', obj);
-        setTimeout(function() {
-            obj.click();
-        }, Math.random()*1000 + rt);
-    };
 };
 
 
@@ -102,39 +109,39 @@ function get_matchup(n_players, index) {
 
 
 
-var GroupView = function(id, groupdata, mygroup) {
+var GroupView = function(id, groupdata, mygroup, max_players, experiment) {
     var self = this;
     self.id = id;
     self.groupid = groupdata.groupid;
     self.seed    = groupdata.seed;
     self.players = groupdata.players;
+    self.max_players = max_players;
     self.mygroup = mygroup;
     self.counter = 0;
+    self.experiment = experiment;
 
+    // Create the group interface given a container element
     self.create = function(container) {
         var content = '<div id=group-'+self.id+' class=group-coord>';
-        content += '<div class=group-prompt></div>';
-        content += '<div class=group-counter><span id=assigned-'+self.id+'>' + self.players.length+ '</span> players so far<br />';
-        content += 'Need <span id=needed-'+self.id+'>' + (PLAYERS_PER_SESSION - self.players.length) + '</span> more</div>';
-
-        // bootstrap buttons
-        //content += '<a href="#" id=join-'+self.id+' class="btn btn-success btn-lg"><span class="glyphicon glyphicon-user"></span> JOIN</a>'
-
-        content += '<p><button type=button id=join-'+self.id+' class=group-button>JOIN</button>';
-        content += '<button type=button id=confirm-'+self.id+' class=group-button>READY</button>';
-        content += '<button type=button id=begin-'+self.id+' class=group-button>START!</button></p>';
-        content += '</div>';
+        content    += '<div class=group-prompt></div>';
+        content    += '<div class=group-counter><span id=assigned-'+self.id+'>' + self.players.length+ '</span> players so far<br />';
+        content    += 'Need <span id=needed-'+self.id+'>' + (self.max_players - self.players.length) + '</span> more</div>';
+        content    += '<p><button type=button id=join-'+self.id+' class=group-button>JOIN</button>';
+        content    += '<button type=button id=confirm-'+self.id+' class=group-button>READY</button>';
+        content    += '<button type=button id=begin-'+self.id+' class=group-button>START!</button></p>';
+        content    += '</div>';
         container.append(content);
 
         self.div = $('#group-'+self.id);
         self.assigned_span = $('#assigned-'+self.id);
         self.needed_span = $('#needed-'+self.id);
 
+        // The join button is always visible, but is highlighed
+        // based on whether person has joined this group already
         $('#join-'+self.id).css('visibility', 'visible');        
-        
         if (self.mygroup) {
             self.highlight_joined();
-        } else if (self.players.length == PLAYERS_PER_SESSION) {
+        } else if (self.players.length == self.max_players) {
             console.log('highlighting full!');
             self.highlight_full();
         };
@@ -179,7 +186,7 @@ var GroupView = function(id, groupdata, mygroup) {
     };
 
     self.remove_player = function(playerid, message, callback) {
-        console.log('removing player '+playerid+' from group');
+        session_output('removing player '+playerid+' from group');
         self.players = _.without(self.players, playerid);
         self.reset_counter(self.players.length);
 
@@ -194,23 +201,45 @@ var GroupView = function(id, groupdata, mygroup) {
     self.reset_counter = function() {
         self.counter = 0;
         self.assigned_span.html(0);
-        self.needed_span.html(PLAYERS_PER_SESSION);
+        self.needed_span.html(self.max_players);
     };
 
     self.update_counter = function(count) {
         self.counter = count;
         self.assigned_span.html(self.counter);
-        self.needed_span.html(PLAYERS_PER_SESSION - self.counter);
+        self.needed_span.html(self.max_players - self.counter);
     };
 
     self.update_assigned = function() {
         self.assigned_span.html(self.players.length);
-        self.needed_span.html(PLAYERS_PER_SESSION - self.players.length);
+        self.needed_span.html(self.max_players - self.players.length);
     };
 
+    self.highlight_joined = function() {
+        $('#join-'+self.id).css({'visibility': 'visible',
+                                 'background': COL_BUTTON_PRESSED,
+                                 'opacity': 0.5});
+        $('#join-'+self.id).html('JOINED');        
+    };
+
+    self.highlight_full = function() {
+        $('#join-'+self.id).css({'visibility': 'visible',
+                                 'background': 'gray',
+                                 'opacity': 0.2});                
+        $('#join-'+self.id).html('FILLED');        
+        
+    };
+
+    self.acknowledge_response = function(messages) {
+        self.update_counter(self.counter + 1);
+        if (messages[0].source == userid) {
+	    self.update_prompt('<p>Thanks! Waiting for others...</p>');
+        };
+    };
+    
     self.listen = function() {
 
-        if (self.mygroup == true && self.players.length==PLAYERS_PER_SESSION) {
+        if (self.mygroup == true && self.players.length==self.max_players) {
             self.listen_for_confirm('ready_to_play');
         } else {
             self.listen_for_join();   
@@ -267,37 +296,23 @@ var GroupView = function(id, groupdata, mygroup) {
             $('#begin-'+self.id).unbind('click');
             self.update_prompt('<p>Experiment in progress</p>');
             $('.group-button').css('display', 'none');
-            exp.proceed(self);
+            document.title = 'Experiment in progress';
+            
+            //
+            // START THE EXPERIMENT
+            // 
+            self.experiment.group = self;
+            self.experiment.proceed();
+
         });
         simclick($('#begin-'+self.id));
     };
-
-
-    self.highlight_joined = function() {
-        $('#join-'+self.id).css({'visibility': 'visible',
-                                 'background': COL_BUTTON_PRESSED,
-                                 'opacity': 0.5});
-        $('#join-'+self.id).html('JOINED');        
-    };
-
-    self.highlight_full = function() {
-        $('#join-'+self.id).css({'visibility': 'visible',
-                                 'background': 'gray',
-                                 'opacity': 0.2});                
-        $('#join-'+self.id).html('FILLED');        
-        
-    };
-
-    self.acknowledge_response = function(messages) {
-        self.update_counter(self.counter + 1);
-        if (messages[0].source == userid) {
-	    self.update_prompt('<p>Thanks! Waiting for others...</p>');
-        };
-    };
-    
+  
 };
 
 
+// A list of messages that are required from other players in the same
+// group before a callback will be triggered.
 var ConditionalCallback = function(required_messages, callback) {
     var self = this;
 
@@ -327,65 +342,71 @@ var ConditionalCallback = function(required_messages, callback) {
         if (unmet == 0) {
             self.completed = true;
             self.callback(self.req);
-            //console.log('met cc:', self.req);
         }; 
 
         return self.completed;
-
     };
-
 };
 
 
-var MultiplayerSession = function() {
+var MultiplayerSession = function(players_per_session, experiment) {
     var self = this;
+    self.PLAYERS_PER_SESSION = players_per_session;
     self.groups = {};
     self.assigned_group = null;
     self.assigned_group_members = [];
     self.condcall = [];
     self.message_log = [];
+    self.experiment = experiment;
 
     self.update_groups = function(groups) {
 
         for (var i=0; i<groups.length; i++) {
 
+            console.log(groups[i]);
+
             var gid = groups[i].groupid;
             var mygroup = gid == self.assigned_group;
 
-            //console.log('assigned group:', self.assigned_group);
+            session_output('assigned group: '+self.assigned_group);
 
-            //self.groups[gid] = new GroupView(i, groups[i], mygroup);
-            //self.groups[gid].create($('#session-groups')).listen();
-            
             // only display a group if it is mygroup or
             // (mygroup is unassigned and it has space available)
             if (mygroup || (groups[i].available > 0 && self.assigned_group==null)) {
-                self.groups[gid] = new GroupView(i, groups[i], mygroup);
+                self.groups[gid] = new GroupView(i, groups[i], mygroup, self.PLAYERS_PER_SESSION, self.experiment);
                 self.groups[gid].create($('#session-groups')).listen();
             };
             
         };
 
         if (self.assigned_group!=null) {
-            if (self.groups[self.assigned_group].players.length == PLAYERS_PER_SESSION) {
+            if (self.groups[self.assigned_group].players.length == self.PLAYERS_PER_SESSION) {
                 self.confirm_ready_to_play();
             };
+        } else {
+            t = '<p>In this experiment you will play a multiplayer game involving 1 or more other ' +
+                'people. The first step is to join an open group using the interface below. ' +
+                '</p><p><strong>Please note:</strong> Since completion of this task depends on all ' +
+                'players completing the task at the same time, it is important that you pay ' +
+                'attention throughout.</p>';
+
+            t += '<p>After you join a group below, you may have to wait for other player(s) ' +
+                'to arrive and complete your group. Once your group is full, all players ' +
+                'must confirm that they are ready to play, and the experiment will begin.</p>';
+
+            t += '<p>Join one of the groups below (if all are filled, try reloading the page).</p>';
+
+            $('#session-instruction').html(t);
         };
 
-        $('#session-instruction').html('Join one of the groups below (if all are filled, '+
-                                       'try reloading the page.)');
     };
 
 
     self.confirm_ready_to_play = function() {
-        // hide other groups
-        /*console.log('hiding other groups');
-        $.each(self.groups, function(i, group) {
-            if (group.groupid != self.assigned_group) {
-                $('#group-'+group.groupid).css('display', 'none');
-            };
-        });*/
 
+        // play a sound to indicate ready to play
+        readysound();
+        document.title = 'READY TO START EXPERIMENT!';
 
         // expose button
         var msg = '<p>All players have joined!<br />Click below to confirm that you\'re ready to play.</p>';
@@ -483,13 +504,8 @@ var MultiplayerSession = function() {
                     catch_leave();
 
                     $('#session-instruction').html('');
-
-                    //console.log('hiding other groups');
                     $.each(self.groups, function(i, group) {
-                        //console.log(self.assigned_group);
-                        //console.log(group.groupid != self.assigned_group)
                         if (group.groupid != self.assigned_group) {
-                            //console.log('hidiing');
                             $('#group-'+group.id).css('display', 'none');
                         };
                     });
@@ -498,13 +514,13 @@ var MultiplayerSession = function() {
 
                 if (grp.mygroup) {
                     // if enough players, move on to confirmation
-                    if (grp.players.length == PLAYERS_PER_SESSION) {
+                    if (grp.players.length == self.PLAYERS_PER_SESSION) {
                         self.confirm_ready_to_play();                
                     } else {
                         if (msg.source == userid) grp.update_prompt('Thanks! Waiting for others to join...');
                     };  
                 } else {
-                    if (grp.players.length == PLAYERS_PER_SESSION) {
+                    if (grp.players.length == self.PLAYERS_PER_SESSION) {
                         grp.highlight_full();
                     };   
                 };
@@ -557,10 +573,10 @@ var MultiplayerSession = function() {
     };
 
     self.abort = function() {
-        console.log('finishing the experiment because something went wrong.');
+        session_output('finishing the experiment because something went wrong.');
 
         setTimeout(function() {
-            exp.abort();
+            self.experiment.abort();
         }, 500);
     };
 
@@ -571,14 +587,14 @@ var MultiplayerSession = function() {
 
 
 function onOpened() {
-    console.log('opened!');
+    session_output('channel open');
 };
 
 function onError() {
-    console.log('error :(');
+    session_output('channel error');
 };
 
 function onClose() {
-    console.log('closed..');
+    session_output('channel closed');
 };
 
