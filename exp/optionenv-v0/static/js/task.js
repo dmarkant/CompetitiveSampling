@@ -2,7 +2,7 @@
 
 
 switch (Number(condition)) {
-
+	/*
 	case 0:
 		COMPETING = false;
 		OPT_ENVIRONMENT = 'discrete-normal';
@@ -14,14 +14,15 @@ switch (Number(condition)) {
 		OPT_ENVIRONMENT = 'discrete-skewed';
 		OPT_CONDITION = 1;
 		break;
+	*/
 
-	case 2:
+	case 0:
 		COMPETING = true;
 		OPT_ENVIRONMENT = 'discrete-normal';
 		OPT_CONDITION = 0;
 		break;
 	
-	case 3:
+	case 1:
 		COMPETING = true;
 		OPT_ENVIRONMENT = 'discrete-skewed';
 		OPT_CONDITION = 1;
@@ -317,26 +318,33 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 
 	self.show_heading = function() {
 		if (self.practice==true) {
-			self.above_stage.html('<h1>Practice game '+(self.round+1)+'/'+N_PRACTICE_GAMES+'</h1>');
+			self.above_stage.html('<h1>Practice game '+(self.round+1)+'/'+
+								  N_PRACTICE_GAMES+'</h1>');
 		} else {
 			if (self.opponents.length > 0) {
-				self.above_stage.html('<h1>Game '+(self.round+1)+'/'+NROUNDS+'</h1><h2>'+self.n_options+' urns, '+self.opponents.length+' opponents</h2>');
+				self.above_stage.html('<h1>Game '+(self.round+1)+'/'+
+						NROUNDS+'</h1><h2>'+self.n_options+' urns, '+
+						self.opponents.length+' opponents</h2>');
 			} else {
-				self.above_stage.html('<h1>Game '+(self.round+1)+'/'+NROUNDS+'</h1><h2>'+self.n_options+' urns</h2>');
+				self.above_stage.html('<h1>Game '+(self.round+1)+'/'+NROUNDS+
+						'</h1><h2>'+self.n_options+' urns</h2>');
 			};			
 		}
 	};
 
 
 	self.set_instruction = function(text) {
-		self.instruction.html('<div id="turn-number">TURN '+(self.trial+1)+'</div>'+text);
+		self.instruction.html('<div id="turn-number">TURN '+(self.trial+1)+
+							  '</div>'+text);
 	};
 
 
 	self.toggle_instruction_color = function(on) {
 		/* turns green to indicate ready to sample, otherwise white */
-		if (on) $('#turn-number').css({'background-color': '#04B404', 'color': 'white'});
-		else $('#turn-number').css({'background-color': 'white', 'color': 'gray'});	
+		if (on) $('#turn-number').css({'background-color': '#04B404', 
+									   'color': 'white'});
+		else $('#turn-number').css({'background-color': 'white', 
+							 	 	'color': 'gray'});	
 	};
 
 
@@ -349,7 +357,8 @@ var CompetitiveSamplingGame = function(group, round, callback, practice) {
 			self.reset_stage(self.sampling_trial);	
 		};
     	session.confirm_ready_to('ready_game_'+self.round, 
-								 '<p>Click below to confirm that you\'re ready to start this game.</p>',
+								 '<p>Click below to confirm that you\'re ready' +
+								 'to start this game.</p>',
 								 self.group.players,
 								 self.group.acknowledge_response);
 	};
@@ -759,12 +768,13 @@ var Abort = function() {
 	$('#main').html('');
 	var self = init_instruction(this, 'abort');
 	$('h1').css('display', 'none');	
-	self.add_text('Oops! Looks like there was an error or someone in your group left the experiment '+
-				  'early.');
+	self.add_text('Oops! Looks like there was an error or someone in your '+
+				  'group left the experiment early.');
 				  
-	self.add_text('Unfortunately, you won\'t be able to complete the rest of the experiment. However, '+
-				  'you will still receive your base payment of $'+BASE_PAYMENT.toFixed(2)+'. Please click below '+
-				  'to continue.');
+	self.add_text('Unfortunately, you won\'t be able to complete the rest '+
+				  'of the experiment. However, you will still receive your '+
+				  'base payment of $'+BASE_PAYMENT.toFixed(2)+'. Please click '+ 
+				  'below to continue.');
 	
 	add_next_instruction_button(Exit);
 
@@ -780,23 +790,30 @@ var Feedback = function() {
 	self.div = $('#container-instructions');
 	
 
-	var t = 'All done! Now you can see the results of your choices across all the games you ' +
-		    'played, and how they impact your final bonus:';
+	var t = 'All done! Now you can see the results of your choices across all '+
+	   		'the games you played, and how they impact your final bonus:';
 	self.div.append(instruction_text_element(t));
 
 	html =  '<div id=feedback-table>';
 	for (var i=0; i<NROUNDS; i++) {
-		html +=	'<div class=row><div class=left>Game '+(i+1)+':</div><div class=right>'+(chosen_values[i] * BONUS_SCALE).toFixed(2)+'</div></div>';	
+		html +=	'<div class=row><div class=left>Game '+(i+1)+':</div>'+
+			'<div class=right>'+(chosen_values[i] * BONUS_SCALE).toFixed(2)+
+			'</div></div>';	
 	};
-	html +=	'<div class=row style="border-top: 1px solid black; font-weight: bold;"><div class=left>Final bonus:</div><div class=right>$'+Math.max(0, final_bonus).toFixed(2)+'</div></div>';	
+	html +=	'<div class=row style="border-top: 1px solid black; '+
+		'font-weight: bold;"><div class=left>Final bonus:</div>'+
+		'<div class=right>$'+Math.max(0, final_bonus).toFixed(2)+'</div></div>';	
 	html += '</div>'
 	self.div.append(html);
 
 
-	var t = 'You will be eligible to receive the bonus after you\'ve answered the following questions:'
+	var t = 'You will be eligible to receive the bonus after you\'ve answered '+
+		'the following questions:'
 	self.div.append(instruction_text_element(t));
 
-	var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your HIT. Press the button to resubmit.</p><button id='resubmit'>Resubmit</button>";
+	var error_message = "<h1>Oops!</h1><p>Something went wrong submitting your "+
+		"HIT. Press the button to resubmit.</p>"+
+		"<button id='resubmit'>Resubmit</button>";
 
 	record_responses = function() {
 
