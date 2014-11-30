@@ -2,7 +2,7 @@
 
 
 switch (Number(condition)) {
-	/*
+	
 	case 0:
 		COMPETING = false;
 		OPT_ENVIRONMENT = 'discrete-normal';
@@ -14,15 +14,14 @@ switch (Number(condition)) {
 		OPT_ENVIRONMENT = 'discrete-skewed';
 		OPT_CONDITION = 1;
 		break;
-	*/
 
-	case 0:
+	case 2:
 		COMPETING = true;
 		OPT_ENVIRONMENT = 'discrete-normal';
 		OPT_CONDITION = 0;
 		break;
 	
-	case 1:
+	case 3:
 		COMPETING = true;
 		OPT_ENVIRONMENT = 'discrete-skewed';
 		OPT_CONDITION = 1;
@@ -713,14 +712,14 @@ var CompetitiveSamplingExperiment = function() {
 
 		} else if (!self.training_completed) {
 
-			InstructionsTraining();	
+			update_state('EXP_STARTED', function(data) {
+            	output('updated status (EXP_STARTED)?:', data); 
+				InstructionsTraining();
+			});
 
 		} else {
 
-			update_state('EXP_STARTED', function(data) {
-            	output('updated status (EXP_STARTED)?:', data); 
-				self.next();
-			});
+			self.next();
 
 		};
 	};
