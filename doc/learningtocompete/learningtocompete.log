@@ -1,0 +1,1510 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2014.1.13)  26 MAR 2015 14:24
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**learningtocompete.tex
+(./learningtocompete.tex
+LaTeX2e <2011/06/27>
+Babel <3.9f> and hyphenation patterns for 78 languages loaded.
+(/usr/local/texlive/2013/texmf-dist/tex/latex/apa6/apa6.cls
+Document Class: apa6 2013/01/10 v2.12 APA formatting (6th edition)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/size11.clo
+File: size11.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2011/01/03 v2.1 e-TeX tools for LaTeX
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/etex-pkg/etex.sty
+Package: etex 1998/03/26 v2.0 eTeX basic definition package (PEB)
+\et@xins=\count87
+)
+\etb@tempcnta=\count88
+)
+Class apa6 Info: No bibliography package was specified; defaulting to (but not 
+loading) Biblatex on input line 213.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/lm/lmodern.sty
+Package: lmodern 2009/10/30 v1.6 Latin Modern Fonts
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/lmm/m/it on input line 23.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> OMS/lmsy/m/n on input line 24.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 25.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 26.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/lmm/b/it on input line 27.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> OMS/lmsy/b/n on input line 28.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 29.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 31.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 32.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/lmr/m/it on input line 33.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> OT1/lmss/bx/n on input line 36.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/lmr/bx/it on input line 37.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/t1enc.def
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
+))
+(/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/txfonts.sty
+Package: txfonts 2008/01/22 v3.2.1
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 21.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/lmr/m/n --> OT1/txr/m/n on input line 21.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/lmr/bx/n --> OT1/txr/m/n on input line 21.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/txr/m/n --> OT1/txr/bx/n on input line 22.
+\symitalic=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `italic' in version `bold'
+(Font)                  OT1/txr/m/it --> OT1/txr/bx/it on input line 26.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 29.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/lmr/bx/n --> OT1/txr/bx/n on input line 29.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/lmr/bx/n --> OT1/txr/bx/n on input line 29.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 30.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/lmr/m/it --> OT1/txr/m/it on input line 30.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/lmr/bx/it --> OT1/txr/m/it on input line 30.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/txr/m/it --> OT1/txr/bx/it on input line 31.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 40.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/lmss/m/n --> OT1/txss/m/n on input line 40.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/lmss/bx/n --> OT1/txss/m/n on input line 40.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/txss/m/n --> OT1/txss/b/n on input line 41.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 50.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/lmtt/m/n --> OT1/txtt/m/n on input line 50.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/lmtt/m/n --> OT1/txtt/m/n on input line 50.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/txtt/m/n --> OT1/txtt/b/n on input line 51.
+LaTeX Font Info:    Redeclaring symbol font `letters' on input line 58.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/lmm/m/it --> OML/txmi/m/it on input line 58.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/lmm/b/it --> OML/txmi/m/it on input line 58.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/txmi/m/it --> OML/txmi/bx/it on input line 59.
+\symlettersA=\mathgroup5
+LaTeX Font Info:    Overwriting symbol font `lettersA' in version `bold'
+(Font)                  U/txmia/m/it --> U/txmia/bx/it on input line 67.
+LaTeX Font Info:    Redeclaring symbol font `symbols' on input line 77.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/lmsy/m/n --> OMS/txsy/m/n on input line 77.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/lmsy/b/n --> OMS/txsy/m/n on input line 77.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/txsy/m/n --> OMS/txsy/bx/n on input line 78.
+\symAMSa=\mathgroup6
+LaTeX Font Info:    Overwriting symbol font `AMSa' in version `bold'
+(Font)                  U/txsya/m/n --> U/txsya/bx/n on input line 94.
+\symAMSb=\mathgroup7
+LaTeX Font Info:    Overwriting symbol font `AMSb' in version `bold'
+(Font)                  U/txsyb/m/n --> U/txsyb/bx/n on input line 103.
+\symsymbolsC=\mathgroup8
+LaTeX Font Info:    Overwriting symbol font `symbolsC' in version `bold'
+(Font)                  U/txsyc/m/n --> U/txsyc/bx/n on input line 113.
+LaTeX Font Info:    Redeclaring symbol font `largesymbols' on input line 120.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/lmex/m/n --> OMX/txex/m/n on input line 120.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/lmex/m/n --> OMX/txex/m/n on input line 120.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/txex/m/n --> OMX/txex/bx/n on input line 121.
+\symlargesymbolsA=\mathgroup9
+LaTeX Font Info:    Overwriting symbol font `largesymbolsA' in version `bold'
+(Font)                  U/txexa/m/n --> U/txexa/bx/n on input line 129.
+LaTeX Info: Redefining \not on input line 1043.
+)
+apa6.cls: Using txfonts
+(/usr/local/texlive/2013/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(/usr/local/texlive/2013/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count89
+\Gm@cntv=\count90
+\c@Gm@tempcnt=\count91
+\Gm@bindingoffset=\dimen103
+\Gm@wd@mp=\dimen104
+\Gm@odd@mp=\dimen105
+\Gm@even@mp=\dimen106
+\Gm@layoutwidth=\dimen107
+\Gm@layoutheight=\dimen108
+\Gm@layouthoffset=\dimen109
+\Gm@layoutvoffset=\dimen110
+\Gm@dimlist=\toks15
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: pdftex.def on input line 91.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count92
+))
+\Gin@req@height=\dimen111
+\Gin@req@width=\dimen112
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2005/04/14 v1.61803 publication quality tables
+\heavyrulewidth=\dimen113
+\lightrulewidth=\dimen114
+\cmidrulewidth=\dimen115
+\belowrulesep=\dimen116
+\belowbottomsep=\dimen117
+\aboverulesep=\dimen118
+\abovetopsep=\dimen119
+\cmidrulesep=\dimen120
+\cmidrulekern=\dimen121
+\defaultaddspace=\dimen122
+\@cmidla=\count93
+\@cmidlb=\count94
+\@aboverulesep=\dimen123
+\@belowrulesep=\dimen124
+\@thisruleclass=\count95
+\@lastruleclass=\count96
+\@thisrulewidth=\dimen125
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/threeparttable/threeparttable.sty
+Package: threeparttable 2003/06/13  v 3.0
+\@tempboxb=\box26
+)
+\b@level@one@skip=\skip43
+\e@level@one@skip=\skip44
+\b@level@two@skip=\skip45
+\e@level@two@skip=\skip46
+\b@level@three@skip=\skip47
+\e@level@three@skip=\skip48
+\b@level@four@skip=\skip49
+\e@level@four@skip=\skip50
+\b@level@five@skip=\skip51
+\e@level@five@skip=\skip52
+ (/usr/local/texlive/2013/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
+\captionmargin=\dimen126
+\captionmargin@=\dimen127
+\captionwidth=\dimen128
+\caption@tempdima=\dimen129
+\caption@indent=\dimen130
+\caption@parindent=\dimen131
+\caption@hangindent=\dimen132
+)
+\c@ContinuedFloat=\count97
+Package caption Info: threeparttable package is loaded.
+)
+\c@APAenum=\count98
+\@text@par@indent=\skip53
+\gr@box=\box27
+\gr@boxwidth=\skip54
+\gr@boxheight=\skip55
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/tools/bm.sty
+Package: bm 2004/02/26 v1.1c Bold Symbol Support (DPC/FMi)
+\symboldoperators=\mathgroup10
+\symboldletters=\mathgroup11
+\symboldsymbols=\mathgroup12
+\symboldlargesymbols=\mathgroup13
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 138.
+LaTeX Info: Redefining \bm on input line 204.
+)
+\c@appendix=\count99
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/sttools/flushend.sty
+Package: flushend 2012/05/29 v1.1 Balancing columns at last page
+Package: flushend 1997/10/01
+\@aaa=\box28
+\@ccc=\box29
+\@viper=\box30
+\hold@viper=\box31
+\atColsBreak=\toks16
+\@extra@skip=\dimen133
+\@nd@page@rule=\dimen134
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/tools/ftnright.sty
+Package: ftnright 2010/02/25 v1.1f footnote layout package (FMi)
+\rcol@footinsskip=\skip56
+\ftn@amount=\dimen135
+)
+\auone@box=\box32
+\autwo@box=\box33
+\autot@box=\box34
+\auone@boxwidth=\skip57
+\autwo@boxwidth=\skip58
+\autot@boxwidth=\skip59
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/apacite/apacite.sty
+Package: apacite 2012/02/25 v6.01 APA citation
+\c@BibCnt=\count100
+\bibleftmargin=\skip60
+\bibindent=\skip61
+\bibparsep=\skip62
+\bibitemsep=\skip63
+\biblabelsep=\skip64
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/pdfsync/pdfsync.sty
+Package: pdfsync 2008/01/26 v1.1
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/hyphenat/hyphenat.sty
+Package: hyphenat 2009/09/02 v2.3c hyphenation utilities
+\langwohyphens=\language79
+LaTeX Info: Redefining \_ on input line 43.
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2003/08/22 v1.5q LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks17
+\verbatim@line=\toks18
+\verbatim@in@stream=\read1
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/multirow/multirow.sty
+\bigstrutjot=\dimen136
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/rotating/rotating.sty
+Package: rotating 2009/03/28 v2.16a rotated objects in LaTeX
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\c@r@tfl@t=\count101
+\rotFPtop=\skip65
+\rotFPbot=\skip66
+\rot@float@box=\box35
+\rot@mess@toks=\toks19
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 130.
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/soul/soul.sty
+Package: soul 2003/11/17 v2.4 letterspacing/underlining (mf)
+\SOUL@word=\toks20
+\SOUL@lasttoken=\toks21
+\SOUL@cmds=\toks22
+\SOUL@buffer=\toks23
+\SOUL@token=\toks24
+\SOUL@spaceskip=\skip67
+\SOUL@ttwidth=\dimen137
+\SOUL@uldp=\dimen138
+\SOUL@ulht=\dimen139
+)
+(./learningtocompete.aux)
+\openout1 = `learningtocompete.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 36.
+LaTeX Font Info:    Try loading font information for OML+txmi on input line 36.
+
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/omltxmi.fd
+File: omltxmi.fd 2000/12/15 v3.1
+)
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 36.
+LaTeX Font Info:    Try loading font information for OMS+txsy on input line 36.
+
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/omstxsy.fd
+File: omstxsy.fd 2000/12/15 v3.1
+)
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 36.
+LaTeX Font Info:    Try loading font information for OMX+txex on input line 36.
+
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/omxtxex.fd
+File: omxtxex.fd 2000/12/15 v3.1
+)
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 36.
+LaTeX Font Info:    Try loading font information for U+txexa on input line 36.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/utxexa.fd
+File: utxexa.fd 2000/12/15 v3.1
+)
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Try loading font information for T1+txr on input line 36.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/t1txr.fd
+File: t1txr.fd 2000/12/15 v3.1
+)
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: twoside 
+* h-part:(L,W,R)=(72.26999pt, 469.75502pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 650.43001pt, 72.26999pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=501.55397pt
+* \textheight=643.20255pt
+* \oddsidemargin=-18.06749pt
+* \evensidemargin=-18.06749pt
+* \topmargin=-19.8738pt
+* \headheight=13.4457pt
+* \headsep=13.72546pt
+* \topskip=11.0pt
+* \footskip=30.0pt
+* \marginparwidth=113.0pt
+* \marginparsep=10.0pt
+* \columnsep=18.06749pt
+* \skip\footins=10.0pt plus 5.0pt minus 3.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidetrue
+* \@mparswitchtrue
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+(/usr/local/texlive/2013/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count102
+\scratchdimen=\dimen140
+\scratchbox=\box36
+\nofMPsegments=\count103
+\nofMParguments=\count104
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count105
+\MPscratchDim=\dimen141
+\MPnumerator=\count106
+\makeMPintoPDFobject=\count107
+\everyMPtoPDFconversion=\toks26
+) (/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(/usr/local/texlive/2013/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/oberdiek/grfext.sty
+Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+))
+(/usr/local/texlive/2013/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+
+(/usr/local/texlive/2013/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 452.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+(/usr/local/texlive/2013/texmf-dist/tex/latex/apa6/config/APAamerican.txt
+File: APAamerican.txt 2012/02/23 v1.25 apa6 configuration for American English
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: rotating package is loaded.
+Package caption Info: End \AtBeginDocument code.
+\c@maskedRefs=\count108
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/apacite/english.apc
+File: english.apc 2012/02/25 v6.01 apacite language file
+LaTeX Info: Redefining \BPBI on input line 129.
+LaTeX Info: Redefining \BHBI on input line 130.
+)
+Configuring pdfsync
+\PDFSYNC@ut=\write3
+\openout3 = `learningtocompete.pdfsync'.
+
+\PDFSYNCf@li@=\count109
+\PDFSYNC@rder=\count110
+**** pdfsync.sty: Synchronizing at \everypar
+\PDFSYNCeveryp@r=\toks27
+**** pdfsync.sty: Synchronizing at \everymath
+\PDFSYNCeverym@th=\toks28
+**** pdfsync.sty: Synchronizing at \everyhbox
+\PDFSYNCeveryhb@x=\toks29
+**** pdfsync.sty: Synchronizing at \everyvbox
+\PDFSYNCeveryvb@x=\toks30
+
+! pdfsync is patching the soul package
+**** pdfsync.sty: started
+
+
+Class apa6 Warning: Abstract not defined.
+
+Class apa6 Info: Keywords not defined on input line 37.
+<figures/exp1_results.pdf, id=1, 489.78607pt x 365.24893pt>
+File: figures/exp1_results.pdf Graphic file (type pdf)
+
+<use figures/exp1_results.pdf>
+Package pdftex.def Info: figures/exp1_results.pdf used on input line 56.
+(pdftex.def)             Requested size: 289.07999pt x 215.57303pt.
+LaTeX Font Info:    Try loading font information for OT1+txr on input line 63.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/ot1txr.fd
+File: ot1txr.fd 2000/12/15 v3.1
+)
+LaTeX Font Info:    Try loading font information for U+txmia on input line 63.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/utxmia.fd
+File: utxmia.fd 2000/12/15 v3.1
+)
+LaTeX Font Info:    Try loading font information for U+txsya on input line 63.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/utxsya.fd
+File: utxsya.fd 2000/12/15 v3.1
+)
+LaTeX Font Info:    Try loading font information for U+txsyb on input line 63.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/utxsyb.fd
+File: utxsyb.fd 2000/12/15 v3.1
+)
+LaTeX Font Info:    Try loading font information for U+txsyc on input line 63.
+
+(/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/utxsyc.fd
+File: utxsyc.fd 2000/12/15 v3.1
+) [1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+
+] [2 <./figures/exp1_results.pdf>] (./learningtocompete.bbl)
+Overfull \vbox (57.24496pt too high) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (85.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 557.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (84.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 558.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (83.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 559.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (82.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 560.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (81.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 561.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (80.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 562.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (79.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 563.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (78.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 564.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (77.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 565.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (76.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 566.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (75.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 567.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (74.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 568.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (73.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 569.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (72.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 570.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (71.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 571.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (70.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 572.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (69.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 573.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (68.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 574.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (67.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 575.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (66.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 576.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (65.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 577.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (64.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 578.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (63.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 579.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (62.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 580.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (61.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 581.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (60.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 582.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (59.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 583.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (58.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 584.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (57.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 585.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (56.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 586.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (55.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 587.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (54.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 588.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (53.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 589.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (52.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 590.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (51.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 591.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (50.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 592.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (49.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 593.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (48.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 594.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (47.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 595.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (46.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 596.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (45.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 597.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (44.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 598.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (43.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 599.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (42.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 600.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (41.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 601.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (40.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 602.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (39.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 603.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (38.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 604.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (37.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 605.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (36.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 606.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (35.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 607.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (34.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 608.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (33.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 609.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (32.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 610.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (31.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 611.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (30.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 612.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (29.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 613.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (28.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 614.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (27.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 615.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (26.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 616.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (25.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 617.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (24.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 618.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (23.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 619.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (22.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 620.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (21.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 621.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (20.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 622.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (19.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 623.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (18.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 624.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (17.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 625.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (16.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 626.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (15.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 627.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (14.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 628.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (13.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 629.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (12.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 630.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (11.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 631.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (10.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 632.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (9.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 633.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (8.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 634.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (7.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 635.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (6.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 636.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (5.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 637.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (4.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 638.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (3.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 639.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (2.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 640.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (1.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 641.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (0.33263pt too high) has occurred while \output is active []
+
+Extra height:71.11996pt when 642.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 643.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 644.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 645.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 646.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 647.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 648.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 649.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 650.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 651.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 652.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 653.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 654.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 655.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 656.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 657.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 658.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 659.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 660.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 661.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 662.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:71.11996pt when 663.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 664.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 665.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 666.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 667.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 668.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 669.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 670.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 671.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 672.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 673.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 674.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:35.0pt when 675.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 676.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 677.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 678.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 679.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 680.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 681.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 682.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 683.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 684.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 685.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 686.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 687.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 688.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 689.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 690.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 691.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 692.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 693.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 694.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 695.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 696.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 697.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 698.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:23.0pt when 699.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:0.0pt when 700.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+(2)Left:700.86992pt Right:700.44751pt Output:700.86992pt
+- LAST -
+Extra skip:0.0pt
+Left:700.86992pt
+Right:700.44751pt
+Output:700.86992pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \vbox (3.17763pt too high) has occurred while \output is active []
+
+
+[3
+
+] (./learningtocompete.aux) ) 
+Here is how much of TeX's memory you used:
+ 5854 strings out of 493315
+ 83061 string characters out of 6137904
+ 154463 words of memory out of 5000000
+ 9154 multiletter control sequences out of 15000+600000
+ 58710 words of font info for 126 fonts, out of 8000000 for 9000
+ 957 hyphenation exceptions out of 8191
+ 43i,20n,40p,804b,440s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2013/texmf-dist/fonts/enc/dvip
+s/base/8r.enc}</usr/local/texlive/2013/texmf-dist/fonts/type1/public/txfonts/rt
+xmi.pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/txfonts/rtxr.pfb
+></usr/local/texlive/2013/texmf-dist/fonts/type1/public/txfonts/txsy.pfb></usr/
+local/texlive/2013/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texl
+ive/2013/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2013/t
+exmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on learningtocompete.pdf (3 pages, 78446 bytes).
+PDF statistics:
+ 114 PDF objects out of 1000 (max. 8388607)
+ 33 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+
