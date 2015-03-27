@@ -47,12 +47,13 @@
 
 \subsection{Participants and materials}
 
-\hl{X} participants were recruited through Amazon Mechanical Turk (www.mturk.com) using \emph{psiTurk}.
+We recruited 136 participants through Amazon Mechanical Turk (www.mturk.com) using \emph{psiTurk}~\cite{gureckis2015psiturk}.
 Participants were paid a base payment of \$.50 for their participation, as well as a bonus of up to \$3 depending on their performance.
+Participants were randomly assigned to either the Public condition or Competitive condition (both $N=68$ or 34 pairs in each condition).
 
 \subsection{Procedure}
 
-\begin{figure*}[ht]
+\begin{figure*}[htbp]
 \centerline{\includegraphics[width=4in]{figures/exp1_results.pdf}}
 \caption{Caption}
 \label{exp1_results.fig}
@@ -63,6 +64,8 @@ Participants were paid a base payment of \$.50 for their participation, as well 
 Each decision problem involved two options $H$ and $L$ with higher and lower expected value, respectively.
 Each option was associated with two possible outcomes: a \emph{common} outcome that occurred with probability $p = .8$ and a \emph{rare} outcome that occurred with probability $1 - p = .2$.
 For each option, the common outcome was a random number in the range $[-20, 20]$, while the rare outcome was a random number in the range $[-200, 200]$.
+Thus, the option environment featured high-magnitude outcomes that were relatively infrequent but could have a large impact on the value of an option, including changing the sign of its perceived value (e.g., from a gain to a loss).
+
 Option sets were randomly generated and retained if the difference between the expected value for the $H$ and $L$ options was greater than or equal to $25$. 
 Twenty problem sets comprised of 8 problems each were generated with this procedure.
 Problem sets were resampled if the summed expected value across all $L$ options was less than $-100$ or the summed expected value of all $H$ options was greater than $200$, ensuring that each participant's total payoff would lie in that range.
@@ -73,7 +76,7 @@ For each option, they were instructed to sample 25 time and observing the result
 They then reported the highest and lowest outcomes that were seen during sampling, and estimated the expected value of the option.
 All participants experienced the same four example options, which were chosen to include options where both outcomes were in the same domain (i.e., both the common and rare outcome were gains) and options where they were in different domains (i.e., a common loss but rare gain with high value).
 This training ensured that participants had experience with the structure of individual options prior to the game, including the relative frequency and range of each outcome type. 
-In addition, it served as an \hl{instructional check to evaluate whether participants were able to report both outcomes they observed during sampling}.\footnote{any participants excluded based on this?}
+%In addition, it served as an \hl{instructional check to evaluate whether participants were able to report both outcomes they observed during sampling}.\footnote{any participants excluded based on this?}
 
 Participants were endowed with an initial bonus of \$1.00 at the beginning of the experiment, and were instructed that their payoff from each game (the expected value of the the option they selected) would be added or subtracted when determining their final bonus.
 
@@ -83,10 +86,11 @@ After completing the instructions, participants were presented with a list of op
 After joining an open group, they waited for a second participant to join the same group. 
 When the group was full, both participants then confirmed that they were ready to play.
 This confirmation was required for the experiment to begin to ensure that both players were present and attending to the experiment.
+%At this point participants were informed that leaving experiment early would result in them forgoing any bonus payment. 
 
 The experiment was designed such that the game advanced only when decisions were received from both players and broadcast to the entire group. 
 For example, each game started when both participants confirmed they were ready to begin.
-Similarly, during the sampling phase, players continued to the next trial when they received their opponent's decision to either stop or continue sampling.
+Similarly, during the sampling phase, players continued to the next trial only when they received their opponent's decision to either stop or continue sampling.
 
 \subsubsection{Gameplay}
 
@@ -128,7 +132,9 @@ At the end of the experiment, participants were informed as to the expected valu
 
 \subsubsection{Sample size}
 
-Sample size was greater in the public condition than in the competitive condition. No change in sample size in the public condition over games. Decline in sample size in the competitive condition across games.
+The observed sample size across 8 games is shown in Figure~\ref{exp1_results.fig}\hl{A}.
+Average sample size was higher in the public condition than in the competitive condition.
+No change in sample size in the public condition over games. Decline in sample size in the competitive condition across games.
 
 Increase in ties over games in the competitive condition, indicating convergence of strategies.
 
@@ -144,7 +150,7 @@ Show proportion choosing the better option in Public (first), Public (second), C
 
 \subsection{Discussion}
 
-Interesting to note that this change in the competitive condition occurred in the absence of any feedback.\footnote{Of course, there is some feedback in the sense that people may have a preference regarding the two options, and they can observe an opponent's choice with respect to their own preferences. That is, can experience an opponent taking an option that seemed better or that one was learning about.}
+Interesting to note that this change in the competitive condition occurred in the absence of any feedback.\footnote{Of course, people may have a preference regarding the two options, and they can evaluate an opponent's choice with respect to their own preferences. That is, can experience an opponent taking an option that seemed better or that one was learning about.}
 Results in the public condition suggest that the effect is not due to further learning about the option environment, since the level of sampling was sustained in that condition across games.
 Thus, we conclude that participants adjusted their sample size in response to observing a competitor choose first.
 
