@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2014.1.13)  29 MAR 2015 15:47
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2014.1.13)  29 MAR 2015 21:48
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -558,33 +558,30 @@ LaTeX Font Info:    Try loading font information for U+txsyc on input line 52.
 (/usr/local/texlive/2013/texmf-dist/tex/latex/txfonts/utxsyc.fd
 File: utxsyc.fd 2000/12/15 v3.1
 )
-<figures/exp1_results.pdf, id=1, 644.39966pt x 283.20523pt>
+<figures/exp1_results.pdf, id=1, 645.57397pt x 288.39053pt>
 File: figures/exp1_results.pdf Graphic file (type pdf)
 
 <use figures/exp1_results.pdf>
 Package pdftex.def Info: figures/exp1_results.pdf used on input line 57.
-(pdftex.def)             Requested size: 397.48499pt x 174.69522pt.
+(pdftex.def)             Requested size: 397.48499pt x 177.56374pt.
  [1{/usr/local/texlive/2013/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
-]
-Underfull \vbox (badness 3128) has occurred while \output is active []
-
- [2 <./figures/exp1_results.pdf>] (./learningtocompete.bbl)
-Extra height:0.0pt when 337.35513pt
-(2)Left:337.35513pt Right:343.05649pt Output:337.35513pt
-(2)Left:343.05649pt Right:317.67296pt Output:343.05649pt
+] [2 <./figures/exp1_results.pdf>]
+(./learningtocompete.bbl)
+Extra height:0.0pt when 522.05022pt
+(2)Left:522.05022pt Right:522.04657pt Output:522.05022pt
 - LAST -
 Extra skip:0.0pt
-Left:343.05649pt
-Right:317.67296pt
-Output:343.05649pt
+Left:522.05022pt
+Right:522.04657pt
+Output:522.05022pt
  [3] (./learningtocompete.aux) ) 
 Here is how much of TeX's memory you used:
- 5810 strings out of 493315
- 82498 string characters out of 6137904
- 153554 words of memory out of 5000000
- 9114 multiletter control sequences out of 15000+600000
+ 5811 strings out of 493315
+ 82521 string characters out of 6137904
+ 159554 words of memory out of 5000000
+ 9115 multiletter control sequences out of 15000+600000
  38026 words of font info for 78 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  43i,20n,40p,804b,440s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -595,10 +592,10 @@ pfb></usr/local/texlive/2013/texmf-dist/fonts/type1/public/txfonts/txsy.pfb></u
 sr/local/texlive/2013/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/t
 exlive/2013/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/201
 3/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on learningtocompete.pdf (3 pages, 81129 bytes).
+Output written on learningtocompete.pdf (3 pages, 83455 bytes).
 PDF statistics:
- 114 PDF objects out of 1000 (max. 8388607)
- 33 compressed objects within 1 object stream
+ 121 PDF objects out of 1000 (max. 8388607)
+ 37 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

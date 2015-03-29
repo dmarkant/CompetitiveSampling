@@ -1,0 +1,7 @@
+\begin{figure*}[htbp]
+\centerline{\includegraphics[width=5.5in]{figures/exp1_results.pdf}}
+\caption{Experiment 1 results}
+\label{exp1_results.fig}
+\end{figure*}
+\efloatseparator
+ 
