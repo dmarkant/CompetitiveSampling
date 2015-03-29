@@ -39,9 +39,9 @@
 
 
 
-\section{Competition in decisions from experience}
+%\section{Competition in decisions from experience}
 
-\cite{phillips2014rivals}
+%\cite{phillips2014rivals}
 
 \section{Experiment 1}
 
@@ -54,8 +54,8 @@ Participants were randomly assigned to either the Public condition or Competitiv
 \subsection{Procedure}
 
 \begin{figure*}[htbp]
-\centerline{\includegraphics[width=4in]{figures/exp1_results.pdf}}
-\caption{Caption}
+\centerline{\includegraphics[width=5.5in]{figures/exp1_results.pdf}}
+\caption{Experiment 1 results}
 \label{exp1_results.fig}
 \end{figure*}
 
@@ -66,13 +66,13 @@ Each option was associated with two possible outcomes: a \emph{common} outcome t
 For each option, the common outcome was a random number in the range $[-20, 20]$, while the rare outcome was a random number in the range $[-200, 200]$.
 Thus, the option environment featured high-magnitude outcomes that were relatively infrequent but could have a large impact on the value of an option, including changing the sign of its perceived value (e.g., from a gain to a loss).
 
-Option sets were randomly generated and retained if the difference between the expected value for the $H$ and $L$ options was greater than or equal to $25$. 
-Twenty problem sets comprised of 8 problems each were generated with this procedure.
+Twenty problem sets comprised of 8 problems each were randomly generated.
+Option sets were resampled if the difference between the expected value for the $H$ and $L$ options was less than to $25$. 
 Problem sets were resampled if the summed expected value across all $L$ options was less than $-100$ or the summed expected value of all $H$ options was greater than $200$, ensuring that each participant's total payoff would lie in that range.
 
-Participants were told about the option structure, including the relative probabilities of the common and rare outcomes.
+Participants were informed about the option structure, including the relative probabilities of the common and rare outcomes.
 Prior to playing any games, they completed four trials of non-consequential sampling with individual options.
-For each option, they were instructed to sample 25 time and observing the resulting outcome.
+For each option, they were instructed to sample 25 times and observe the resulting outcome.
 They then reported the highest and lowest outcomes that were seen during sampling, and estimated the expected value of the option.
 All participants experienced the same four example options, which were chosen to include options where both outcomes were in the same domain (i.e., both the common and rare outcome were gains) and options where they were in different domains (i.e., a common loss but rare gain with high value).
 This training ensured that participants had experience with the structure of individual options prior to the game, including the relative frequency and range of each outcome type. 
@@ -83,8 +83,7 @@ Participants were endowed with an initial bonus of \$1.00 at the beginning of th
 \subsubsection{Group formation and coordination}
 
 After completing the instructions, participants were presented with a list of open groups.
-After joining an open group, they waited for a second participant to join the same group. 
-When the group was full, both participants then confirmed that they were ready to play.
+After joining an open group, they waited for a second participant to join the same group, at which point both participants confirmed that they were ready to play.
 This confirmation was required for the experiment to begin to ensure that both players were present and attending to the experiment.
 %At this point participants were informed that leaving experiment early would result in them forgoing any bonus payment. 
 
@@ -127,41 +126,61 @@ At the end of the experiment, participants were informed as to the expected valu
 
 \subsection{Results}
 
-
-
-
 \subsubsection{Sample size}
 
-The observed sample size across 8 games is shown in Figure~\ref{exp1_results.fig}\hl{A}.
-Average sample size was higher in the public condition than in the competitive condition.
-No change in sample size in the public condition over games. Decline in sample size in the competitive condition across games.
-
-Increase in ties over games in the competitive condition, indicating convergence of strategies.
+The observed sample size across 8 games is shown in Figure~\ref{exp1_results.fig}A.
+Negative binomial regression was used to evaluate the effects of condition and game index on sample size (in the public condition, the average of the two players in each pair was used).
+Sample size was higher in the public condition overall (Wald $z=-5.0$, $p<.001$).
+There was a marginal positive effect of game index on sample size in the public condition ($z=1.74$, $p=.08$).
+Additionally, there was a significant negative effect of game index in the competitive condition ($z=-3.4$, $p=.001$).
 
 The decrease in sample size at the group level was evident at the level of individual pairs, with 23 pairs (68\%) in the competitive condition showing a decrease in average sample size from the first half to second half of the experiment. Of the remaining pairs, 5 (15\%) showed no change, and 6 (18\%) showed an increase in average sample size.
 In comparison, participants in the public condition showed the opposite pattern of change from first to second halves of the experiment, with 21 (31\%) showing a decrease, 5 (7\%) showing no change, and 42 (62\%) showing an increase.
 
+Notably, although the average sample size was higher in the public condition on the first game, the sample size of the first stoppers in that condition (shown by the dotted line in Figure~\ref{exp1_results.fig}A) was equivalent to the overall sample size observed in the competitive condition.
+This suggests that participants in both conditions may have had similar strategies at the outset of the experiment, but differed in how they adjusted their information search over the course of multiple games.
+
+%Increase in ties over games in the competitive condition, indicating convergence of strategies.
+
+
 
 \subsubsection{Performance}
 
-Did the person receiving do worse than the person choosing in the competitive condition? The interesting thing would be if that is NOT the case -- that the increased competition didn't actually make people better off.
+We next evaluated whether the two conditions differed in their selection of the $H$ option.
+Figure~\ref{exp1_results.fig}B shows the proportion of $H$ choices for individuals in the public condition (gray line) and choosers in the competitive condition (black line).
+There was a decrease in proportion of $H$ choices in the competitive condition but not the public condition.
 
-Show proportion choosing the better option in Public (first), Public (second), Competitive (chooser), Competitive (receiver).
+\subsubsection{Strategy analysis}
+
 
 \subsection{Discussion}
 
-Interesting to note that this change in the competitive condition occurred in the absence of any feedback.\footnote{Of course, people may have a preference regarding the two options, and they can evaluate an opponent's choice with respect to their own preferences. That is, can experience an opponent taking an option that seemed better or that one was learning about.}
+The results of the experiment 
+
+
+Interesting to note that this change in the competitive condition occurred in the absence of any feedback.
+%\footnote{Of course, people may have a preference regarding the two options, and they can evaluate an opponent's choice with respect to their own preferences. That is, can experience an opponent taking an option that seemed better or that one was learning about.}
 Results in the public condition suggest that the effect is not due to further learning about the option environment, since the level of sampling was sustained in that condition across games.
 Thus, we conclude that participants adjusted their sample size in response to observing a competitor choose first.
 
 
 \section{Experiment 2}
 
-Role of no, partial, and full feedback.
+\subsection{Procedure}
+
+\subsection{Results}
+
+\subsection{Discussion}
 
 
 
 \section{Experiment 3}
+
+\subsection{Procedure}
+
+\subsection{Results}
+
+\subsection{Discussion}
 
 
 \bibliographystyle{apacite}
